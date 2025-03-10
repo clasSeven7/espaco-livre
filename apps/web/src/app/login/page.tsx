@@ -1,5 +1,16 @@
 'use client';
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Lock, User } from 'lucide-react';
@@ -92,12 +103,35 @@ export default function Login() {
           </div>
         </div>
         <div className="z-10 w-[500px] flex flex-col justify-center items-center mt-4 gap-10 border-t-[1.5px] border-zinc-950 py-4">
-          <span className="mt-4 font-bold">Não tem conta?</span>
-          <Link href="/cadastrar" className="flex items-center space-x-">
-            <Button className="w-72 z-10 text-zinc-950 text-base py-5 cursor-pointer font-bold bg-transparent border-2 border-zinc-950 hover:text-zinc-50">
-              Crie agora
-            </Button>
-          </Link>
+          <span className="mt-4 font-bold">Não tem conta? Crie agora!</span>
+          <AlertDialog>
+            <AlertDialogTrigger className="w-72 z-10 text-zinc-950 text-base py-2 cursor-pointer font-bold bg-transparent border-2 border-zinc-950 transition-colors duration-300 hover:text-zinc-50 hover:bg-zinc-950 rounded-md">
+              Criar Agora
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Escolha o tipo de cadastro</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Selecione o tipo de conta que você deseja criar.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter className="flex flex-col gap-2">
+                <AlertDialogCancel className="cursor-pointer">
+                  Cancelar
+                </AlertDialogCancel>
+                <Link href="/cadastro/alocador" className="w-full">
+                  <AlertDialogAction className="w-full cursor-pointer">
+                    Alocador
+                  </AlertDialogAction>
+                </Link>
+                <Link href="/cadastro/cliente" className="w-full">
+                  <AlertDialogAction className="w-full cursor-pointer">
+                    Cliente
+                  </AlertDialogAction>
+                </Link>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </div>
     </>
