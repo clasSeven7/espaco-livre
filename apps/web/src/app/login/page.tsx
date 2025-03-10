@@ -46,7 +46,7 @@ export default function Login() {
             />
             <Input
               placeholder="Digite aqui seu login!"
-              className="bg-[#1178B9] text-zinc-50 py-6 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/90"
+              className="bg-[#1178B9] text-zinc-50 py-6 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/50"
             />
           </div>
           <div className="mb-8 relative">
@@ -58,7 +58,7 @@ export default function Login() {
             <Input
               type="password"
               placeholder="Digite aqui a sua senha!"
-              className="bg-[#1178B9] text-zinc-50 py-6 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/90"
+              className="bg-[#1178B9] text-zinc-50 py-6 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/50"
             />
           </div>
         </div>
