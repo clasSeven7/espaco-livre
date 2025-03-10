@@ -46,7 +46,7 @@ export default function Login() {
             />
             <Input
               placeholder="Digite aqui seu login!"
-              className="bg-[#1178B9] text-zinc-50 py-6 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10"
+              className="bg-[#1178B9] text-zinc-50 py-6 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/90"
             />
           </div>
           <div className="mb-8 relative">
@@ -58,7 +58,7 @@ export default function Login() {
             <Input
               type="password"
               placeholder="Digite aqui a sua senha!"
-              className="bg-[#1178B9] text-zinc-50 py-6 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder-white"
+              className="bg-[#1178B9] text-zinc-50 py-6 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/90"
             />
           </div>
         </div>
@@ -66,7 +66,7 @@ export default function Login() {
           Entrar
         </Button>
         <div className="mt-9 mb-6 z-10 flex items-center">
-          <label className="flex items-center cursor-pointer gap-96">
+          <div className="flex items-center cursor-pointer gap-96">
             <span className="mr-2 font-bold">Salvar senha</span>
             <div className="relative">
               <input
@@ -89,7 +89,7 @@ export default function Login() {
                 />
               </div>
             </div>
-          </label>
+          </div>
         </div>
         <div className="z-10 w-[500px] flex flex-col justify-center items-center mt-4 gap-10 border-t-[1.5px] border-zinc-950 py-4">
           <span className="mt-4 font-bold">Não tem conta?</span>

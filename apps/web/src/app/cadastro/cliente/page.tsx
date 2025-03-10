@@ -1,6 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Calendar, Lock, Mail, MapPin, Phone, User } from 'lucide-react';
 import Image from 'next/image';
@@ -35,11 +36,11 @@ export default function Cadastro() {
               <Mail
                 width={25}
                 height={25}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
+                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50 "
               />
               <Input
                 placeholder="Digite seu email"
-                className="bg-[#1178B9] text-zinc-50 py-4 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10"
+                className="bg-[#1178B9] text-zinc-50 py-4 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/90"
               />
             </div>
             <div className="mb-4 relative">
@@ -51,7 +52,7 @@ export default function Cadastro() {
               <Input
                 type="password"
                 placeholder="Digite sua senha"
-                className="bg-[#1178B9] text-zinc-50 py-4 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10"
+                className="bg-[#1178B9] text-zinc-50 py-4 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/90"
               />
             </div>
             <div className="mb-4 relative">
@@ -62,7 +63,7 @@ export default function Cadastro() {
               />
               <Input
                 placeholder="Digite seu usuário"
-                className="bg-[#1178B9] text-zinc-50 py-4 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10"
+                className="bg-[#1178B9] text-zinc-50 py-4 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/90"
               />
             </div>
             <div className="mb-4 relative">
@@ -73,7 +74,7 @@ export default function Cadastro() {
               />
               <Input
                 placeholder="Digite seu telefone"
-                className="bg-[#1178B9] text-zinc-50 py-4 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10"
+                className="bg-[#1178B9] text-zinc-50 py-4 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/90"
               />
             </div>
             <div className="mb-4 relative">
@@ -84,7 +85,7 @@ export default function Cadastro() {
               />
               <Input
                 placeholder="Digite sua idade"
-                className="bg-[#1178B9] text-zinc-50 py-4 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10"
+                className="bg-[#1178B9] text-zinc-50 py-4 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/90"
               />
             </div>
             <div className="mb-4 relative">
@@ -95,32 +96,114 @@ export default function Cadastro() {
               />
               <Input
                 placeholder="Digite seu endereço"
-                className="bg-[#1178B9] text-zinc-50 py-4 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10"
+                className="bg-[#1178B9] text-zinc-50 py-4 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/90"
               />
             </div>
           </div>
           <div>
-            <div className="mb-4 relative">
-              <MapPin
-                width={25}
-                height={25}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
-              />
-              <Input
-                placeholder="Digite seu endereço"
-                className="bg-[#1178B9] text-zinc-50 py-4 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10"
-              />
+            <span className="text-2xl font-bold">Tipo de Ocupação</span>
+            <div className="grid grid-cols-2 mb-4">
+              <div>
+                <div className="flex items-center space-x-2 mb-2.5">
+                  <Checkbox className="bg-zinc-400 border-0" id="terms" />
+                  <label
+                    htmlFor="terms"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Startup
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2 mb-2.5">
+                  <Checkbox className="bg-zinc-400 border-0" id="terms" />
+                  <label
+                    htmlFor="terms"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Influencer
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2 mb-2.5">
+                  <Checkbox className="bg-zinc-400 border-0" id="terms" />
+                  <label
+                    htmlFor="terms"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Produtor
+                  </label>
+                </div>
+              </div>
+              <div>
+                <div className="flex items-center space-x-2 mb-2.5">
+                  <Checkbox className="bg-zinc-400 border-0" id="terms" />
+                  <label
+                    htmlFor="terms"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Gerente
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2 mb-2.5">
+                  <Checkbox className="bg-zinc-400 border-0" id="terms" />
+                  <label
+                    htmlFor="terms"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Freelancer
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2 mb-2.5">
+                  <Checkbox className="bg-zinc-400 border-0" id="terms" />
+                  <label
+                    htmlFor="terms"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Fotógrafo
+                  </label>
+                </div>
+              </div>
             </div>
-            <div className="mb-4 relative">
-              <MapPin
-                width={25}
-                height={25}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
-              />
-              <Input
-                placeholder="Digite seu endereço"
-                className="bg-[#1178B9] text-zinc-50 py-4 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10"
-              />
+            <span className="text-2xl font-bold">Frequência de Uso</span>
+            <div className="grid grid-cols-2 mb-4">
+              <div>
+                <div className="flex items-center space-x-2 mb-2.5">
+                  <Checkbox className="bg-zinc-400 border-0" id="terms" />
+                  <label
+                    htmlFor="terms"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Ocasional
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2 mb-2.5">
+                  <Checkbox className="bg-zinc-400 border-0" id="terms" />
+                  <label
+                    htmlFor="terms"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Semanal
+                  </label>
+                </div>
+              </div>
+              <div>
+                <div className="flex items-center space-x-2 mb-2.5">
+                  <Checkbox className="bg-zinc-400 border-0" id="terms" />
+                  <label
+                    htmlFor="terms"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Diário
+                  </label>
+                </div>
+                <div className="flex items-center space-x-2 mb-2.5">
+                  <Checkbox className="bg-zinc-400 border-0" id="terms" />
+                  <label
+                    htmlFor="terms"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    Mensal
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
         </div>
