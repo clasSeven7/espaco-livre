@@ -12,6 +12,10 @@ APPS = [
     'auth_app',
 ]
 
+REST = [
+    'rest_framework',
+]
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -19,7 +23,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-] + APPS
+]  + APPS + REST
 
 
 MIDDLEWARE = [
@@ -57,7 +61,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'espaco_livre_db',
         'USER': 'postgres',
-        'PASSWORD': 'postgres-admin',
+        'PASSWORD': 'iagodutra',
         'HOST': 'localhost',
         'PORT': '5432',
 
