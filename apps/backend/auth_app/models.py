@@ -4,10 +4,10 @@ from django.db import models
 class AuthLogin(models.Model):
     nome_usuario = models.CharField(max_length=100)
     senha = models.CharField(max_length=100)
-    salvar_senha = models.BooleanField(default=False)  
+    salvar_senha = models.BooleanField(default=False)
 
     def __str__(self):
-        return self.email
+        return self.nome_usuario
 
 
 class AuthCliente(models.Model):
@@ -20,7 +20,6 @@ class AuthCliente(models.Model):
     cidade = models.CharField(max_length=100)
     cep = models.CharField(max_length=9)
 
-    
     ocupacao_choices = [
         ('startup', 'Startup'),
         ('influencer', 'Influencer'),
@@ -35,7 +34,6 @@ class AuthCliente(models.Model):
         blank=True,
     )
 
-    
     frequencia_choices = [
         ('ocasional', 'Ocasional'),
         ('semanal', 'Semanal'),
@@ -61,7 +59,7 @@ class AuthAlocador(models.Model):
     endereco_residencial = models.CharField(max_length=255)
     cidade = models.CharField(max_length=100)
     cpf = models.CharField(max_length=14)
-    aceitar_termos = models.BooleanField(default=False) 
+    aceitar_termos = models.BooleanField(default=False)
     cep = models.CharField(max_length=9)
 
     def __str__(self):

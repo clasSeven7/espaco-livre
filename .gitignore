@@ -1,11 +1,10 @@
 # _______________________ Python ___________________________
-bin/
-include/
-lib/
-lib64/
-Scripts/
-
-pyvenv.cfg
+venv/
+*.pyc
+*.pyo
+*.pyd
+__pycache__/
+requirements.txt
 
 # _________________________ Next.js ________________________
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
