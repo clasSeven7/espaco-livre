@@ -2,7 +2,7 @@ from django.db import models
 
 
 class AuthLogin(models.Model):
-    email = models.CharField(max_length=254)
+    nome_usuario = models.CharField(max_length=100)
     senha = models.CharField(max_length=100)
     salvar_senha = models.BooleanField(default=False)  
 
@@ -11,9 +11,9 @@ class AuthLogin(models.Model):
 
 
 class AuthCliente(models.Model):
-    email = models.CharField(max_length=254)
-    senha = models.CharField(max_length=100)
     nome_usuario = models.CharField(max_length=100)
+    senha = models.CharField(max_length=100)
+    email = models.CharField(max_length=254)
     telefone = models.CharField(max_length=15)
     idade = models.IntegerField()
     endereco_residencial = models.CharField(max_length=255)

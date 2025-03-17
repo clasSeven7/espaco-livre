@@ -1,9 +1,10 @@
 # _______________________ Python ___________________________
-# bin/
+bin/
 include/
 lib/
 lib64/
 Scripts/
+
 # _________________________ Next.js ________________________
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
