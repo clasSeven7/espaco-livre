@@ -8,12 +8,22 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Configurações do CORS
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "https://seusite.com",
+]
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True
+
+
 APPS = [
     'auth_app',
 ]
 
 REST = [
     'rest_framework',
+    # 'rest_framework_simplejwt',
 ]
 
 INSTALLED_APPS = [
@@ -23,10 +33,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
+    'django_filters',
     'corsheaders',
-    'auth_app',
-]
+] + APPS + REST
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -62,9 +71,9 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'espaco_livre',
+        'NAME': 'espaco_livre_db',
         'USER': 'postgres',
-        'PASSWORD': 'iagodutra',
+        'PASSWORD': 'postgres-admin',
         'HOST': 'localhost',
         'PORT': '5432',
 
@@ -99,9 +108,9 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
-    # 'DEFAULT_AUTHENTICATION_CLASSES': (
-    #     'rest_framework_simplejwt.authentication.JWTAuthentication',
-    # ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
@@ -111,9 +120,3 @@ REST_FRAMEWORK = {
     "NON_FIELD_ERRORS_KEY": "error",
     "PAGE_SIZE": 10,
 }
-
-# Configurações do CORS
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-]
-CORS_ALLOW_CREDENTIALS = True
