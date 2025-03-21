@@ -23,13 +23,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_filters',
-]  + APPS + REST
-
+    'rest_framework',
+    'corsheaders',
+    'auth_app',
+]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -60,9 +62,9 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'espaco_livre_db',
+        'NAME': 'espaco_livre',
         'USER': 'postgres',
-        'PASSWORD': 'postgres-admin',
+        'PASSWORD': 'iagodutra',
         'HOST': 'localhost',
         'PORT': '5432',
 
@@ -109,3 +111,9 @@ REST_FRAMEWORK = {
     "NON_FIELD_ERRORS_KEY": "error",
     "PAGE_SIZE": 10,
 }
+
+# Configurações do CORS
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
+CORS_ALLOW_CREDENTIALS = True

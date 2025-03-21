@@ -13,16 +13,56 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import authService from '@/services/auth';
 import { Lock, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { toast } from 'react-hot-toast';
 
 export default function Login() {
+  const router = useRouter();
   const [isSaved, setIsSaved] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    nome_usuario: '',
+    senha: '',
+  });
 
-  const handleToggle = () => {
-    setIsSaved(!isSaved);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const response = await authService.login({
+        ...formData,
+        salvar_senha: isSaved,
+      });
+
+      toast.success('Login realizado com sucesso!');
+
+      // Redireciona baseado no tipo de usuário
+      if (response.user.tipo === 'cliente') {
+        router.push('/dashboard/cliente');
+      } else {
+        router.push('/dashboard/alocador');
+      }
+    } catch (error: any) {
+      const errorMessage =
+        error?.message || 'Falha no login. Verifique suas credenciais.';
+      toast.error(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -48,7 +88,7 @@ export default function Login() {
             Login
           </span>
         </div>
-        <div className="w-[30%] z-10">
+        <form onSubmit={handleLogin} className="w-[30%] z-10">
           <div className="mb-8 relative">
             <User
               width={25}
@@ -56,8 +96,12 @@ export default function Login() {
               className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
             />
             <Input
+              name="nome_usuario"
+              value={formData.nome_usuario}
+              onChange={handleInputChange}
               placeholder="Digite aqui seu login!"
               className="bg-[#1178B9] text-zinc-50 py-6 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/50"
+              required
             />
           </div>
           <div className="mb-8 relative">
@@ -68,14 +112,23 @@ export default function Login() {
             />
             <Input
               type="password"
+              name="senha"
+              value={formData.senha}
+              onChange={handleInputChange}
               placeholder="Digite aqui a sua senha!"
               className="bg-[#1178B9] text-zinc-50 py-6 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/50"
+              required
             />
           </div>
-        </div>
-        <Button className="w-72 z-10 py-5 cursor-pointer text-[18px] font-bold">
-          Entrar
-        </Button>
+          <Button
+            type="submit"
+            className="w-full py-5 cursor-pointer text-[18px] font-bold"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Entrando...' : 'Entrar'}
+          </Button>
+        </form>
+
         <div className="mt-9 mb-6 z-10 flex items-center">
           <div className="flex items-center cursor-pointer gap-96">
             <span className="mr-2 font-bold">Salvar senha</span>
@@ -84,24 +137,24 @@ export default function Login() {
                 type="checkbox"
                 className="hidden"
                 checked={isSaved}
-                onChange={handleToggle}
+                onChange={() => setIsSaved(!isSaved)}
               />
               <div
                 className={`w-12 h-6 pl-1 py-1 rounded-full transition-colors duration-300 ${
                   isSaved ? 'bg-zinc-950' : 'bg-zinc-300'
                 }`}
-                onClick={handleToggle}
+                onClick={() => setIsSaved(!isSaved)}
               >
                 <div
                   className={`w-4 h-4 bg-zinc-50 rounded-full shadow-md transform transition-transform duration-300 ${
                     isSaved ? 'translate-x-6' : 'translate-x-0'
                   }`}
-                  onClick={handleToggle}
                 />
               </div>
             </div>
           </div>
         </div>
+
         <div className="z-10 w-[500px] flex flex-col justify-center items-center mt-4 gap-10 border-t-[1.5px] border-zinc-950 py-4">
           <span className="mt-4 font-bold">Não tem conta? Crie agora!</span>
           <AlertDialog>
