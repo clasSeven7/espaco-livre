@@ -1,3 +1,4 @@
+from django.core.validators import MinValueValidator, validate_email
 from django.db import models
 
 
@@ -12,10 +13,11 @@ class AuthLogin(models.Model):
 
 class AuthCliente(models.Model):
     nome_usuario = models.CharField(max_length=100)
-    senha = models.CharField(max_length=100)
-    email = models.CharField(max_length=254)
+    senha = models.CharField(max_length=128)
+    email = models.EmailField(
+        max_length=254, unique=True, validators=[validate_email])
     telefone = models.CharField(max_length=15)
-    idade = models.IntegerField()
+    idade = models.IntegerField(validators=[MinValueValidator(18)])
     endereco_residencial = models.CharField(max_length=255)
     cidade = models.CharField(max_length=100)
     cep = models.CharField(max_length=9)
@@ -51,14 +53,16 @@ class AuthCliente(models.Model):
 
 
 class AuthAlocador(models.Model):
-    email = models.CharField(max_length=254)
-    senha = models.CharField(max_length=100)
     nome_usuario = models.CharField(max_length=100)
+    senha = models.CharField(max_length=128)
+    email = models.EmailField(
+        max_length=254, unique=True, validators=[validate_email])
     telefone = models.CharField(max_length=15)
-    idade = models.IntegerField()
+    idade = models.IntegerField(validators=[MinValueValidator(18)])
     endereco_residencial = models.CharField(max_length=255)
     cidade = models.CharField(max_length=100)
-    cpf = models.CharField(max_length=14)
+    cpf = models.CharField(max_length=14, unique=True)
+    cep = models.CharField(max_length=9)
     aceitar_termos = models.BooleanField(default=False)
     cep = models.CharField(max_length=9)
 

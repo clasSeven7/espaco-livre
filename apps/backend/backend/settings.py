@@ -9,10 +9,6 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 # Configurações do CORS
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "https://seusite.com",
-]
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
 

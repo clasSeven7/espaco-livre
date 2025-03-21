@@ -1,7 +1,5 @@
 from auth_app import models
-from rest_framework import permissions, status, viewsets
-from rest_framework.decorators import action
-from rest_framework.response import Response
+from rest_framework import viewsets
 
 from .serializers import (AuthAlocadorSerializer, AuthClienteSerializer,
                           AuthLoginSerializer)

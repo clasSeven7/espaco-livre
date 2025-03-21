@@ -99,6 +99,7 @@ export default function Cadastro() {
           </span>
         </div>
         <form
+          id="cadastro-form"
           onSubmit={handleSubmit}
           className="w-[50%] z-10 grid grid-cols-2 gap-4"
         >
