@@ -8,10 +8,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-# Configurações do CORS
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_ALL_ORIGINS = True
-
 
 APPS = [
     'auth_app',
@@ -34,9 +32,9 @@ INSTALLED_APPS = [
 ] + APPS + REST
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -72,7 +70,6 @@ DATABASES = {
         'PASSWORD': 'postgres-admin',
         'HOST': 'localhost',
         'PORT': '5432',
-
     }
 }
 

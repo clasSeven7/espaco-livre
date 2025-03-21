@@ -263,9 +263,12 @@ export default function CadastroAlocador() {
                 htmlFor="terms"
                 className="text-sm font-medium leading-none mt-22 peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-justify"
               >
-                Eu, [Nome do Locador], CPF/CNPJ [Número], declaro estar ciente e
-                de acordo com as seguintes responsabilidades ao disponibilizar
-                meu espaço para aluguel
+                Declaro estar ciente e de acordo com as seguintes
+                responsabilidades ao disponibilizar meu espaço para aluguel:
+                manter o espaço em boas condições, garantir a segurança,
+                respeitar as normas de uso e os horários acordados, e assumir
+                responsabilidade por quaisquer danos causados durante o período
+                de locação.
               </label>
             </div>
           </div>

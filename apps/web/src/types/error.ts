@@ -1,7 +1,5 @@
-export interface ApiError extends Error {
-  response?: {
-    data?: {
-      message?: string;
-    };
-  };
+export interface ApiError {
+  message: string;
+  field?: string;
+  error?: string;
 }

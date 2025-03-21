@@ -66,10 +66,20 @@ export default function Cadastro() {
       });
 
       toast.success('Cadastro realizado com sucesso!');
-      router.push('/login');
+
+      // Redireciona para a página de login após 1 segundo
+      setTimeout(() => {
+        router.push('/login');
+      }, 1000);
     } catch (error) {
       const apiError = error as ApiError;
-      toast.error(apiError.message || 'Erro ao realizar cadastro');
+
+      // Se o erro tiver um campo específico, mostra mensagem mais detalhada
+      if (apiError.field) {
+        toast.error(`Erro no campo ${apiError.field}: ${apiError.message}`);
+      } else {
+        toast.error(apiError.message || 'Erro ao realizar cadastro');
+      }
     } finally {
       setIsLoading(false);
     }

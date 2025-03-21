@@ -64,7 +64,6 @@ class AuthAlocador(models.Model):
     cpf = models.CharField(max_length=14, unique=True)
     cep = models.CharField(max_length=9)
     aceitar_termos = models.BooleanField(default=False)
-    cep = models.CharField(max_length=9)
 
     def __str__(self):
         return self.nome_usuario

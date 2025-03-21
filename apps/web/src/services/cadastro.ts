@@ -36,31 +36,39 @@ export interface CadastroAlocadorData {
 const cadastroService = {
   async cadastrarCliente(data: CadastroClienteData) {
     try {
-      const response = await api.post('/auth/cadastro/cliente/', data);
+      const response = await api.post('/cadastro/cliente/', data);
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        throw new Error(
-          error.response?.data?.message ||
-            'Erro ao realizar cadastro. Tente novamente.'
-        );
+        throw {
+          message:
+            error.response?.data?.message ||
+            'Erro ao realizar cadastro. Tente novamente.',
+          field: error.response?.data?.field,
+        };
       }
-      throw new Error('Erro ao conectar com o servidor.');
+      throw {
+        message: 'Erro ao conectar com o servidor.',
+      };
     }
   },
 
   async cadastrarAlocador(data: CadastroAlocadorData) {
     try {
-      const response = await api.post('/auth/cadastro/alocador/', data);
+      const response = await api.post('/cadastro/alocador/', data);
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
-        throw new Error(
-          error.response?.data?.message ||
-            'Erro ao realizar cadastro. Tente novamente.'
-        );
+        throw {
+          message:
+            error.response?.data?.message ||
+            'Erro ao realizar cadastro. Tente novamente.',
+          field: error.response?.data?.field,
+        };
       }
-      throw new Error('Erro ao conectar com o servidor.');
+      throw {
+        message: 'Erro ao conectar com o servidor.',
+      };
     }
   },
 };
