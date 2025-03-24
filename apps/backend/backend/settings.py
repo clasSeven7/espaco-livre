@@ -62,7 +62,7 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'espaco_livre',
+        'NAME': 'espaco_livre_db',
         'USER': 'postgres',
         'PASSWORD': 'iagodutra',
         'HOST': 'localhost',
