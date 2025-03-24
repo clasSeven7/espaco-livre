@@ -3,13 +3,26 @@
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-import cadastroService, { CadastroClienteData } from '@/services/cadastro';
 import { ApiError } from '@/types/error';
 import { Calendar, Lock, Mail, MapPin, Phone, User } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
+
+// Defina o tipo CadastroClienteData
+type CadastroClienteData = {
+  email: string;
+  senha: string;
+  nome_usuario: string;
+  telefone: string;
+  idade: number; // Mantenha como number se você estiver usando parseInt
+  endereco_residencial: string;
+  cidade: string;
+  cep: string;
+  tipo_ocupacao: string;
+  frequencia_uso: string;
+};
 
 export default function Cadastro() {
   const router = useRouter();
@@ -60,10 +73,23 @@ export default function Cadastro() {
         throw new Error('Selecione uma frequência de uso');
       }
 
-      await cadastroService.cadastrarCliente({
-        ...formData,
-        idade: parseInt(formData.idade),
+      // Enviar dados para o backend
+      const response = await fetch('/api/clientes/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          idade: parseInt(formData.idade),
+        }),
       });
+
+      console.log(response);
+
+      if (!response.ok) {
+        throw new Error('Erro ao cadastrar cliente');
+      }
 
       toast.success('Cadastro realizado com sucesso!');
       router.push('/login');
@@ -101,6 +127,7 @@ export default function Cadastro() {
         <form
           onSubmit={handleSubmit}
           className="w-[50%] z-10 grid grid-cols-2 gap-4"
+          id="cadastro-form"
         >
           <div>
             <div className="mb-4 relative">
@@ -376,15 +403,14 @@ export default function Cadastro() {
               </div>
             </div>
           </div>
+          <Button
+            type="submit"
+            className="w-72 z-10 py-5 cursor-pointer text-[18px] font-bold mt-6"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Cadastrando...' : 'Cadastrar'}
+          </Button>
         </form>
-        <Button
-          type="submit"
-          form="cadastro-form"
-          className="w-72 z-10 py-5 cursor-pointer text-[18px] font-bold mt-6"
-          disabled={isLoading}
-        >
-          {isLoading ? 'Cadastrando...' : 'Cadastrar'}
-        </Button>
       </div>
     </>
   );
