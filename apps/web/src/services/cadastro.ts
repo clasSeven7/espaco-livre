@@ -36,13 +36,13 @@ export interface CadastroAlocadorData {
 const cadastroService = {
   async cadastrarCliente(data: CadastroClienteData) {
     try {
-      const response = await api.post('/cadastro/cliente/', data);
+      const response = await api.post('/clientes', data);
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
         throw {
           message:
-            error.response?.data?.message ||
+            error.response?.data?.error ||
             'Erro ao realizar cadastro. Tente novamente.',
           field: error.response?.data?.field,
         };
@@ -55,13 +55,13 @@ const cadastroService = {
 
   async cadastrarAlocador(data: CadastroAlocadorData) {
     try {
-      const response = await api.post('/cadastro/alocador/', data);
+      const response = await api.post('/alocadores', data);
       return response.data;
     } catch (error) {
       if (error instanceof AxiosError) {
         throw {
           message:
-            error.response?.data?.message ||
+            error.response?.data?.error ||
             'Erro ao realizar cadastro. Tente novamente.',
           field: error.response?.data?.field,
         };

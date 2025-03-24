@@ -1,19 +1,21 @@
 import cors from '@fastify/cors';
-import dotenv from 'dotenv';
 import fastify from 'fastify';
-
-dotenv.config();
+import server from './config/server';
+import { clienteRoutes } from './routes/clienteRoutes';
 
 const app = fastify({
   logger: true,
 });
 
-const port = Number(process.env.PORT) || 3000;
+const port = server.port;
 
 // Registrar plugins
 app.register(cors, {
   origin: true,
 });
+
+// Registrar rotas
+app.register(clienteRoutes);
 
 // Rota básica
 app.get('/', async () => {
