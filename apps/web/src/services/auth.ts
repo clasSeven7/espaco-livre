@@ -20,7 +20,11 @@ export interface AuthResponse {
 const authService = {
   async login(data: LoginData): Promise<AuthResponse> {
     try {
-      const response = await api.post<AuthResponse>('/auth/login/', data);
+      const response = await api.post<AuthResponse>('/auth/login/', {
+        nome_usuario: data.nome_usuario,
+        senha: data.senha,
+      });
+
       if (response.data.token) {
         // Define o cookie com as informações do usuário
         const cookieOptions = {
