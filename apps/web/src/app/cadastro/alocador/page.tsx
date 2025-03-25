@@ -3,8 +3,8 @@
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-import cadastroService from '@/services/cadastro';
-import { ApiError } from '@/types/error';
+import { api } from '@/lib/axios';
+import { AxiosError } from 'axios';
 import {
   Calendar,
   CreditCard,
@@ -19,10 +19,23 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 
-export default function CadastroAlocador() {
+interface FormData {
+  email: string;
+  senha: string;
+  nome_usuario: string;
+  telefone: string;
+  idade: string;
+  endereco_residencial: string;
+  cidade: string;
+  cpf: string;
+  cep: string;
+  aceitar_termos: boolean;
+}
+
+export default function Alocador() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     email: '',
     senha: '',
     nome_usuario: '',
@@ -45,24 +58,54 @@ export default function CadastroAlocador() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!formData.aceitar_termos) {
+      toast.error('Você precisa aceitar os termos para continuar');
+      return;
+    }
+
     setIsLoading(true);
-
     try {
-      // Validações
-      if (!formData.aceitar_termos) {
-        throw new Error('Você precisa aceitar os termos para continuar');
-      }
+      const {
+        email,
+        senha,
+        nome_usuario,
+        telefone,
+        idade,
+        endereco_residencial,
+        cidade,
+        cpf,
+        cep,
+      } = formData;
+      const dadosFormatados = {
+        email,
+        senha,
+        nome_usuario,
+        telefone: telefone.replace(/\D/g, ''),
+        idade: Number(idade),
+        endereco_residencial,
+        cidade,
+        cpf: cpf.replace(/\D/g, ''),
+        cep: cep.replace(/\D/g, ''),
+      };
 
-      await cadastroService.cadastrarAlocador({
-        ...formData,
-        idade: parseInt(formData.idade),
-      });
-
+      await api.post('/alocadores', dadosFormatados);
       toast.success('Cadastro realizado com sucesso!');
       router.push('/login');
     } catch (error) {
-      const apiError = error as ApiError;
-      toast.error(apiError.message || 'Erro ao realizar cadastro');
+      console.error('Erro ao cadastrar:', error);
+      const axiosError = error as AxiosError<{ error: string; field?: string }>;
+
+      if (axiosError.response?.data?.field) {
+        toast.error(
+          `Erro no campo ${axiosError.response.data.field}: ${axiosError.response.data.error}`
+        );
+      } else {
+        toast.error(
+          axiosError.response?.data?.error ||
+            'Erro ao realizar cadastro. Tente novamente.'
+        );
+      }
     } finally {
       setIsLoading(false);
     }
@@ -91,10 +134,10 @@ export default function CadastroAlocador() {
             Cadastro
           </span>
         </div>
-
         <form
+          id="cadastro-form"
           onSubmit={handleSubmit}
-          className="w-[50%] grid grid-cols-2 gap-4 z-10"
+          className="w-[50%] z-10 grid grid-cols-2 gap-4"
         >
           <div>
             <div className="mb-4 relative">
@@ -113,7 +156,6 @@ export default function CadastroAlocador() {
                 className="bg-[#1178B9] text-zinc-50 py-5 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/50"
               />
             </div>
-
             <div className="mb-4 relative">
               <Lock
                 width={25}
@@ -130,7 +172,6 @@ export default function CadastroAlocador() {
                 className="bg-[#1178B9] text-zinc-50 py-5 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/50"
               />
             </div>
-
             <div className="mb-4 relative">
               <User
                 width={25}
@@ -146,7 +187,6 @@ export default function CadastroAlocador() {
                 className="bg-[#1178B9] text-zinc-50 py-5 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/50"
               />
             </div>
-
             <div className="mb-4 relative">
               <Phone
                 width={25}
@@ -162,7 +202,6 @@ export default function CadastroAlocador() {
                 className="bg-[#1178B9] text-zinc-50 py-5 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/50"
               />
             </div>
-
             <div className="mb-4 relative">
               <Calendar
                 width={25}
@@ -179,7 +218,6 @@ export default function CadastroAlocador() {
                 className="bg-[#1178B9] text-zinc-50 py-5 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/50"
               />
             </div>
-
             <div className="mb-4 relative">
               <MapPin
                 width={25}
@@ -196,7 +234,6 @@ export default function CadastroAlocador() {
               />
             </div>
           </div>
-
           <div>
             <div className="mb-4 relative">
               <MapPin
@@ -213,7 +250,6 @@ export default function CadastroAlocador() {
                 className="bg-[#1178B9] text-zinc-50 py-5 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/50"
               />
             </div>
-
             <div className="mb-4 relative">
               <CreditCard
                 width={25}
@@ -229,7 +265,6 @@ export default function CadastroAlocador() {
                 className="bg-[#1178B9] text-zinc-50 py-5 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/50"
               />
             </div>
-
             <div className="mb-4 relative">
               <MapPin
                 width={25}
@@ -240,40 +275,30 @@ export default function CadastroAlocador() {
                 name="cep"
                 value={formData.cep}
                 onChange={handleInputChange}
-                placeholder="Digite seu CEP"
+                placeholder="Digite o CEP"
                 required
                 className="bg-[#1178B9] text-zinc-50 py-5 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/50"
               />
             </div>
-
-            <div className="flex items-center space-x-2 mt-8">
+            <div className="flex items-center space-x-2">
               <Checkbox
-                id="terms"
+                id="aceitar_termos"
                 name="aceitar_termos"
                 checked={formData.aceitar_termos}
-                onCheckedChange={(checked) =>
+                onCheckedChange={(checked) => {
                   setFormData((prev) => ({
                     ...prev,
-                    aceitar_termos: checked === true,
-                  }))
-                }
-                className="bg-zinc-400 border-0 mt-20"
+                    aceitar_termos: checked as boolean,
+                  }));
+                }}
+                className="bg-zinc-400 border-0"
               />
-              <label
-                htmlFor="terms"
-                className="text-sm font-medium leading-none mt-22 peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-justify"
-              >
-                Declaro estar ciente e de acordo com as seguintes
-                responsabilidades ao disponibilizar meu espaço para aluguel:
-                manter o espaço em boas condições, garantir a segurança,
-                respeitar as normas de uso e os horários acordados, e assumir
-                responsabilidade por quaisquer danos causados durante o período
-                de locação.
+              <label htmlFor="aceitar_termos" className="text-base">
+                Aceito os termos e condições
               </label>
             </div>
           </div>
         </form>
-
         <Button
           type="submit"
           form="cadastro-form"

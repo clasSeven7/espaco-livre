@@ -3,20 +3,38 @@
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-import cadastroService, { CadastroClienteData } from '@/services/cadastro';
-import { ApiError } from '@/types/error';
+import axios, { AxiosError } from 'axios';
 import { Calendar, Lock, Mail, MapPin, Phone, User } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 
-export default function Cadastro() {
+// Configuração do axios
+const api = axios.create({
+  baseURL: 'http://localhost:3001',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+interface FormData {
+  email: string;
+  senha: string;
+  nome_usuario: string;
+  telefone: string;
+  idade: string;
+  endereco_residencial: string;
+  cidade: string;
+  cep: string;
+  tipo_ocupacao: string;
+  frequencia_uso: string;
+}
+
+export default function Cliente() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState<
-    Omit<CadastroClienteData, 'idade'> & { idade: string }
-  >({
+  const [formData, setFormData] = useState<FormData>({
     email: '',
     senha: '',
     nome_usuario: '',
@@ -25,8 +43,8 @@ export default function Cadastro() {
     endereco_residencial: '',
     cidade: '',
     cep: '',
-    tipo_ocupacao: 'startup',
-    frequencia_uso: 'ocasional',
+    tipo_ocupacao: '',
+    frequencia_uso: '',
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,12 +56,12 @@ export default function Cadastro() {
   };
 
   const handleCheckboxChange = (
-    tipo: string,
-    categoria: 'tipo_ocupacao' | 'frequencia_uso'
+    value: string,
+    field: 'tipo_ocupacao' | 'frequencia_uso'
   ) => {
     setFormData((prev) => ({
       ...prev,
-      [categoria]: tipo,
+      [field]: value,
     }));
   };
 
@@ -52,33 +70,30 @@ export default function Cadastro() {
     setIsLoading(true);
 
     try {
-      // Validações
-      if (!formData.tipo_ocupacao) {
-        throw new Error('Selecione um tipo de ocupação');
-      }
-      if (!formData.frequencia_uso) {
-        throw new Error('Selecione uma frequência de uso');
-      }
-
-      await cadastroService.cadastrarCliente({
+      const dadosFormatados = {
         ...formData,
-        idade: parseInt(formData.idade),
-      });
+        idade: Number(formData.idade),
+        cep: formData.cep.replace(/\D/g, ''),
+        telefone: formData.telefone.replace(/\D/g, ''),
+      };
+
+      await api.post('/clientes', dadosFormatados);
 
       toast.success('Cadastro realizado com sucesso!');
-
-      // Redireciona para a página de login após 1 segundo
-      setTimeout(() => {
-        router.push('/login');
-      }, 1000);
+      router.push('/login');
     } catch (error) {
-      const apiError = error as ApiError;
+      console.error('Erro ao cadastrar:', error);
+      const axiosError = error as AxiosError<{ error: string; field?: string }>;
 
-      // Se o erro tiver um campo específico, mostra mensagem mais detalhada
-      if (apiError.field) {
-        toast.error(`Erro no campo ${apiError.field}: ${apiError.message}`);
+      if (axiosError.response?.data?.field) {
+        toast.error(
+          `Erro no campo ${axiosError.response.data.field}: ${axiosError.response.data.error}`
+        );
       } else {
-        toast.error(apiError.message || 'Erro ao realizar cadastro');
+        toast.error(
+          axiosError.response?.data?.error ||
+            'Erro ao realizar cadastro. Tente novamente.'
+        );
       }
     } finally {
       setIsLoading(false);

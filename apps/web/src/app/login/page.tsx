@@ -13,22 +13,23 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import authService from '@/services/auth';
 import { Lock, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { toast } from 'react-hot-toast';
+
+interface FormData {
+  nome_usuario: string;
+  senha: string;
+}
 
 export default function Login() {
-  const router = useRouter();
-  const [isSaved, setIsSaved] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     nome_usuario: '',
     senha: '',
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -43,23 +44,16 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      const response = await authService.login({
-        ...formData,
-        salvar_senha: isSaved,
-      });
+      // Aqui você implementará a lógica de autenticação
+      console.log('Dados do formulário:', formData);
 
-      toast.success('Login realizado com sucesso!');
+      // Simular uma chamada de API
+      await new Promise((resolve) => setTimeout(resolve, 1000));
 
-      // Redireciona baseado no tipo de usuário
-      if (response.user.tipo === 'cliente') {
-        router.push('/dashboard/cliente');
-      } else {
-        router.push('/dashboard/alocador');
-      }
-    } catch (error: any) {
-      const errorMessage =
-        error?.message || 'Falha no login. Verifique suas credenciais.';
-      toast.error(errorMessage);
+      // Redirecionar após o login bem-sucedido
+      // router.push('/dashboard');
+    } catch (error) {
+      console.error('Erro ao fazer login:', error);
     } finally {
       setIsLoading(false);
     }
