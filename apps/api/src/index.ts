@@ -1,9 +1,9 @@
+import SERVER from '@/config/server.js';
+import alocadorRouter from '@/routes/alocadorRoutes';
+import authRouter from '@/routes/authRoutes';
+import clienteRouter from '@/routes/clienteRoutes';
 import cors from 'cors';
 import express from 'express';
-import SERVER from './config/server.js';
-import alocadorRouter from './routes/alocadorRoutes.js';
-import authRouter from './routes/authRoutes.js';
-import clienteRouter from './routes/clienteRoutes.js';
 
 const app = express();
 

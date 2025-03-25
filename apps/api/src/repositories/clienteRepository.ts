@@ -1,5 +1,5 @@
-import DB from '../database/index';
-import { Cliente, ClienteResponse } from '../types/index';
+import DB from '@/database/index';
+import { Cliente, ClienteResponse } from '@/types/index';
 
 export const clienteRepository = {
   async criar(cliente: Cliente): Promise<ClienteResponse> {

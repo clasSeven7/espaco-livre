@@ -1,6 +1,6 @@
+import { clienteService } from '@/services/clienteService';
+import { ClienteData } from '@/types/index';
 import { Request, Response } from 'express';
-import { clienteService } from '../services/clienteService';
-import { ClienteData } from '../types';
 
 export const clienteController = {
   async criar(request: Request, response: Response) {

@@ -1,5 +1,5 @@
-import { alocadorRepository } from '../repositories/alocadorRepository';
-import { AlocadorData, AlocadorResponse } from '../types/index';
+import { alocadorRepository } from '@/repositories/alocadorRepository';
+import { AlocadorData, AlocadorResponse } from '@/types/index';
 
 export const alocadorService = {
   async criarAlocador(data: AlocadorData) {

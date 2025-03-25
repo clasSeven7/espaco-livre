@@ -1,6 +1,6 @@
+import { alocadorService } from '@/services/alocadorService';
+import { AlocadorData } from '@/types/index';
 import { Request, Response } from 'express';
-import { alocadorService } from '../services/alocadorService';
-import { AlocadorData } from '../types';
 
 export const alocadorController = {
   async criar(request: Request, response: Response) {

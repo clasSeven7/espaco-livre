@@ -1,6 +1,6 @@
+import { alocadorRepository } from '@/repositories/alocadorRepository';
+import { clienteRepository } from '@/repositories/clienteRepository';
 import jwt from 'jsonwebtoken';
-import { alocadorRepository } from '../repositories/alocadorRepository';
-import { clienteRepository } from '../repositories/clienteRepository';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'sua-chave-secreta';
 

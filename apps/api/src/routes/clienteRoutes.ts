@@ -1,6 +1,6 @@
+import { clienteController } from '@/controllers/clienteController';
+import { validateCliente } from '@/middlewares/validateCliente';
 import { Router } from 'express';
-import { clienteController } from '../controllers/clienteController';
-import { validateCliente } from '../middlewares/validateCliente';
 
 const router = Router();
 

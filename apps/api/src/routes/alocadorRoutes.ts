@@ -1,6 +1,6 @@
+import { alocadorController } from '@/controllers/alocadorController';
+import { validateAlocador } from '@/middlewares/validateAlocador';
 import { Router } from 'express';
-import { alocadorController } from '../controllers/alocadorController';
-import { validateAlocador } from '../middlewares/validateAlocador';
 
 const router = Router();
 

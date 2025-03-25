@@ -1,5 +1,5 @@
-import { clienteRepository } from '../repositories/clienteRepository';
-import { ClienteData, ClienteResponse } from '../types/index';
+import { clienteRepository } from '@/repositories/clienteRepository';
+import { ClienteData, ClienteResponse } from '@/types/index';
 
 export const clienteService = {
   async criarCliente(data: ClienteData) {

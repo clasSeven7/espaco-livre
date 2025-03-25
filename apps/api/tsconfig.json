@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
     "target": "ES2020",
+    "lib": ["ES2020"],
     "module": "ESNext",
     "moduleResolution": "Node",
-    "lib": ["ES2020"],
     "allowJs": true,
     "outDir": "dist",
     "rootDir": "src",
@@ -12,8 +12,12 @@
     "esModuleInterop": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
 }

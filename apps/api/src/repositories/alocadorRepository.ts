@@ -1,5 +1,5 @@
-import DB from '../database/index';
-import { Alocador, AlocadorResponse } from '../types/index';
+import DB from '@/database/index';
+import { Alocador, AlocadorResponse } from '@/types/index';
 
 export const alocadorRepository = {
   async criar(alocador: Alocador): Promise<AlocadorResponse> {
