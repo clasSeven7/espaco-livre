@@ -6,11 +6,17 @@ export const authController = {
     try {
       const { nome_usuario, senha } = request.body;
       const resultado = await authService.login(nome_usuario, senha);
-      return response.status(200).json(resultado);
+      return response.status(200).json({
+        message: '🎉 Login realizado com sucesso!',
+        data: resultado,
+      });
     } catch (error: any) {
-      console.error('Erro ao realizar login:', error);
+      console.error('❌ Erro ao realizar login:', error);
       return response.status(error.status || 500).json({
-        error: error.message,
+        error:
+          error.message ||
+          '🔒 Erro interno do servidor ao tentar realizar login',
+        details: error.details || 'Por favor, tente novamente mais tarde',
       });
     }
   },

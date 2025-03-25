@@ -17,7 +17,11 @@ export const authService = {
           JWT_SECRET,
           { expiresIn: '24h' }
         );
-        return { token, usuario: { ...cliente, tipo: 'cliente' } };
+        return {
+          token,
+          usuario: { ...cliente, tipo: 'cliente' },
+          message: '✅ Login realizado com sucesso! Bem-vindo(a)!',
+        };
       }
 
       // Tenta encontrar o usuário como alocador
@@ -30,12 +34,17 @@ export const authService = {
           JWT_SECRET,
           { expiresIn: '24h' }
         );
-        return { token, usuario: { ...alocador, tipo: 'alocador' } };
+        return {
+          token,
+          usuario: { ...alocador, tipo: 'alocador' },
+          message: '✅ Login realizado com sucesso! Bem-vindo(a)!',
+        };
       }
 
       throw {
         status: 401,
-        message: 'Usuário ou senha inválidos',
+        message:
+          '❌ Usuário ou senha inválidos. Por favor, verifique suas credenciais.',
       };
     } catch (error: any) {
       if (error.status) {
@@ -43,7 +52,8 @@ export const authService = {
       }
       throw {
         status: 500,
-        message: 'Erro ao realizar login',
+        message:
+          '⚠️ Ops! Ocorreu um erro ao tentar fazer login. Por favor, tente novamente mais tarde.',
       };
     }
   },

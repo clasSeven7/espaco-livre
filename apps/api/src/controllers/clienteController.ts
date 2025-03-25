@@ -9,9 +9,9 @@ export const clienteController = {
       const resultado = await clienteService.criarCliente(clienteData);
       return response.status(201).json(resultado);
     } catch (error: any) {
-      console.error('Erro ao criar cliente:', error);
+      console.error('❌ Erro ao criar cliente:', error);
       return response.status(error.status || 500).json({
-        error: error.message,
+        error: `❌ ${error.message}`,
         field: error.field,
       });
     }
@@ -23,9 +23,9 @@ export const clienteController = {
       const cliente = await clienteService.buscarPorId(Number(id));
       return response.status(200).json(cliente);
     } catch (error: any) {
-      console.error('Erro ao buscar cliente:', error);
+      console.error('🔍 Erro ao buscar cliente:', error);
       return response.status(error.status || 500).json({
-        error: error.message,
+        error: `🔍 ${error.message}`,
       });
     }
   },
@@ -35,9 +35,9 @@ export const clienteController = {
       const clientes = await clienteService.listarClientes();
       return response.status(200).json(clientes);
     } catch (error: any) {
-      console.error('Erro ao listar clientes:', error);
+      console.error('📋 Erro ao listar clientes:', error);
       return response.status(error.status || 500).json({
-        error: error.message,
+        error: `📋 ${error.message}`,
       });
     }
   },
@@ -52,9 +52,9 @@ export const clienteController = {
       );
       return response.status(200).json(cliente);
     } catch (error: any) {
-      console.error('Erro ao atualizar cliente:', error);
+      console.error('🔄 Erro ao atualizar cliente:', error);
       return response.status(error.status || 500).json({
-        error: error.message,
+        error: `🔄 ${error.message}`,
         field: error.field,
       });
     }
@@ -66,9 +66,9 @@ export const clienteController = {
       await clienteService.deletarCliente(Number(id));
       return response.status(204).send();
     } catch (error: any) {
-      console.error('Erro ao deletar cliente:', error);
+      console.error('🗑️ Erro ao deletar cliente:', error);
       return response.status(error.status || 500).json({
-        error: error.message,
+        error: `🗑️ ${error.message}`,
       });
     }
   },

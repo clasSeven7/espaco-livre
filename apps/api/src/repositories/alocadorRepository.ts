@@ -11,7 +11,7 @@ export const alocadorRepository = {
         !alocador.email ||
         !alocador.cpf
       ) {
-        throw new Error('Dados obrigatórios não fornecidos');
+        throw new Error('❌ Dados obrigatórios não fornecidos');
       }
 
       // Trunca strings muito longas
@@ -48,12 +48,12 @@ export const alocadorRepository = {
       const result = await DB.query(query, values);
 
       if (!result.rows[0]) {
-        throw new Error('Erro ao criar alocador no banco de dados');
+        throw new Error('❌ Erro ao criar alocador no banco de dados');
       }
 
       return result.rows[0];
     } catch (error) {
-      console.error('Erro no repositório ao criar alocador:', error);
+      console.error('🚨 Erro no repositório ao criar alocador:', error);
       throw error;
     }
   },
@@ -64,7 +64,10 @@ export const alocadorRepository = {
       const result = await DB.query(query, [email]);
       return result.rows[0] || null;
     } catch (error) {
-      console.error('Erro no repositório ao buscar alocador por email:', error);
+      console.error(
+        '🚨 Erro no repositório ao buscar alocador por email:',
+        error
+      );
       throw error;
     }
   },
@@ -78,7 +81,7 @@ export const alocadorRepository = {
       return result.rows[0] || null;
     } catch (error) {
       console.error(
-        'Erro no repositório ao buscar alocador por nome de usuário:',
+        '🚨 Erro no repositório ao buscar alocador por nome de usuário:',
         error
       );
       throw error;
@@ -91,7 +94,10 @@ export const alocadorRepository = {
       const result = await DB.query(query, [cpf]);
       return result.rows[0] || null;
     } catch (error) {
-      console.error('Erro no repositório ao buscar alocador por CPF:', error);
+      console.error(
+        '🚨 Erro no repositório ao buscar alocador por CPF:',
+        error
+      );
       throw error;
     }
   },
@@ -102,7 +108,7 @@ export const alocadorRepository = {
       const result = await DB.query(query, [id]);
       return result.rows[0] || null;
     } catch (error) {
-      console.error('Erro no repositório ao buscar alocador por id:', error);
+      console.error('🚨 Erro no repositório ao buscar alocador por id:', error);
       throw error;
     }
   },
@@ -113,7 +119,7 @@ export const alocadorRepository = {
       const result = await DB.query(query);
       return result.rows;
     } catch (error) {
-      console.error('Erro no repositório ao listar alocadores:', error);
+      console.error('🚨 Erro no repositório ao listar alocadores:', error);
       throw error;
     }
   },
@@ -140,7 +146,7 @@ export const alocadorRepository = {
       );
 
       if (camposParaAtualizar.length === 0) {
-        throw new Error('Nenhum campo para atualizar');
+        throw new Error('⚠️ Nenhum campo para atualizar');
       }
 
       const query = `
@@ -160,12 +166,12 @@ export const alocadorRepository = {
       const result = await DB.query(query, values);
 
       if (!result.rows[0]) {
-        throw new Error('Alocador não encontrado');
+        throw new Error('❌ Alocador não encontrado');
       }
 
       return result.rows[0];
     } catch (error) {
-      console.error('Erro no repositório ao atualizar alocador:', error);
+      console.error('🚨 Erro no repositório ao atualizar alocador:', error);
       throw error;
     }
   },
@@ -176,10 +182,10 @@ export const alocadorRepository = {
       const result = await DB.query(query, [id]);
 
       if (result.rowCount === 0) {
-        throw new Error('Alocador não encontrado');
+        throw new Error('❌ Alocador não encontrado');
       }
     } catch (error) {
-      console.error('Erro no repositório ao deletar alocador:', error);
+      console.error('🚨 Erro no repositório ao deletar alocador:', error);
       throw error;
     }
   },

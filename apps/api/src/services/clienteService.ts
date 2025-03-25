@@ -23,7 +23,7 @@ export const clienteService = {
       const { senha, ...clienteSemSenha } = cliente as ClienteResponse;
 
       return {
-        message: 'Cliente cadastrado com sucesso',
+        message: '✅ Cliente cadastrado com sucesso',
         cliente: clienteSemSenha,
       };
     } catch (error: any) {
@@ -32,7 +32,7 @@ export const clienteService = {
       }
       throw {
         status: 500,
-        message: 'Erro ao criar cliente no banco de dados',
+        message: '❌ Erro ao criar cliente no banco de dados',
       };
     }
   },
@@ -43,7 +43,7 @@ export const clienteService = {
     } catch (error) {
       throw {
         status: 500,
-        message: 'Erro ao buscar cliente por email',
+        message: '❌ Erro ao buscar cliente por email',
       };
     }
   },
@@ -54,7 +54,7 @@ export const clienteService = {
       if (!cliente) {
         throw {
           status: 404,
-          message: 'Cliente não encontrado',
+          message: '🔍 Cliente não encontrado',
         };
       }
       return cliente;
@@ -64,7 +64,7 @@ export const clienteService = {
       }
       throw {
         status: 500,
-        message: 'Erro ao buscar cliente',
+        message: '❌ Erro ao buscar cliente',
       };
     }
   },
@@ -76,7 +76,7 @@ export const clienteService = {
     } catch (error) {
       throw {
         status: 500,
-        message: 'Erro ao listar clientes',
+        message: '❌ Erro ao listar clientes',
       };
     }
   },
@@ -90,7 +90,7 @@ export const clienteService = {
       if (!cliente) {
         throw {
           status: 404,
-          message: 'Cliente não encontrado',
+          message: '🔍 Cliente não encontrado',
         };
       }
 
@@ -103,7 +103,7 @@ export const clienteService = {
       }
       throw {
         status: 500,
-        message: 'Erro ao atualizar cliente',
+        message: '❌ Erro ao atualizar cliente',
       };
     }
   },
@@ -114,7 +114,7 @@ export const clienteService = {
       if (!cliente) {
         throw {
           status: 404,
-          message: 'Cliente não encontrado',
+          message: '🔍 Cliente não encontrado',
         };
       }
       await clienteRepository.deletar(id);
@@ -124,7 +124,7 @@ export const clienteService = {
       }
       throw {
         status: 500,
-        message: 'Erro ao deletar cliente',
+        message: '❌ Erro ao deletar cliente',
       };
     }
   },

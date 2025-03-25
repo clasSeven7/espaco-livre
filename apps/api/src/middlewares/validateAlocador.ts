@@ -15,7 +15,7 @@ export async function validateAlocador(
     !alocadorData.cpf
   ) {
     return response.status(400).json({
-      error: 'Campos obrigatórios não preenchidos',
+      error: '❌ Campos obrigatórios não preenchidos',
       field: !alocadorData.email
         ? 'email'
         : !alocadorData.senha
@@ -30,7 +30,7 @@ export async function validateAlocador(
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(alocadorData.email)) {
     return response.status(400).json({
-      error: 'Email inválido',
+      error: '📧 Email inválido. Por favor, verifique o formato',
       field: 'email',
     });
   }
@@ -38,7 +38,7 @@ export async function validateAlocador(
   // Validação de senha
   if (alocadorData.senha.length < 6) {
     return response.status(400).json({
-      error: 'A senha deve ter no mínimo 6 caracteres',
+      error: '🔒 A senha deve ter no mínimo 6 caracteres para maior segurança',
       field: 'senha',
     });
   }
@@ -46,7 +46,7 @@ export async function validateAlocador(
   // Validação de idade
   if (!alocadorData.idade || alocadorData.idade < 18) {
     return response.status(400).json({
-      error: 'É necessário ter 18 anos ou mais para se cadastrar',
+      error: '👤 É necessário ter 18 anos ou mais para se cadastrar',
       field: 'idade',
     });
   }
@@ -55,7 +55,7 @@ export async function validateAlocador(
   const cpfRegex = /^\d{11}$/;
   if (!cpfRegex.test(alocadorData.cpf.replace(/\D/g, ''))) {
     return response.status(400).json({
-      error: 'CPF inválido',
+      error: '📄 CPF inválido. Verifique o número informado',
       field: 'cpf',
     });
   }

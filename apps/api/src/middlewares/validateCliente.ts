@@ -10,7 +10,7 @@ export async function validateCliente(
   // Validações básicas
   if (!clienteData.email || !clienteData.senha || !clienteData.nome_usuario) {
     return response.status(400).json({
-      error: 'Campos obrigatórios não preenchidos',
+      error: '❌ Campos obrigatórios não preenchidos',
       field: !clienteData.email
         ? 'email'
         : !clienteData.senha
@@ -23,7 +23,7 @@ export async function validateCliente(
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(clienteData.email)) {
     return response.status(400).json({
-      error: 'Email inválido',
+      error: '📧 Email inválido',
       field: 'email',
     });
   }
@@ -31,7 +31,7 @@ export async function validateCliente(
   // Validação de senha
   if (clienteData.senha.length < 6) {
     return response.status(400).json({
-      error: 'A senha deve ter no mínimo 6 caracteres',
+      error: '🔒 A senha deve ter no mínimo 6 caracteres',
       field: 'senha',
     });
   }
@@ -39,7 +39,7 @@ export async function validateCliente(
   // Validação de idade
   if (!clienteData.idade || clienteData.idade < 18) {
     return response.status(400).json({
-      error: 'É necessário ter 18 anos ou mais para se cadastrar',
+      error: '⚠️ É necessário ter 18 anos ou mais para se cadastrar',
       field: 'idade',
     });
   }

@@ -6,7 +6,9 @@ export const clienteRepository = {
     try {
       // Validações básicas
       if (!cliente.nome_usuario || !cliente.senha || !cliente.email) {
-        throw new Error('Dados obrigatórios não fornecidos');
+        throw new Error(
+          '❌ Dados obrigatórios não fornecidos. Por favor, preencha todos os campos necessários.'
+        );
       }
 
       // Trunca strings muito longas
@@ -46,12 +48,14 @@ export const clienteRepository = {
       const result = await DB.query(query, values);
 
       if (!result.rows[0]) {
-        throw new Error('Erro ao criar cliente no banco de dados');
+        throw new Error(
+          '❌ Erro ao criar cliente no banco de dados. Por favor, tente novamente.'
+        );
       }
 
       return result.rows[0];
     } catch (error) {
-      console.error('Erro no repositório ao criar cliente:', error);
+      console.error('🔴 Erro no repositório ao criar cliente:', error);
       throw error;
     }
   },
@@ -62,7 +66,10 @@ export const clienteRepository = {
       const result = await DB.query(query, [email]);
       return result.rows[0] || null;
     } catch (error) {
-      console.error('Erro no repositório ao buscar cliente por email:', error);
+      console.error(
+        '🔴 Erro no repositório ao buscar cliente por email:',
+        error
+      );
       throw error;
     }
   },
@@ -76,7 +83,7 @@ export const clienteRepository = {
       return result.rows[0] || null;
     } catch (error) {
       console.error(
-        'Erro no repositório ao buscar cliente por nome de usuário:',
+        '🔴 Erro no repositório ao buscar cliente por nome de usuário:',
         error
       );
       throw error;
@@ -89,7 +96,7 @@ export const clienteRepository = {
       const result = await DB.query(query, [id]);
       return result.rows[0] || null;
     } catch (error) {
-      console.error('Erro no repositório ao buscar cliente por id:', error);
+      console.error('🔴 Erro no repositório ao buscar cliente por id:', error);
       throw error;
     }
   },
@@ -100,7 +107,7 @@ export const clienteRepository = {
       const result = await DB.query(query);
       return result.rows;
     } catch (error) {
-      console.error('Erro no repositório ao listar clientes:', error);
+      console.error('🔴 Erro no repositório ao listar clientes:', error);
       throw error;
     }
   },
@@ -128,7 +135,9 @@ export const clienteRepository = {
       );
 
       if (camposParaAtualizar.length === 0) {
-        throw new Error('Nenhum campo para atualizar');
+        throw new Error(
+          '⚠️ Nenhum campo para atualizar. Forneça pelo menos um campo para atualização.'
+        );
       }
 
       const query = `
@@ -148,12 +157,12 @@ export const clienteRepository = {
       const result = await DB.query(query, values);
 
       if (!result.rows[0]) {
-        throw new Error('Cliente não encontrado');
+        throw new Error('❌ Cliente não encontrado. Verifique o ID fornecido.');
       }
 
       return result.rows[0];
     } catch (error) {
-      console.error('Erro no repositório ao atualizar cliente:', error);
+      console.error('🔴 Erro no repositório ao atualizar cliente:', error);
       throw error;
     }
   },
@@ -164,10 +173,12 @@ export const clienteRepository = {
       const result = await DB.query(query, [id]);
 
       if (result.rowCount === 0) {
-        throw new Error('Cliente não encontrado');
+        throw new Error(
+          '❌ Cliente não encontrado para exclusão. Verifique o ID fornecido.'
+        );
       }
     } catch (error) {
-      console.error('Erro no repositório ao deletar cliente:', error);
+      console.error('🔴 Erro no repositório ao deletar cliente:', error);
       throw error;
     }
   },

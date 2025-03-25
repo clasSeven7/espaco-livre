@@ -11,7 +11,7 @@ export const alocadorService = {
       if (alocadorExistente) {
         throw {
           status: 409,
-          message: 'Email já cadastrado',
+          message: '📧 Email já cadastrado',
           field: 'email',
         };
       }
@@ -21,7 +21,7 @@ export const alocadorService = {
       if (cpfExistente) {
         throw {
           status: 409,
-          message: 'CPF já cadastrado',
+          message: '🆔 CPF já cadastrado',
           field: 'cpf',
         };
       }
@@ -33,7 +33,7 @@ export const alocadorService = {
       const { senha, ...alocadorSemSenha } = alocador as AlocadorResponse;
 
       return {
-        message: 'Alocador cadastrado com sucesso',
+        message: '✅ Alocador cadastrado com sucesso',
         alocador: alocadorSemSenha,
       };
     } catch (error: any) {
@@ -42,7 +42,7 @@ export const alocadorService = {
       }
       throw {
         status: 500,
-        message: 'Erro ao criar alocador no banco de dados',
+        message: '❌ Erro ao criar alocador no banco de dados',
       };
     }
   },
@@ -53,7 +53,7 @@ export const alocadorService = {
       if (!alocador) {
         throw {
           status: 404,
-          message: 'Alocador não encontrado',
+          message: '🔍 Alocador não encontrado',
         };
       }
       return alocador;
@@ -63,7 +63,7 @@ export const alocadorService = {
       }
       throw {
         status: 500,
-        message: 'Erro ao buscar alocador',
+        message: '❌ Erro ao buscar alocador',
       };
     }
   },
@@ -74,7 +74,7 @@ export const alocadorService = {
     } catch (error) {
       throw {
         status: 500,
-        message: 'Erro ao listar alocadores',
+        message: '❌ Erro ao listar alocadores',
       };
     }
   },
@@ -89,7 +89,7 @@ export const alocadorService = {
       }
       throw {
         status: 500,
-        message: 'Erro ao atualizar alocador',
+        message: '❌ Erro ao atualizar alocador',
       };
     }
   },
@@ -97,14 +97,14 @@ export const alocadorService = {
   async deletar(id: number) {
     try {
       await alocadorRepository.deletar(id);
-      return { message: 'Alocador deletado com sucesso' };
+      return { message: '🗑️ Alocador deletado com sucesso' };
     } catch (error: any) {
       if (error.status) {
         throw error;
       }
       throw {
         status: 500,
-        message: 'Erro ao deletar alocador',
+        message: '❌ Erro ao deletar alocador',
       };
     }
   },
