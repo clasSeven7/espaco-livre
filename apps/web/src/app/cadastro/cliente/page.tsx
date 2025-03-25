@@ -106,9 +106,8 @@ export default function Cliente() {
         <Image
           src="/background.png"
           alt="Fundo"
-          layout="fill"
-          objectFit="cover"
-          className="absolute top-0 left-0 z-0 opacity-10"
+          fill
+          className="absolute top-0 left-0 z-0 opacity-10 object-cover"
         />
 
         <div className="flex items-center justify-center gap-4 mb-10">

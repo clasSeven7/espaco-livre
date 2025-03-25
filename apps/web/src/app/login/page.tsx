@@ -75,9 +75,8 @@ export default function Login() {
         <Image
           src="/background.png"
           alt="Fundo"
-          layout="fill"
-          objectFit="cover"
-          className="absolute top-0 left-0 z-0 opacity-10"
+          fill
+          className="absolute top-0 left-0 z-0 opacity-10 object-cover"
         />
 
         <div className="flex items-center justify-center gap-4 mb-10">
@@ -171,11 +170,25 @@ export default function Login() {
                 <AlertDialogDescription>
                   Selecione o tipo de conta que você deseja criar.
                 </AlertDialogDescription>
+                <AlertDialogCancel className="absolute right-4 top-4 rounded-sm cursor-pointer">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-4 w-4"
+                  >
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </AlertDialogCancel>
               </AlertDialogHeader>
               <AlertDialogFooter className="flex flex-col gap-2">
-                <AlertDialogCancel className="cursor-pointer">
-                  Cancelar
-                </AlertDialogCancel>
                 <Link href="/cadastro/alocador" className="w-full">
                   <AlertDialogAction className="w-full cursor-pointer">
                     Alocador

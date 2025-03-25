@@ -117,9 +117,8 @@ export default function Alocador() {
         <Image
           src="/background.png"
           alt="Fundo"
-          layout="fill"
-          objectFit="cover"
-          className="absolute top-0 left-0 z-0 opacity-10"
+          fill
+          className="absolute top-0 left-0 z-0 opacity-10 object-cover"
         />
 
         <div className="flex items-center justify-center gap-4 mb-10">
@@ -294,7 +293,10 @@ export default function Alocador() {
                 className="bg-zinc-400 border-0"
               />
               <label htmlFor="aceitar_termos" className="text-base">
-                Aceito os termos e condições
+                Eu, {formData.nome_usuario || '[Nome do Locador]'}, CPF/CNPJ{' '}
+                {formData.cpf || '[Número]'}, declaro estar ciente e de acordo
+                com as seguintes responsabilidades ao disponibilizar meu espaço
+                para aluguel
               </label>
             </div>
           </div>
