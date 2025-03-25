@@ -1,9 +1,13 @@
-import pg from 'pg';
+import pkg from 'pg';
+import DATABASE from '../config/database';
+const { Pool } = pkg;
 
-export const db = new pg.Pool({
-  user: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD || 'postgres',
-  host: process.env.DB_HOST || 'localhost',
-  port: Number(process.env.DB_PORT) || 5432,
-  database: process.env.DB_NAME || 'espaco_livre',
+const DB = new Pool({
+  host: DATABASE.host,
+  user: DATABASE.user,
+  password: DATABASE.password,
+  database: DATABASE.database,
+  port: DATABASE.port,
 });
+
+export default DB;

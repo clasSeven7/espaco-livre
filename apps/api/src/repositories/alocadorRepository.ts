@@ -1,4 +1,4 @@
-import pool from '../config/database';
+import DB from '../database/index';
 import { Alocador, AlocadorResponse } from '../types/index';
 
 export const alocadorRepository = {
@@ -45,7 +45,7 @@ export const alocadorRepository = {
         dadosTruncados.cep,
       ];
 
-      const result = await pool.query(query, values);
+      const result = await DB.query(query, values);
 
       if (!result.rows[0]) {
         throw new Error('Erro ao criar alocador no banco de dados');
@@ -61,7 +61,7 @@ export const alocadorRepository = {
   async buscarPorEmail(email: string): Promise<AlocadorResponse | null> {
     try {
       const query = 'SELECT * FROM alocadores WHERE email = $1';
-      const result = await pool.query(query, [email]);
+      const result = await DB.query(query, [email]);
       return result.rows[0] || null;
     } catch (error) {
       console.error('Erro no repositório ao buscar alocador por email:', error);
@@ -69,10 +69,26 @@ export const alocadorRepository = {
     }
   },
 
+  async buscarPorNomeUsuario(
+    nome_usuario: string
+  ): Promise<AlocadorResponse | null> {
+    try {
+      const query = 'SELECT * FROM alocadores WHERE nome_usuario = $1';
+      const result = await DB.query(query, [nome_usuario]);
+      return result.rows[0] || null;
+    } catch (error) {
+      console.error(
+        'Erro no repositório ao buscar alocador por nome de usuário:',
+        error
+      );
+      throw error;
+    }
+  },
+
   async buscarPorCpf(cpf: string): Promise<AlocadorResponse | null> {
     try {
       const query = 'SELECT * FROM alocadores WHERE cpf = $1';
-      const result = await pool.query(query, [cpf]);
+      const result = await DB.query(query, [cpf]);
       return result.rows[0] || null;
     } catch (error) {
       console.error('Erro no repositório ao buscar alocador por CPF:', error);
@@ -83,7 +99,7 @@ export const alocadorRepository = {
   async buscarPorId(id: number): Promise<AlocadorResponse | null> {
     try {
       const query = 'SELECT * FROM alocadores WHERE id = $1';
-      const result = await pool.query(query, [id]);
+      const result = await DB.query(query, [id]);
       return result.rows[0] || null;
     } catch (error) {
       console.error('Erro no repositório ao buscar alocador por id:', error);
@@ -94,7 +110,7 @@ export const alocadorRepository = {
   async listarTodos(): Promise<AlocadorResponse[]> {
     try {
       const query = 'SELECT * FROM alocadores ORDER BY nome_usuario';
-      const result = await pool.query(query);
+      const result = await DB.query(query);
       return result.rows;
     } catch (error) {
       console.error('Erro no repositório ao listar alocadores:', error);
@@ -141,7 +157,7 @@ export const alocadorRepository = {
         ...camposParaAtualizar.map((campo) => data[campo as keyof Alocador]),
       ];
 
-      const result = await pool.query(query, values);
+      const result = await DB.query(query, values);
 
       if (!result.rows[0]) {
         throw new Error('Alocador não encontrado');
@@ -157,7 +173,7 @@ export const alocadorRepository = {
   async deletar(id: number): Promise<void> {
     try {
       const query = 'DELETE FROM alocadores WHERE id = $1';
-      const result = await pool.query(query, [id]);
+      const result = await DB.query(query, [id]);
 
       if (result.rowCount === 0) {
         throw new Error('Alocador não encontrado');

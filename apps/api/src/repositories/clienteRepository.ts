@@ -1,4 +1,4 @@
-import pool from '../config/database';
+import DB from '../database/index';
 import { Cliente, ClienteResponse } from '../types/index';
 
 export const clienteRepository = {
@@ -43,7 +43,7 @@ export const clienteRepository = {
         dadosTruncados.frequencia_uso,
       ];
 
-      const result = await pool.query(query, values);
+      const result = await DB.query(query, values);
 
       if (!result.rows[0]) {
         throw new Error('Erro ao criar cliente no banco de dados');
@@ -59,7 +59,7 @@ export const clienteRepository = {
   async buscarPorEmail(email: string): Promise<ClienteResponse | null> {
     try {
       const query = 'SELECT * FROM clientes WHERE email = $1';
-      const result = await pool.query(query, [email]);
+      const result = await DB.query(query, [email]);
       return result.rows[0] || null;
     } catch (error) {
       console.error('Erro no repositório ao buscar cliente por email:', error);
@@ -67,10 +67,26 @@ export const clienteRepository = {
     }
   },
 
+  async buscarPorNomeUsuario(
+    nome_usuario: string
+  ): Promise<ClienteResponse | null> {
+    try {
+      const query = 'SELECT * FROM clientes WHERE nome_usuario = $1';
+      const result = await DB.query(query, [nome_usuario]);
+      return result.rows[0] || null;
+    } catch (error) {
+      console.error(
+        'Erro no repositório ao buscar cliente por nome de usuário:',
+        error
+      );
+      throw error;
+    }
+  },
+
   async buscarPorId(id: number): Promise<ClienteResponse | null> {
     try {
       const query = 'SELECT * FROM clientes WHERE id = $1';
-      const result = await pool.query(query, [id]);
+      const result = await DB.query(query, [id]);
       return result.rows[0] || null;
     } catch (error) {
       console.error('Erro no repositório ao buscar cliente por id:', error);
@@ -81,7 +97,7 @@ export const clienteRepository = {
   async listarTodos(): Promise<ClienteResponse[]> {
     try {
       const query = 'SELECT * FROM clientes ORDER BY nome_usuario';
-      const result = await pool.query(query);
+      const result = await DB.query(query);
       return result.rows;
     } catch (error) {
       console.error('Erro no repositório ao listar clientes:', error);
@@ -129,7 +145,7 @@ export const clienteRepository = {
         ...camposParaAtualizar.map((campo) => data[campo as keyof Cliente]),
       ];
 
-      const result = await pool.query(query, values);
+      const result = await DB.query(query, values);
 
       if (!result.rows[0]) {
         throw new Error('Cliente não encontrado');
@@ -145,7 +161,7 @@ export const clienteRepository = {
   async deletar(id: number): Promise<void> {
     try {
       const query = 'DELETE FROM clientes WHERE id = $1';
-      const result = await pool.query(query, [id]);
+      const result = await DB.query(query, [id]);
 
       if (result.rowCount === 0) {
         throw new Error('Cliente não encontrado');
