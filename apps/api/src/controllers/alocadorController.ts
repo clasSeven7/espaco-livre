@@ -1,15 +1,15 @@
 import { Request, Response } from 'express';
-import { clienteService } from '../services/clienteService';
-import { ClienteData } from '../types';
+import { alocadorService } from '../services/alocadorService';
+import { AlocadorData } from '../types';
 
-export const clienteController = {
+export const alocadorController = {
   async criar(request: Request, response: Response) {
     try {
-      const clienteData = request.body as ClienteData;
-      const resultado = await clienteService.criarCliente(clienteData);
+      const alocadorData = request.body as AlocadorData;
+      const resultado = await alocadorService.criarAlocador(alocadorData);
       return response.status(201).json(resultado);
     } catch (error: any) {
-      console.error('Erro ao criar cliente:', error);
+      console.error('Erro ao criar alocador:', error);
       return response.status(error.status || 500).json({
         error: error.message,
         field: error.field,
@@ -20,10 +20,10 @@ export const clienteController = {
   async buscarPorId(request: Request, response: Response) {
     try {
       const { id } = request.params;
-      const cliente = await clienteService.buscarPorId(Number(id));
-      return response.status(200).json(cliente);
+      const alocador = await alocadorService.buscarPorId(Number(id));
+      return response.status(200).json(alocador);
     } catch (error: any) {
-      console.error('Erro ao buscar cliente:', error);
+      console.error('Erro ao buscar alocador:', error);
       return response.status(error.status || 500).json({
         error: error.message,
       });
@@ -32,10 +32,10 @@ export const clienteController = {
 
   async listarTodos(request: Request, response: Response) {
     try {
-      const clientes = await clienteService.listarClientes();
-      return response.status(200).json(clientes);
+      const alocadores = await alocadorService.listarTodos();
+      return response.status(200).json(alocadores);
     } catch (error: any) {
-      console.error('Erro ao listar clientes:', error);
+      console.error('Erro ao listar alocadores:', error);
       return response.status(error.status || 500).json({
         error: error.message,
       });
@@ -45,17 +45,16 @@ export const clienteController = {
   async atualizar(request: Request, response: Response) {
     try {
       const { id } = request.params;
-      const clienteData = request.body as Partial<ClienteData>;
-      const cliente = await clienteService.atualizarCliente(
+      const alocadorData = request.body as Partial<AlocadorData>;
+      const alocador = await alocadorService.atualizar(
         Number(id),
-        clienteData
+        alocadorData
       );
-      return response.status(200).json(cliente);
+      return response.status(200).json(alocador);
     } catch (error: any) {
-      console.error('Erro ao atualizar cliente:', error);
+      console.error('Erro ao atualizar alocador:', error);
       return response.status(error.status || 500).json({
         error: error.message,
-        field: error.field,
       });
     }
   },
@@ -63,10 +62,10 @@ export const clienteController = {
   async deletar(request: Request, response: Response) {
     try {
       const { id } = request.params;
-      await clienteService.deletarCliente(Number(id));
-      return response.status(204).send();
+      const resultado = await alocadorService.deletar(Number(id));
+      return response.status(200).json(resultado);
     } catch (error: any) {
-      console.error('Erro ao deletar cliente:', error);
+      console.error('Erro ao deletar alocador:', error);
       return response.status(error.status || 500).json({
         error: error.message,
       });

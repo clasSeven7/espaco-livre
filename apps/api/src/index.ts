@@ -1,30 +1,18 @@
-import cors from '@fastify/cors';
-import fastify from 'fastify';
-import server from './config/server';
-import { clienteRoutes } from './routes/clienteRoutes';
+import cors from 'cors';
+import express from 'express';
+import SERVER from './config/server.js';
+import alocadorRouter from './routes/alocadorRoutes.js';
+import clienteRouter from './routes/clienteRoutes.js';
 
-const app = fastify({
-  logger: true,
+const app = express();
+
+app.use(cors(SERVER.cors));
+app.use(express.json());
+app.use('/clientes', clienteRouter);
+app.use('/alocadores', alocadorRouter);
+
+const PORT = process.env.PORT || 3001;
+
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
-
-const port = server.port;
-
-// Registrar plugins
-app.register(cors, {
-  origin: true,
-});
-
-// Registrar rotas
-app.register(clienteRoutes);
-
-// Rota básica
-app.get('/', async () => {
-  return { message: 'API funcionando!' };
-});
-
-// Iniciar servidor
-const start = async () => {
-  console.log(`Servidor rodando na porta ${port}`);
-};
-
-start();
