@@ -13,10 +13,15 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { api } from '@/lib/axios';
+import { AxiosError } from 'axios';
+import Cookies from 'js-cookie';
 import { Lock, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { toast } from 'react-hot-toast';
 
 interface FormData {
   nome_usuario: string;
@@ -24,6 +29,7 @@ interface FormData {
 }
 
 export default function Login() {
+  const router = useRouter();
   const [formData, setFormData] = useState<FormData>({
     nome_usuario: '',
     senha: '',
@@ -44,16 +50,20 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      // Aqui você implementará a lógica de autenticação
-      console.log('Dados do formulário:', formData);
+      const response = await api.post('/auth/login', formData);
 
-      // Simular uma chamada de API
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Salva o token e os dados do usuário nos cookies
+      Cookies.set('token', response.data.token);
+      Cookies.set('user', JSON.stringify(response.data.usuario));
 
-      // Redirecionar após o login bem-sucedido
-      // router.push('/dashboard');
-    } catch (error) {
-      console.error('Erro ao fazer login:', error);
+      toast.success('Login realizado com sucesso!');
+      router.push('/');
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data?.error || 'Erro ao fazer login');
+      } else {
+        toast.error('Erro ao fazer login');
+      }
     } finally {
       setIsLoading(false);
     }
