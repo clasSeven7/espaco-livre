@@ -61,7 +61,7 @@ export default function Home() {
           <div className="flex items-center gap-4">
             <button
               onClick={handleLogout}
-              className="text-red-500 hover:text-red-600 font-medium"
+              className="text-red-500 hover:text-red-600 font-medium cursor-pointer"
             >
               Sair
             </button>
@@ -97,10 +97,10 @@ export default function Home() {
                 Escolha o espaço certo para cada momento. Use os filtros e encontre a melhor opção!
               </p>
               <div className="flex gap-10">
-                <Button variant="default" className="bg-black text-white hover:bg-gray-800 px-6 py-3 text-lg rounded-sm">
+                <Button variant="default" className="bg-black text-white hover:bg-gray-800 px-6 py-3 text-lg rounded-sm cursor-pointer">
                   Buscar Espaços
                 </Button>
-                <Button variant="default" className="bg-[#2E7AB8] hover:bg-blue-600 px-6 py-3 text-lg rounded-sm">
+                <Button variant="default" className="bg-[#2E7AB8] hover:bg-blue-600 px-6 py-3 text-lg rounded-sm cursor-pointer">
                   Cadastre seu Espaço
                 </Button>
               </div>
