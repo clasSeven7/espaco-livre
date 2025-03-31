@@ -32,7 +32,7 @@ interface FormData {
   aceitar_termos: boolean;
 }
 
-export default function Alocador() {
+export default function Locatario() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<FormData>({
@@ -49,7 +49,8 @@ export default function Alocador() {
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const target = e.target as unknown as { name: string; value: string };
+    const { name, value } = target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,

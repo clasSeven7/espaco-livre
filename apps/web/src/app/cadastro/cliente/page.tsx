@@ -3,20 +3,14 @@
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
-import axios, { AxiosError } from 'axios';
+import { api } from '@/lib/axios';
+import { AxiosError } from 'axios';
 import { Calendar, Lock, Mail, MapPin, Phone, User } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 
-// Configuração do axios
-const api = axios.create({
-  baseURL: 'http://localhost:3001',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
 
 interface FormData {
   email: string;
@@ -48,7 +42,8 @@ export default function Cliente() {
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const target = e.target as unknown as { name: string; value: string };
+    const { name, value } = target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,

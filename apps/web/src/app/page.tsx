@@ -1,6 +1,11 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 import Cookies from 'js-cookie';
 import { Facebook, Github, Instagram, MessageCircle, Star, Twitter, Youtube } from 'lucide-react';
 import Image from 'next/image';
@@ -22,19 +27,19 @@ export default function Home() {
     {
       name: 'Rafael Lima',
       role: 'Gerente de Marketing',
-      image: '/rafael.jpg',
+      image: '/icon_1.png',
       content: 'Utilizamos a plataforma para organizar uma série de workshops para o nosso núcleo. A escolha do espaço e a facilidade de contato com os responsáveis pelo local foi excelente. O processo foi muito simples e certamente vamos usar novamente.'
     },
     {
       name: 'Felipe Martins',
       role: 'Diretor de Vendas',
-      image: '/felipe.jpg',
+      image: '/icon_2.png',
       content: 'Encontramos uma maneira de vendas com clientes importantes e escolhemos um espaço através da plataforma. A experiência foi excepcional e tudo era perfeito, desde a localização até os equipamentos disponíveis para apresentar. Definitivamente, uma solução que facilita nossa rotina.'
     },
     {
       name: 'Laura Santos',
       role: 'Coordenadora de Projetos',
-      image: '/laura.jpg',
+      image: '/icon_3.png',
       content: 'Nossa equipe precisou de um espaço bem equipado para um workshop de treinamento e encontramos tudo que precisávamos na plataforma. A interface fácil de usar e a comunicação rápida com os proprietários foram um ponto muito positivo no processo muito mais eficiente.'
     }
   ];
@@ -88,19 +93,52 @@ export default function Home() {
                   para qualquer ocasião.
                 </span>
               </h1>
-              <p className="text-gray-600 text-lg">
+              <p className="text-gray-600 text-lg mb-60">
                 Escolha o espaço certo para cada momento. Use os filtros e encontre a melhor opção!
               </p>
-              <div className="flex gap-4">
-                <Button variant="default" className="bg-black text-white hover:bg-gray-800 px-6 py-3 text-lg">
+              <div className="flex gap-10">
+                <Button variant="default" className="bg-black text-white hover:bg-gray-800 px-6 py-3 text-lg rounded-sm">
                   Buscar Espaços
                 </Button>
-                <Button variant="default" className="bg-[#2E7AB8] hover:bg-blue-600 px-6 py-3 text-lg">
+                <Button variant="default" className="bg-[#2E7AB8] hover:bg-blue-600 px-6 py-3 text-lg rounded-sm">
                   Cadastre seu Espaço
                 </Button>
               </div>
             </div>
-            <div className="bg-[#2E7AB8] h-[400px] rounded-lg"></div>
+            <div className="h-[500px] rounded-lg">
+              <ResizablePanelGroup
+                direction="horizontal"
+                className="w-full lg:w-1/2 h-64 mt-6 lg:mt-0"
+              >
+                <ResizablePanel
+                  defaultSize={50}
+                  className="flex justify-center items-center rounded-lg"
+                >
+                  <div className="relative w-full h-full">
+                    <Image
+                      src="/home_image_1.jpg"
+                      alt="Imagem 1"
+                      fill
+                      style={{ objectFit: 'contain' }}
+                    />
+                  </div>
+                </ResizablePanel>
+                <ResizableHandle />
+                <ResizablePanel
+                  defaultSize={50}
+                  className="flex justify-center items-center"
+                >
+                  <div className="relative w-full h-full">
+                    <Image
+                      src="/home_image_2.jpg"
+                      alt="Imagem 2"
+                      fill
+                      style={{ objectFit: 'contain' }}
+                    />
+                  </div>
+                </ResizablePanel>
+              </ResizablePanelGroup>
+            </div>
           </div>
         </div>
       </section>
@@ -151,7 +189,7 @@ export default function Home() {
           </div>
           <div>
             <Image
-              src="/coworking.jpg"
+              src="/image_1.png"
               alt="Espaço de coworking"
               width={500}
               height={300}
@@ -163,7 +201,7 @@ export default function Home() {
         <div className="grid md:grid-cols-2 gap-12 items-center mt-16">
           <div>
             <Image
-              src="/user-laptop.jpg"
+              src="/image_2.png"
               alt="Usuário usando laptop"
               width={500}
               height={300}
