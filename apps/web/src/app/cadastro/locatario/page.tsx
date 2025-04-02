@@ -32,7 +32,7 @@ interface FormData {
   aceitar_termos: boolean;
 }
 
-export default function Alocador() {
+export default function Locatario() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<FormData>({
@@ -89,7 +89,7 @@ export default function Alocador() {
         cep: cep.replace(/\D/g, ''),
       };
 
-      await api.post('/alocadores', dadosFormatados);
+      await api.post('/locatarios', dadosFormatados);
       toast.success('Cadastro realizado com sucesso!');
       router.push('/login');
     } catch (error) {

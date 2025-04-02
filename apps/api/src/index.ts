@@ -1,7 +1,7 @@
 import SERVER from '@/config/server.js';
-import alocadorRouter from '@/routes/alocadorRoutes';
 import authRouter from '@/routes/authRoutes';
 import clienteRouter from '@/routes/clienteRoutes';
+import locatarioRouter from '@/routes/locatarioRoutes';
 import cors from 'cors';
 import express from 'express';
 
@@ -10,7 +10,7 @@ const app = express();
 // Mapeamento de emojis para cada rota
 const routeEmojis: Record<string, string> = {
   '/auth': '🔑',
-  '/alocadores': '👥',
+  '/locatarios': '👥',
   '/clientes': '🏢',
 };
 
@@ -19,7 +19,7 @@ app.use(express.json());
 
 // Registro das rotas
 app.use('/auth', authRouter);
-app.use('/alocadores', alocadorRouter);
+app.use('/locatarios', locatarioRouter);
 app.use('/clientes', clienteRouter);
 
 // Função para obter as rotas registradas

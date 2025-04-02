@@ -189,9 +189,9 @@ export default function Login() {
                 </AlertDialogCancel>
               </AlertDialogHeader>
               <AlertDialogFooter className="flex flex-col gap-2">
-                <Link href="/cadastro/alocador" className="w-full">
+                <Link href="/cadastro/locatario" className="w-full">
                   <AlertDialogAction className="w-full cursor-pointer">
-                    Alocador
+                    locatario
                   </AlertDialogAction>
                 </Link>
                 <Link href="/cadastro/cliente" className="w-full">

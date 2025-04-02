@@ -1,4 +1,4 @@
-export interface Alocador {
+export interface Locatario {
   nome_usuario: string;
   senha: string;
   email: string;
@@ -10,7 +10,7 @@ export interface Alocador {
   cep?: string;
 }
 
-export interface AlocadorData {
+export interface LocatarioData {
   email: string;
   senha: string;
   nome_usuario: string;
@@ -22,7 +22,7 @@ export interface AlocadorData {
   cep: string;
 }
 
-export interface AlocadorResponse extends AlocadorData {
+export interface LocatarioResponse extends LocatarioData {
   id: number;
   criado_em: Date;
   atualizado_em: Date;
@@ -67,7 +67,7 @@ export interface ClienteResponse extends ClienteData {
 }
 
 // Interfaces para criação com campos opcionais
-export interface AlocadorCreate extends Partial<AlocadorData> {
+export interface LocatarioCreate extends Partial<LocatarioData> {
   email: string;
   senha: string;
   nome_usuario: string;

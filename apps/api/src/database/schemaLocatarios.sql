@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS alocadores (
+CREATE TABLE IF NOT EXISTS locatarios (
   id SERIAL PRIMARY KEY,
   nome_usuario VARCHAR(100) NOT NULL,
   senha VARCHAR(255) NOT NULL,
@@ -22,7 +22,7 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
-CREATE TRIGGER atualizacao_alocadores_atualizado_em
-  BEFORE UPDATE ON alocadores
+CREATE TRIGGER atualizacao_locatarios_atualizado_em
+  BEFORE UPDATE ON locatarios
   FOR EACH ROW
   EXECUTE FUNCTION atualizacao_atualizada_na_coluna(); 

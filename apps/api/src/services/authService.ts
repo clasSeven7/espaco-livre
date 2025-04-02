@@ -1,5 +1,5 @@
-import { alocadorRepository } from '@/repositories/alocadorRepository';
 import { clienteRepository } from '@/repositories/clienteRepository';
+import { locatarioRepository } from '@/repositories/locatarioRepository';
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'sua-chave-secreta';
@@ -24,19 +24,19 @@ export const authService = {
         };
       }
 
-      // Tenta encontrar o usuário como alocador
-      const alocador = await alocadorRepository.buscarPorNomeUsuario(
+      // Tenta encontrar o usuário como locatario
+      const locatario = await locatarioRepository.buscarPorNomeUsuario(
         nome_usuario
       );
-      if (alocador && alocador.senha === senha) {
+      if (locatario && locatario.senha === senha) {
         const token = jwt.sign(
-          { id: alocador.id, tipo: 'alocador' },
+          { id: locatario.id, tipo: 'locatario' },
           JWT_SECRET,
           { expiresIn: '24h' }
         );
         return {
           token,
-          usuario: { ...alocador, tipo: 'alocador' },
+          usuario: { ...locatario, tipo: 'locatario' },
           message: '✅ Login realizado com sucesso! Bem-vindo(a)!',
         };
       }

@@ -1,26 +1,26 @@
 import { NextFunction, Request, Response } from 'express';
 
-export async function validateAlocador(
+export async function validateLocatario(
   request: Request,
   response: Response,
   next: NextFunction
 ) {
-  const alocadorData = request.body as any;
+  const locatarioData = request.body as any;
 
   // Validações básicas
   if (
-    !alocadorData.email ||
-    !alocadorData.senha ||
-    !alocadorData.nome_usuario ||
-    !alocadorData.cpf
+    !locatarioData.email ||
+    !locatarioData.senha ||
+    !locatarioData.nome_usuario ||
+    !locatarioData.cpf
   ) {
     return response.status(400).json({
       error: '❌ Campos obrigatórios não preenchidos',
-      field: !alocadorData.email
+      field: !locatarioData.email
         ? 'email'
-        : !alocadorData.senha
+        : !locatarioData.senha
         ? 'senha'
-        : !alocadorData.nome_usuario
+        : !locatarioData.nome_usuario
         ? 'nome_usuario'
         : 'cpf',
     });
@@ -28,7 +28,7 @@ export async function validateAlocador(
 
   // Validação de email
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(alocadorData.email)) {
+  if (!emailRegex.test(locatarioData.email)) {
     return response.status(400).json({
       error: '📧 Email inválido. Por favor, verifique o formato',
       field: 'email',
@@ -36,7 +36,7 @@ export async function validateAlocador(
   }
 
   // Validação de senha
-  if (alocadorData.senha.length < 6) {
+  if (locatarioData.senha.length < 6) {
     return response.status(400).json({
       error: '🔒 A senha deve ter no mínimo 6 caracteres para maior segurança',
       field: 'senha',
@@ -44,7 +44,7 @@ export async function validateAlocador(
   }
 
   // Validação de idade
-  if (!alocadorData.idade || alocadorData.idade < 18) {
+  if (!locatarioData.idade || locatarioData.idade < 18) {
     return response.status(400).json({
       error: '👤 É necessário ter 18 anos ou mais para se cadastrar',
       field: 'idade',
@@ -53,7 +53,7 @@ export async function validateAlocador(
 
   // Validação de CPF
   const cpfRegex = /^\d{11}$/;
-  if (!cpfRegex.test(alocadorData.cpf.replace(/\D/g, ''))) {
+  if (!cpfRegex.test(locatarioData.cpf.replace(/\D/g, ''))) {
     return response.status(400).json({
       error: '📄 CPF inválido. Verifique o número informado',
       field: 'cpf',
@@ -61,19 +61,19 @@ export async function validateAlocador(
   }
 
   // Formatação de dados
-  if (alocadorData.cep) {
-    alocadorData.cep = alocadorData.cep.replace(/\D/g, '');
+  if (locatarioData.cep) {
+    locatarioData.cep = locatarioData.cep.replace(/\D/g, '');
   }
 
-  if (alocadorData.telefone) {
-    alocadorData.telefone = alocadorData.telefone.replace(/\D/g, '');
+  if (locatarioData.telefone) {
+    locatarioData.telefone = locatarioData.telefone.replace(/\D/g, '');
   }
 
-  if (alocadorData.cpf) {
-    alocadorData.cpf = alocadorData.cpf.replace(/\D/g, '');
+  if (locatarioData.cpf) {
+    locatarioData.cpf = locatarioData.cpf.replace(/\D/g, '');
   }
 
   // Adiciona os dados formatados ao request
-  request.body = alocadorData;
+  request.body = locatarioData;
   next();
 }

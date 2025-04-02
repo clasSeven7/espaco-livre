@@ -1,32 +1,32 @@
 import DB from '@/database/index';
-import { Alocador, AlocadorResponse } from '@/types/index';
+import { Locatario, LocatarioResponse } from '@/types/index';
 
-export const alocadorRepository = {
-  async criar(alocador: Alocador): Promise<AlocadorResponse> {
+export const locatarioRepository = {
+  async criar(locatario: Locatario): Promise<LocatarioResponse> {
     try {
       // Validações básicas
       if (
-        !alocador.nome_usuario ||
-        !alocador.senha ||
-        !alocador.email ||
-        !alocador.cpf
+        !locatario.nome_usuario ||
+        !locatario.senha ||
+        !locatario.email ||
+        !locatario.cpf
       ) {
         throw new Error('❌ Dados obrigatórios não fornecidos');
       }
 
       // Trunca strings muito longas
       const dadosTruncados = {
-        ...alocador,
-        nome_usuario: alocador.nome_usuario.substring(0, 100),
-        email: alocador.email.substring(0, 255),
-        telefone: alocador.telefone?.substring(0, 20),
-        cidade: alocador.cidade?.substring(0, 100),
-        cpf: alocador.cpf.substring(0, 11),
-        cep: alocador.cep?.substring(0, 8),
+        ...locatario,
+        nome_usuario: locatario.nome_usuario.substring(0, 100),
+        email: locatario.email.substring(0, 255),
+        telefone: locatario.telefone?.substring(0, 20),
+        cidade: locatario.cidade?.substring(0, 100),
+        cpf: locatario.cpf.substring(0, 11),
+        cep: locatario.cep?.substring(0, 8),
       };
 
       const query = `
-        INSERT INTO alocadores (
+        INSERT INTO locatarios (
           nome_usuario, senha, email, telefone, idade, 
           endereco_residencial, cidade, cpf, cep
         ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
@@ -48,24 +48,24 @@ export const alocadorRepository = {
       const result = await DB.query(query, values);
 
       if (!result.rows[0]) {
-        throw new Error('❌ Erro ao criar alocador no banco de dados');
+        throw new Error('❌ Erro ao criar locatario no banco de dados');
       }
 
       return result.rows[0];
     } catch (error) {
-      console.error('🚨 Erro no repositório ao criar alocador:', error);
+      console.error('🚨 Erro no repositório ao criar locatario:', error);
       throw error;
     }
   },
 
-  async buscarPorEmail(email: string): Promise<AlocadorResponse | null> {
+  async buscarPorEmail(email: string): Promise<LocatarioResponse | null> {
     try {
-      const query = 'SELECT * FROM alocadores WHERE email = $1';
+      const query = 'SELECT * FROM locatarios WHERE email = $1';
       const result = await DB.query(query, [email]);
       return result.rows[0] || null;
     } catch (error) {
       console.error(
-        '🚨 Erro no repositório ao buscar alocador por email:',
+        '🚨 Erro no repositório ao buscar locatario por email:',
         error
       );
       throw error;
@@ -74,60 +74,63 @@ export const alocadorRepository = {
 
   async buscarPorNomeUsuario(
     nome_usuario: string
-  ): Promise<AlocadorResponse | null> {
+  ): Promise<LocatarioResponse | null> {
     try {
-      const query = 'SELECT * FROM alocadores WHERE nome_usuario = $1';
+      const query = 'SELECT * FROM locatarios WHERE nome_usuario = $1';
       const result = await DB.query(query, [nome_usuario]);
       return result.rows[0] || null;
     } catch (error) {
       console.error(
-        '🚨 Erro no repositório ao buscar alocador por nome de usuário:',
+        '🚨 Erro no repositório ao buscar locatario por nome de usuário:',
         error
       );
       throw error;
     }
   },
 
-  async buscarPorCpf(cpf: string): Promise<AlocadorResponse | null> {
+  async buscarPorCpf(cpf: string): Promise<LocatarioResponse | null> {
     try {
-      const query = 'SELECT * FROM alocadores WHERE cpf = $1';
+      const query = 'SELECT * FROM locatarios WHERE cpf = $1';
       const result = await DB.query(query, [cpf]);
       return result.rows[0] || null;
     } catch (error) {
       console.error(
-        '🚨 Erro no repositório ao buscar alocador por CPF:',
+        '🚨 Erro no repositório ao buscar locatario por CPF:',
         error
       );
       throw error;
     }
   },
 
-  async buscarPorId(id: number): Promise<AlocadorResponse | null> {
+  async buscarPorId(id: number): Promise<LocatarioResponse | null> {
     try {
-      const query = 'SELECT * FROM alocadores WHERE id = $1';
+      const query = 'SELECT * FROM locatarios WHERE id = $1';
       const result = await DB.query(query, [id]);
       return result.rows[0] || null;
     } catch (error) {
-      console.error('🚨 Erro no repositório ao buscar alocador por id:', error);
+      console.error(
+        '🚨 Erro no repositório ao buscar locatario por id:',
+        error
+      );
       throw error;
     }
   },
 
-  async listarTodos(): Promise<AlocadorResponse[]> {
+  async listarTodos(): Promise<LocatarioResponse[]> {
     try {
-      const query = 'SELECT * FROM alocadores ORDER BY nome_usuario';
+      const query = 'SELECT * FROM locatarios ORDER BY nome_usuario';
       const result = await DB.query(query);
       return result.rows;
     } catch (error) {
-      console.error('🚨 Erro no repositório ao listar alocadores:', error);
+      console.error('🚨 Erro no repositório ao listar locatarios:', error);
       throw error;
     }
   },
 
   async atualizar(
     id: number,
-    data: Partial<Alocador>
-  ): Promise<AlocadorResponse> {
+    data: Partial<Locatario>
+  ): Promise<LocatarioResponse> {
     try {
       const camposAtualizaveis = [
         'nome_usuario',
@@ -142,7 +145,7 @@ export const alocadorRepository = {
       ];
 
       const camposParaAtualizar = camposAtualizaveis.filter(
-        (campo) => data[campo as keyof Alocador] !== undefined
+        (campo) => data[campo as keyof Locatario] !== undefined
       );
 
       if (camposParaAtualizar.length === 0) {
@@ -150,7 +153,7 @@ export const alocadorRepository = {
       }
 
       const query = `
-        UPDATE alocadores 
+        UPDATE locatarios 
         SET ${camposParaAtualizar
           .map((campo, index) => `${campo} = $${index + 2}`)
           .join(', ')}
@@ -160,32 +163,32 @@ export const alocadorRepository = {
 
       const values = [
         id,
-        ...camposParaAtualizar.map((campo) => data[campo as keyof Alocador]),
+        ...camposParaAtualizar.map((campo) => data[campo as keyof Locatario]),
       ];
 
       const result = await DB.query(query, values);
 
       if (!result.rows[0]) {
-        throw new Error('❌ Alocador não encontrado');
+        throw new Error('❌ locatario não encontrado');
       }
 
       return result.rows[0];
     } catch (error) {
-      console.error('🚨 Erro no repositório ao atualizar alocador:', error);
+      console.error('🚨 Erro no repositório ao atualizar locatario:', error);
       throw error;
     }
   },
 
   async deletar(id: number): Promise<void> {
     try {
-      const query = 'DELETE FROM alocadores WHERE id = $1';
+      const query = 'DELETE FROM locatarios WHERE id = $1';
       const result = await DB.query(query, [id]);
 
       if (result.rowCount === 0) {
-        throw new Error('❌ Alocador não encontrado');
+        throw new Error('❌ locatario não encontrado');
       }
     } catch (error) {
-      console.error('🚨 Erro no repositório ao deletar alocador:', error);
+      console.error('🚨 Erro no repositório ao deletar locatario:', error);
       throw error;
     }
   },
