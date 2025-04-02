@@ -90,7 +90,7 @@ export default function Cliente() {
         );
       }
     } finally {
-      setIsLoading(false);
+      setTimeout(() => setIsLoading(false), 500);
     }
   };
 

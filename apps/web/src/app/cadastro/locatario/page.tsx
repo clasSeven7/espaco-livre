@@ -108,7 +108,7 @@ export default function Locatario() {
         );
       }
     } finally {
-      setIsLoading(false);
+      setTimeout(() => setIsLoading(false), 500);
     }
   };
 
