@@ -14,6 +14,7 @@ import {
   User,
 } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
@@ -305,14 +306,21 @@ export default function Locatario() {
             </div>
           </div>
         </form>
-        <Button
-          type="submit"
-          form="cadastro-form"
-          className="w-72 z-10 py-5 cursor-pointer text-[18px] font-bold mt-6"
-          disabled={isLoading}
-        >
-          {isLoading ? 'Cadastrando...' : 'Cadastrar'}
-        </Button>
+        <div className="flex gap-6 justify-center items-center mt-6">
+          <Button
+            type="submit"
+            form="cadastro-form"
+            className="w-72 z-10 py-5 cursor-pointer text-[18px] font-bold"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Cadastrando...' : 'Cadastrar'}
+          </Button>
+          <Link href="/" className="z-0">
+            <Button className="w-44 bg-red-400 hover:bg-red-400 cursor-pointer py-5 text-[18px] font-bold">
+              Voltar
+            </Button>
+          </Link>
+        </div>
       </div>
     </>
   );
