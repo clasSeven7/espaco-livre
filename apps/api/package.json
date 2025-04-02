@@ -6,10 +6,9 @@
   "scripts": {
     "start": "node src/index.ts",
     "dev": "tsx watch src/index.ts",
-    "build": "tsc",
-    "test1": "echo \"Error: no test specified\" && exit 1",
-    "test": "cucumber-js --require cucumber.ts",
-    "migrate": "tsx src/database/migrate.ts"
+    "migrate": "tsx src/database/migrate.ts",
+    "test": "cucumber-js --config cucumber.cjs",
+    "db:setup": "tsx src/database/setup.ts"
   },
   "keywords": [],
   "author": "",
