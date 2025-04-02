@@ -22,6 +22,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
+import { IMaskInput } from 'react-imask';
 
 interface FormData {
   nome_usuario: string;
@@ -65,12 +66,17 @@ export default function Login() {
         toast.error('Erro ao fazer login');
       }
     } finally {
-      setIsLoading(false);
+      setTimeout(() => setIsLoading(false), 500);
     }
   };
 
   return (
     <>
+      <IMaskInput
+        mask="000.000.000-00"
+        placeholder="Digite seu CPF"
+        className="bg-red-400 m-16 p-16"
+      />
       <div className="flex flex-col items-center justify-center h-screen relative bg-[#DDF0EF]">
         <Image
           src="/background.png"

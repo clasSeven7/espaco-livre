@@ -2,7 +2,6 @@
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
 import { api } from '@/lib/axios';
 import { AxiosError } from 'axios';
 import { Calendar, Lock, Mail, MapPin, Phone, User } from 'lucide-react';
@@ -10,7 +9,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
-
+import { IMaskInput } from 'react-imask';
 
 interface FormData {
   email: string;
@@ -129,14 +128,14 @@ export default function Cliente() {
                 height={25}
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
               />
-              <Input
+              <IMaskInput
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
                 placeholder="Digite seu email"
                 type="email"
                 required
-                className="bg-[#1178B9] text-zinc-50 py-5 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/50"
+                className="w-full bg-[#1178B9] text-zinc-50 py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500  placeholder:text-white/50"
               />
             </div>
             <div className="mb-4 relative">
@@ -145,14 +144,14 @@ export default function Cliente() {
                 height={25}
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
               />
-              <Input
+              <IMaskInput
                 type="password"
                 name="senha"
                 value={formData.senha}
                 onChange={handleInputChange}
                 placeholder="Digite sua senha"
                 required
-                className="bg-[#1178B9] text-zinc-50 py-5 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/50"
+                className="w-full bg-[#1178B9] text-zinc-50 py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-white/50"
               />
             </div>
             <div className="mb-4 relative">
@@ -161,13 +160,13 @@ export default function Cliente() {
                 height={25}
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
               />
-              <Input
+              <IMaskInput
                 name="nome_usuario"
                 value={formData.nome_usuario}
                 onChange={handleInputChange}
                 placeholder="Digite seu usuário"
                 required
-                className="bg-[#1178B9] text-zinc-50 py-5 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/50"
+                className="w-full bg-[#1178B9] text-zinc-50 py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-white/50"
               />
             </div>
             <div className="mb-4 relative">
@@ -176,13 +175,14 @@ export default function Cliente() {
                 height={25}
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
               />
-              <Input
+              <IMaskInput
+                mask="(00) 00000-0000"
                 name="telefone"
                 value={formData.telefone}
                 onChange={handleInputChange}
                 placeholder="Digite seu telefone"
                 required
-                className="bg-[#1178B9] text-zinc-50 py-5 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/50"
+                className="w-full bg-[#1178B9] text-zinc-50 py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-white/50"
               />
             </div>
             <div className="mb-4 relative">
@@ -191,14 +191,14 @@ export default function Cliente() {
                 height={25}
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
               />
-              <Input
+              <IMaskInput
                 name="idade"
                 value={formData.idade}
                 onChange={handleInputChange}
                 placeholder="Digite sua idade"
                 type="number"
                 required
-                className="bg-[#1178B9] text-zinc-50 py-5 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/50"
+                className="w-full bg-[#1178B9] text-zinc-50 py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-white/50"
               />
             </div>
             <div className="mb-4 relative">
@@ -207,13 +207,13 @@ export default function Cliente() {
                 height={25}
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
               />
-              <Input
+              <IMaskInput
                 name="endereco_residencial"
                 value={formData.endereco_residencial}
                 onChange={handleInputChange}
                 placeholder="Digite seu endereço"
                 required
-                className="bg-[#1178B9] text-zinc-50 py-5 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/50"
+                className="w-full bg-[#1178B9] text-zinc-50 py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-white/50"
               />
             </div>
           </div>
@@ -224,13 +224,13 @@ export default function Cliente() {
                 height={25}
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
               />
-              <Input
+              <IMaskInput
                 name="cidade"
                 value={formData.cidade}
                 onChange={handleInputChange}
                 placeholder="Digite sua cidade"
                 required
-                className="bg-[#1178B9] text-zinc-50 py-5 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/50"
+                className="w-full bg-[#1178B9] text-zinc-50 py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-white/50"
               />
             </div>
             <div className="mb-4 relative">
@@ -239,13 +239,14 @@ export default function Cliente() {
                 height={25}
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
               />
-              <Input
+              <IMaskInput
+                mask="00000-000"
                 name="cep"
                 value={formData.cep}
                 onChange={handleInputChange}
                 placeholder="Digite o CEP"
                 required
-                className="bg-[#1178B9] text-zinc-50 py-5 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/50"
+                className="w-full bg-[#1178B9] text-zinc-50 py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-white/50"
               />
             </div>
             <div className="flex gap-3">
