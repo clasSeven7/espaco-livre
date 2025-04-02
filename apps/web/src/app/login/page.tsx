@@ -65,7 +65,7 @@ export default function Login() {
         toast.error('Erro ao fazer login');
       }
     } finally {
-      setTimeout(() => setIsLoading(false), 500);
+      setTimeout(() => setIsLoading(false), 1000);
     }
   };
 
@@ -128,7 +128,33 @@ export default function Login() {
             className="w-full py-5 cursor-pointer text-[18px] font-bold"
             disabled={isLoading}
           >
-            {isLoading ? 'Entrando...' : 'Entrar'}
+            {isLoading ? (
+              <>
+                <svg
+                  className="mr-3 h-5 w-5 animate-spin text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4l-3 3-3-3h4z"
+                  ></path>
+                </svg>
+                Carregando...
+              </>
+            ) : (
+              'Entrar'
+            )}
           </Button>
         </form>
 

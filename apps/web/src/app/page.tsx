@@ -205,49 +205,43 @@ export default function Home() {
       <section className="container mx-auto px-4 py-16">
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold">
+            <p className="text-2xl text-justify tracking-wide">
               Enquanto um andar está movimentado, o outro permanece vazio. Por
-              que não aproveitar essa oportunidade?
-            </h2>
-            <p>
-              Cadastre seu espaço na nossa plataforma e alcance pessoas que
-              estão em busca do lugar ideal.{' '}
-              <span className="text-blue-600">
+              que não aproveitar essa oportunidade? Cadastre seu espaço na nossa
+              plataforma e alcance pessoas que estão em busca do lugar ideal.{' '}
+              <span className="text-blue-600 font-bold">
                 Dê vida ao seu espaço e faça ele trabalhar por você!
               </span>
             </p>
           </div>
-          <div>
+          <div className="hover:ease-out">
             <Image
               src="/image_1.png"
               alt="Espaço de coworking"
               width={500}
               height={300}
-              className="rounded-lg"
+              className="rounded-lg w-full"
             />
           </div>
         </div>
 
         <div className="grid md:grid-cols-2 gap-12 items-center mt-16">
-          <div>
+          <div className="hover:duration-150">
             <Image
               src="/image_2.png"
               alt="Usuário usando laptop"
               width={500}
               height={300}
-              className="rounded-lg"
+              className="rounded-lg w-full"
             />
           </div>
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold">
+            <p className="text-2xl text-justify tracking-wide">
               Encontrar o espaço ideal sem uma plataforma adequada pode consumir
-              horas do seu dia.
-            </h2>
-            <p>
-              Nossa plataforma torna isso rápido e fácil: com apenas alguns
-              cliques, você encontra o local perfeito, com todas as informações
-              e fotos que precisa.{' '}
-              <span className="text-blue-600">
+              horas do seu dia. Nossa plataforma torna isso rápido e fácil: com
+              apenas alguns cliques, você encontra o local perfeito, com todas
+              as informações e fotos que precisa.{' '}
+              <span className="text-blue-600 font-bold">
                 Encontre e reserve sem complicação, economizando seu tempo e
                 indo direto ao que importa!
               </span>
@@ -319,7 +313,7 @@ export default function Home() {
               </Link>
             </div>
             <div className="text-center">
-              <p>© 2024 Espaço Livre. Todos os direitos reservados.</p>
+              <p>© 2025 Espaço Livre. Todos os direitos reservados.</p>
             </div>
           </div>
         </div>
