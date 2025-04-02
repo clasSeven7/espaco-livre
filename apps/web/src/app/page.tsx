@@ -5,9 +5,17 @@ import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
-} from "@/components/ui/resizable";
+} from '@/components/ui/resizable';
 import Cookies from 'js-cookie';
-import { Facebook, Github, Instagram, MessageCircle, Star, Twitter, Youtube } from 'lucide-react';
+import {
+  Facebook,
+  Github,
+  Instagram,
+  MessageCircle,
+  Star,
+  Twitter,
+  Youtube,
+} from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -28,20 +36,23 @@ export default function Home() {
       name: 'Rafael Lima',
       role: 'Gerente de Marketing',
       image: '/icon_1.png',
-      content: 'Utilizamos a plataforma para organizar uma série de workshops para o nosso núcleo. A escolha do espaço e a facilidade de contato com os responsáveis pelo local foi excelente. O processo foi muito simples e certamente vamos usar novamente.'
+      content:
+        'Utilizamos a plataforma para organizar uma série de workshops para o nosso núcleo. A escolha do espaço e a facilidade de contato com os responsáveis pelo local foi excelente. O processo foi muito simples e certamente vamos usar novamente.',
     },
     {
       name: 'Felipe Martins',
       role: 'Diretor de Vendas',
       image: '/icon_2.png',
-      content: 'Encontramos uma maneira de vendas com clientes importantes e escolhemos um espaço através da plataforma. A experiência foi excepcional e tudo era perfeito, desde a localização até os equipamentos disponíveis para apresentar. Definitivamente, uma solução que facilita nossa rotina.'
+      content:
+        'Encontramos uma maneira de vendas com clientes importantes e escolhemos um espaço através da plataforma. A experiência foi excepcional e tudo era perfeito, desde a localização até os equipamentos disponíveis para apresentar. Definitivamente, uma solução que facilita nossa rotina.',
     },
     {
       name: 'Laura Santos',
       role: 'Coordenadora de Projetos',
       image: '/icon_3.png',
-      content: 'Nossa equipe precisou de um espaço bem equipado para um workshop de treinamento e encontramos tudo que precisávamos na plataforma. A interface fácil de usar e a comunicação rápida com os proprietários foram um ponto muito positivo no processo muito mais eficiente.'
-    }
+      content:
+        'Nossa equipe precisou de um espaço bem equipado para um workshop de treinamento e encontramos tudo que precisávamos na plataforma. A interface fácil de usar e a comunicação rápida com os proprietários foram um ponto muito positivo no processo muito mais eficiente.',
+    },
   ];
 
   const handleLogout = () => {
@@ -94,13 +105,20 @@ export default function Home() {
                 </span>
               </h1>
               <p className="text-gray-600 text-lg mb-60">
-                Escolha o espaço certo para cada momento. Use os filtros e encontre a melhor opção!
+                Escolha o espaço certo para cada momento. Use os filtros e
+                encontre a melhor opção!
               </p>
               <div className="flex gap-10">
-                <Button variant="default" className="bg-black text-white hover:bg-gray-800 px-6 py-3 text-lg rounded-sm cursor-pointer">
+                <Button
+                  variant="default"
+                  className="bg-black text-white hover:bg-gray-800 px-6 py-3 text-lg rounded-sm cursor-pointer"
+                >
                   Buscar Espaços
                 </Button>
-                <Button variant="default" className="bg-[#2E7AB8] hover:bg-blue-600 px-6 py-3 text-lg rounded-sm cursor-pointer">
+                <Button
+                  variant="default"
+                  className="bg-[#2E7AB8] hover:bg-blue-600 px-6 py-3 text-lg rounded-sm cursor-pointer"
+                >
                   Cadastre seu Espaço
                 </Button>
               </div>
@@ -146,8 +164,10 @@ export default function Home() {
       {/* Testimonials Section */}
       <section className="container mx-auto px-4 py-16">
         <h2 className="text-2xl font-bold text-center mb-8">Comentários</h2>
-        <p className="text-center text-gray-600 mb-12">Opiniões dos clientes que usaram a plataforma.</p>
-        
+        <p className="text-center text-gray-600 mb-12">
+          Opiniões dos clientes que usaram a plataforma.
+        </p>
+
         <div className="grid md:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (
             <div key={index} className="bg-white p-6 rounded-lg shadow-lg">
@@ -166,7 +186,10 @@ export default function Home() {
               </div>
               <div className="flex mb-4">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                  <Star
+                    key={i}
+                    className="w-4 h-4 fill-yellow-400 text-yellow-400"
+                  />
                 ))}
               </div>
               <p className="text-gray-600 text-sm">{testimonial.content}</p>
@@ -180,11 +203,15 @@ export default function Home() {
         <div className="grid md:grid-cols-2 gap-12 items-center">
           <div className="space-y-6">
             <h2 className="text-2xl font-bold">
-              Enquanto um andar está movimentado, o outro permanece vazio. Por que não aproveitar essa oportunidade?
+              Enquanto um andar está movimentado, o outro permanece vazio. Por
+              que não aproveitar essa oportunidade?
             </h2>
             <p>
-              Cadastre seu espaço na nossa plataforma e alcance pessoas que estão em busca do lugar ideal.{' '}
-              <span className="text-blue-600">Dê vida ao seu espaço e faça ele trabalhar por você!</span>
+              Cadastre seu espaço na nossa plataforma e alcance pessoas que
+              estão em busca do lugar ideal.{' '}
+              <span className="text-blue-600">
+                Dê vida ao seu espaço e faça ele trabalhar por você!
+              </span>
             </p>
           </div>
           <div>
@@ -210,11 +237,17 @@ export default function Home() {
           </div>
           <div className="space-y-6">
             <h2 className="text-2xl font-bold">
-              Encontrar o espaço ideal sem uma plataforma adequada pode consumir horas do seu dia.
+              Encontrar o espaço ideal sem uma plataforma adequada pode consumir
+              horas do seu dia.
             </h2>
             <p>
-              Nossa plataforma torna isso rápido e fácil: com apenas alguns cliques, você encontra o local perfeito, com todas as informações e fotos que precisa.{' '}
-              <span className="text-blue-600">Encontre e reserve sem complicação, economizando seu tempo e indo direto ao que importa!</span>
+              Nossa plataforma torna isso rápido e fácil: com apenas alguns
+              cliques, você encontra o local perfeito, com todas as informações
+              e fotos que precisa.{' '}
+              <span className="text-blue-600">
+                Encontre e reserve sem complicação, economizando seu tempo e
+                indo direto ao que importa!
+              </span>
             </p>
           </div>
         </div>
@@ -225,28 +258,60 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col items-center gap-8">
             <div className="flex justify-center space-x-8">
-              <Link href="/sobre" className="hover:underline">Sobre</Link>
-              <Link href="/acessibilidade" className="hover:underline">Acessibilidade</Link>
-              <Link href="/parceiros" className="hover:underline">Parceiros</Link>
-              <Link href="/suporte" className="hover:underline">Suporte</Link>
+              <Link href="/sobre" className="hover:underline">
+                Sobre
+              </Link>
+              <Link href="/acessibilidade" className="hover:underline">
+                Acessibilidade
+              </Link>
+              <Link href="/parceiros" className="hover:underline">
+                Parceiros
+              </Link>
+              <Link href="/suporte" className="hover:underline">
+                Suporte
+              </Link>
             </div>
             <div className="flex justify-center space-x-6">
-              <Link href="https://facebook.com" target="_blank" className="hover:text-gray-200">
+              <Link
+                href="https://facebook.com"
+                target="_blank"
+                className="hover:text-gray-200"
+              >
                 <Facebook size={24} />
               </Link>
-              <Link href="https://instagram.com" target="_blank" className="hover:text-gray-200">
+              <Link
+                href="https://instagram.com"
+                target="_blank"
+                className="hover:text-gray-200"
+              >
                 <Instagram size={24} />
               </Link>
-              <Link href="https://twitter.com" target="_blank" className="hover:text-gray-200">
+              <Link
+                href="https://twitter.com"
+                target="_blank"
+                className="hover:text-gray-200"
+              >
                 <Twitter size={24} />
               </Link>
-              <Link href="https://github.com" target="_blank" className="hover:text-gray-200">
+              <Link
+                href="https://github.com"
+                target="_blank"
+                className="hover:text-gray-200"
+              >
                 <Github size={24} />
               </Link>
-              <Link href="https://youtube.com" target="_blank" className="hover:text-gray-200">
+              <Link
+                href="https://youtube.com"
+                target="_blank"
+                className="hover:text-gray-200"
+              >
                 <Youtube size={24} />
               </Link>
-              <Link href="https://whatsapp.com" target="_blank" className="hover:text-gray-200">
+              <Link
+                href="https://whatsapp.com"
+                target="_blank"
+                className="hover:text-gray-200"
+              >
                 <MessageCircle size={24} />
               </Link>
             </div>

@@ -285,10 +285,10 @@ export default function Locatario() {
                 id="aceitar_termos"
                 name="aceitar_termos"
                 checked={formData.aceitar_termos}
-                onCheckedChange={(checked) => {
+                onCheckedChange={(checked: boolean) => {
                   setFormData((prev) => ({
                     ...prev,
-                    aceitar_termos: checked as boolean,
+                    aceitar_termos: checked === true,
                   }));
                 }}
                 className="bg-zinc-400 border-0"
