@@ -8,9 +8,11 @@ import {
 } from '@/components/ui/resizable';
 import Cookies from 'js-cookie';
 import {
+  CircleUserRound,
   Facebook,
   Github,
   Instagram,
+  LogOut,
   MessageCircle,
   Star,
   Twitter,
@@ -63,19 +65,20 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-[#DDF0EF]">
-      {/* Header with Logout */}
       <header className="bg-[#f2f7f6] shadow-sm">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <Link href="/">
-            <Image src="/icon-logo.png" alt="Logo" width={40} height={40} />
+            <Image src="/icon-logo.png" alt="Logo" width={50} height={50} />
           </Link>
           <div className="flex items-center gap-4">
-            <button
+            <CircleUserRound size={35} />
+            <Button
               onClick={handleLogout}
-              className="text-red-500 hover:text-red-600 font-medium cursor-pointer"
+              className="text-white font-semibold bg-red-400 cursor-pointer hover:text-white hover:bg-[#2E7AB8]"
             >
+              <LogOut />
               Sair
-            </button>
+            </Button>
           </div>
         </div>
       </header>
@@ -108,16 +111,16 @@ export default function Home() {
                 Escolha o espaço certo para cada momento. Use os filtros e
                 encontre a melhor opção!
               </p>
-              <div className="flex gap-10">
+              <div className="flex gap-14">
                 <Button
                   variant="default"
-                  className="bg-black text-white hover:bg-gray-800 px-6 py-3 text-lg rounded-sm cursor-pointer"
+                  className="bg-black text-white hover:bg-gray-800 px-11 py-6 text-lg rounded-sm cursor-pointer"
                 >
                   Buscar Espaços
                 </Button>
                 <Button
                   variant="default"
-                  className="bg-[#2E7AB8] hover:bg-blue-600 px-6 py-3 text-lg rounded-sm cursor-pointer"
+                  className="bg-[#2E7AB8] hover:bg-blue-600 px-11 py-6 text-lg rounded-sm cursor-pointer"
                 >
                   Cadastre seu Espaço
                 </Button>
