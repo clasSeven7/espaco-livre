@@ -214,19 +214,19 @@ export default function Home() {
               </span>
             </p>
           </div>
-          <div className="hover:ease-out">
+          <div>
             <Image
               src="/image_1.png"
               alt="Espaço de coworking"
               width={500}
               height={300}
-              className="rounded-lg w-full"
+              className="rounded-lg w-full "
             />
           </div>
         </div>
 
         <div className="grid md:grid-cols-2 gap-12 items-center mt-16">
-          <div className="hover:duration-150">
+          <div>
             <Image
               src="/image_2.png"
               alt="Usuário usando laptop"
