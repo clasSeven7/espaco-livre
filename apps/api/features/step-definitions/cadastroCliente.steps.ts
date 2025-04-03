@@ -7,9 +7,12 @@ Given('que o profissional autônomo acessa a página de cadastro', function () {
   console.log('Acessando página de cadastro de profissional autônomo...');
 });
 
-When('ele preenche seus dados pessoais (nome, e-mail, telefone) e suas informações profissionais (especialidade, experiência, etc.)', function () {
-  console.log('Preenchendo dados pessoais e informações profissionais...');
-});
+When(
+  'ele preenche seus dados pessoais (nome, e-mail, telefone) e suas informações profissionais (especialidade, experiência, etc.)',
+  function () {
+    console.log('Preenchendo dados pessoais e informações profissionais...');
+  }
+);
 
 When('ele clica no botão {string}', function (botao: string) {
   console.log(`Clicando no botão ${botao}...`);
@@ -18,23 +21,39 @@ When('ele clica no botão {string}', function (botao: string) {
 When(
   'ele preenche seus dados pessoais {string}, {string}, {string}, {string}, {string}, {string}, {string}, {string} e suas informações profissionais {string}, {string}, {string}',
   function (
-    nome: string, 
-    email: string, 
-    telefone: string, 
-    idade: string, 
-    endereco_residencial: string, 
-    cidade: string, 
+    nome: string,
+    email: string,
+    telefone: string,
+    idade: string,
+    endereco_residencial: string,
+    cidade: string,
     cep: string,
     senha: string,
-    especialidade: string, 
-    tipo_ocupacao: string, 
+    especialidade: string,
+    tipo_ocupacao: string,
     frequencia_uso: string
   ) {
-    console.log(`Dados pessoais: ${nome}, ${email}, ${telefone}, ${idade}, ${endereco_residencial}, ${cidade}, ${cep}, ${senha}`);
-    console.log(`Informações profissionais: ${especialidade}, ${tipo_ocupacao}, ${frequencia_uso}`);
+    console.log(
+      `Dados pessoais: ${nome}, ${email}, ${telefone}, ${idade}, ${endereco_residencial}, ${cidade}, ${cep}, ${senha}`
+    );
+    console.log(
+      `Informações profissionais: ${especialidade}, ${tipo_ocupacao}, ${frequencia_uso}`
+    );
 
     // Simulação de cadastro bem-sucedido
-    if (nome && email && telefone && idade && endereco_residencial && cidade && cep && senha && especialidade && tipo_ocupacao && frequencia_uso) {
+    if (
+      nome &&
+      email &&
+      telefone &&
+      idade &&
+      endereco_residencial &&
+      cidade &&
+      cep &&
+      senha &&
+      especialidade &&
+      tipo_ocupacao &&
+      frequencia_uso
+    ) {
       mensagem = 'Cadastro realizado com sucesso';
     } else {
       mensagem = 'Erro ao realizar o cadastro';
