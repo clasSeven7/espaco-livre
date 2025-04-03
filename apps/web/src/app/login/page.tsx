@@ -125,7 +125,7 @@ export default function Login() {
           </div>
           <Button
             type="submit"
-            className="w-full py-5 cursor-pointer text-[18px] font-bold"
+            className="w-full py-5 cursor-pointer text-lg font-bold text-white hover:bg-zinc-800 bg-black !opacity-100"
             disabled={isLoading}
           >
             {isLoading ? (
@@ -150,7 +150,7 @@ export default function Login() {
                     d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4l-3 3-3-3h4z"
                   ></path>
                 </svg>
-                Carregando...
+                Entrando...
               </>
             ) : (
               'Entrar'
