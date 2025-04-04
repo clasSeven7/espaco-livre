@@ -5,7 +5,7 @@ CREATE DATABASE espaco_livre_db;
 \c espaco_livre_db;
 
 -- Schema da tabela de Clientes
-CREATE TABLE IF NOT EXISTS clientes (
+CREATE TABLE clientes (
   id SERIAL PRIMARY KEY,
   nome_usuario VARCHAR(100) NOT NULL,
   senha VARCHAR(255) NOT NULL,
@@ -35,8 +35,8 @@ CREATE TRIGGER atualizacao_clientes_atualizado_em
   FOR EACH ROW
   EXECUTE FUNCTION atualizacao_atualizada_na_coluna(); 
 
--- Schema da tabela de Alocadores
-CREATE TABLE IF NOT EXISTS alocadores (
+-- Schema da tabela de Locatarios
+CREATE TABLE locatarios (
   id SERIAL PRIMARY KEY,
   nome_usuario VARCHAR(100) NOT NULL,
   senha VARCHAR(255) NOT NULL,
@@ -60,7 +60,7 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
-CREATE TRIGGER atualizacao_alocadores_atualizado_em
-  BEFORE UPDATE ON alocadores
+CREATE TRIGGER atualizacao_locatarios_atualizado_em
+  BEFORE UPDATE ON locatarios
   FOR EACH ROW
   EXECUTE FUNCTION atualizacao_atualizada_na_coluna(); 

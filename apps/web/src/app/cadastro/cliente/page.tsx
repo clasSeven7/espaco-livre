@@ -402,7 +402,7 @@ export default function Cliente() {
           <Button
             type="submit"
             form="cadastro-form"
-            className="w-72 z-10 py-5 cursor-pointer text-[18px] font-bold"
+            className="w-72 z-10 py-5 cursor-pointer text-[18px] font-bold text-white hover:bg-zinc-800 bg-black !opacity-100"
             disabled={isLoading}
           >
             {isLoading ? (
