@@ -2,14 +2,16 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const user = request.cookies.get('user');
-  const isAuthPage = request.nextUrl.pathname === '/login';
+  const token = request.cookies.get('token');
+  const isLoginPage = request.nextUrl.pathname === '/login';
 
-  if (!user && !isAuthPage) {
+  // Se não estiver autenticado e não estiver na página de login, redireciona para login
+  if (!token && !isLoginPage) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
 
-  if (user && isAuthPage) {
+  // Se estiver autenticado e tentar acessar a página de login, redireciona para home
+  if (token && isLoginPage) {
     return NextResponse.redirect(new URL('/', request.url));
   }
 
@@ -17,5 +19,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/', '/dashboard/:path*', '/login'],
+  matcher: ['/', '/login'],
 };

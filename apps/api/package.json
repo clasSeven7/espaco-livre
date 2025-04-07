@@ -1,0 +1,33 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.ts",
+    "dev": "tsx watch src/index.ts",
+    "migrate": "tsx src/database/migrate.ts",
+    "test": "cucumber-js --config cucumber.cjs",
+    "db:setup": "tsx src/database/setup.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/jsonwebtoken": "^9.0.9",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.14.1",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.3"
+  },
+  "devDependencies": {
+    "@cucumber/cucumber": "^11.2.0",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.11.25",
+    "@types/pg": "^8.11.11",
+    "typescript": "^5.4.2"
+  }
+}

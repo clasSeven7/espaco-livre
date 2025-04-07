@@ -13,7 +13,9 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import authService from '@/services/auth';
+import { api } from '@/lib/axios';
+import { AxiosError } from 'axios';
+import Cookies from 'js-cookie';
 import { Lock, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -21,14 +23,19 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 
+interface FormData {
+  nome_usuario: string;
+  senha: string;
+}
+
 export default function Login() {
   const router = useRouter();
-  const [isSaved, setIsSaved] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     nome_usuario: '',
     senha: '',
   });
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -43,25 +50,22 @@ export default function Login() {
     setIsLoading(true);
 
     try {
-      const response = await authService.login({
-        ...formData,
-        salvar_senha: isSaved,
-      });
+      const response = await api.post('/auth/login', formData);
+
+      // Salva o token e os dados do usuário nos cookies
+      Cookies.set('token', response.data.token);
+      Cookies.set('user', JSON.stringify(response.data.usuario));
 
       toast.success('Login realizado com sucesso!');
-
-      // Redireciona baseado no tipo de usuário
-      if (response.user.tipo === 'cliente') {
-        router.push('/dashboard/cliente');
+      router.push('/');
+    } catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        toast.error(error.response?.data?.error || 'Erro ao fazer login');
       } else {
-        router.push('/dashboard/alocador');
+        toast.error('Erro ao fazer login');
       }
-    } catch (error: any) {
-      const errorMessage =
-        error?.message || 'Falha no login. Verifique suas credenciais.';
-      toast.error(errorMessage);
     } finally {
-      setIsLoading(false);
+      setTimeout(() => setIsLoading(false), 1000);
     }
   };
 
@@ -71,9 +75,8 @@ export default function Login() {
         <Image
           src="/background.png"
           alt="Fundo"
-          layout="fill"
-          objectFit="cover"
-          className="absolute top-0 left-0 z-0 opacity-10"
+          fill
+          className="absolute top-0 left-0 z-0 opacity-10 object-cover"
         />
 
         <div className="flex items-center justify-center gap-4 mb-10">
@@ -122,10 +125,36 @@ export default function Login() {
           </div>
           <Button
             type="submit"
-            className="w-full py-5 cursor-pointer text-[18px] font-bold"
+            className="w-full py-5 cursor-pointer text-lg font-bold text-white hover:bg-zinc-800 bg-black !opacity-100"
             disabled={isLoading}
           >
-            {isLoading ? 'Entrando...' : 'Entrar'}
+            {isLoading ? (
+              <>
+                <svg
+                  className="mr-3 h-5 w-5 animate-spin text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4l-3 3-3-3h4z"
+                  ></path>
+                </svg>
+                Entrando...
+              </>
+            ) : (
+              'Entrar'
+            )}
           </Button>
         </form>
 
@@ -167,14 +196,28 @@ export default function Login() {
                 <AlertDialogDescription>
                   Selecione o tipo de conta que você deseja criar.
                 </AlertDialogDescription>
+                <AlertDialogCancel className="absolute right-4 top-4 rounded-sm cursor-pointer">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-4 w-4"
+                  >
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </AlertDialogCancel>
               </AlertDialogHeader>
               <AlertDialogFooter className="flex flex-col gap-2">
-                <AlertDialogCancel className="cursor-pointer">
-                  Cancelar
-                </AlertDialogCancel>
-                <Link href="/cadastro/alocador" className="w-full">
+                <Link href="/cadastro/locatario" className="w-full">
                   <AlertDialogAction className="w-full cursor-pointer">
-                    Alocador
+                    locatario
                   </AlertDialogAction>
                 </Link>
                 <Link href="/cadastro/cliente" className="w-full">
