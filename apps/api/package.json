@@ -7,7 +7,8 @@
     "start": "node src/index.ts",
     "dev": "tsx watch src/index.ts",
     "migrate": "tsx src/database/migrate.ts",
-    "test": "cucumber-js --config cucumber.cjs",
+    "test:cucumber": "cucumber-js --config cucumber.cjs",
+    "test:jest": "jest",
     "db:setup": "tsx src/database/setup.ts"
   },
   "keywords": [],
@@ -23,11 +24,16 @@
     "tsx": "^4.19.3"
   },
   "devDependencies": {
+    "@babel/preset-typescript": "^7.27.0",
     "@cucumber/cucumber": "^11.2.0",
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.14",
     "@types/node": "^20.11.25",
     "@types/pg": "^8.11.11",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.3.1",
     "typescript": "^5.4.2"
   }
 }
