@@ -2,13 +2,8 @@
 
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-<<<<<<< HEAD
-import { Input } from '@/components/ui/input';
-import { ApiError } from '@/types/error';
-=======
 import { api } from '@/lib/axios';
 import { AxiosError } from 'axios';
->>>>>>> develop
 import { Calendar, Lock, Mail, MapPin, Phone, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -17,35 +12,20 @@ import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { IMaskInput } from 'react-imask';
 
-<<<<<<< HEAD
-// Defina o tipo CadastroClienteData
-type CadastroClienteData = {
-=======
 interface FormData {
->>>>>>> develop
   email: string;
   senha: string;
   nome_usuario: string;
   telefone: string;
-<<<<<<< HEAD
-  idade: number; // Mantenha como number se você estiver usando parseInt
-=======
   idade: string;
->>>>>>> develop
   endereco_residencial: string;
   cidade: string;
   cep: string;
   tipo_ocupacao: string;
   frequencia_uso: string;
-<<<<<<< HEAD
-};
-
-export default function Cadastro() {
-=======
 }
 
 export default function Cliente() {
->>>>>>> develop
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<FormData>({
@@ -85,27 +65,6 @@ export default function Cliente() {
     setIsLoading(true);
 
     try {
-<<<<<<< HEAD
-      // Validações
-      if (!formData.tipo_ocupacao) {
-        throw new Error('Selecione um tipo de ocupação');
-      }
-      if (!formData.frequencia_uso) {
-        throw new Error('Selecione uma frequência de uso');
-      }
-
-      // Enviar dados para o backend
-      const response = await fetch('/api/clientes/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...formData,
-          idade: parseInt(formData.idade),
-        }),
-      });
-=======
       const dadosFormatados = {
         ...formData,
         idade: Number(formData.idade),
@@ -114,13 +73,6 @@ export default function Cliente() {
       };
 
       await api.post('/clientes', dadosFormatados);
->>>>>>> develop
-
-      console.log(response);
-
-      if (!response.ok) {
-        throw new Error('Erro ao cadastrar cliente');
-      }
 
       toast.success('Cadastro realizado com sucesso!');
       router.push('/login');
@@ -168,7 +120,6 @@ export default function Cliente() {
           id="cadastro-form"
           onSubmit={handleSubmit}
           className="w-[50%] z-10 grid grid-cols-2 gap-4"
-          id="cadastro-form"
         >
           <div>
             <div className="mb-4 relative">
@@ -446,16 +397,7 @@ export default function Cliente() {
               </div>
             </div>
           </div>
-          <Button
-            type="submit"
-            className="w-72 z-10 py-5 cursor-pointer text-[18px] font-bold mt-6"
-            disabled={isLoading}
-          >
-            {isLoading ? 'Cadastrando...' : 'Cadastrar'}
-          </Button>
         </form>
-<<<<<<< HEAD
-=======
         <div className="flex gap-6 justify-center items-center mt-6">
           <Button
             type="submit"
@@ -497,7 +439,6 @@ export default function Cliente() {
             </Button>
           </Link>
         </div>
->>>>>>> develop
       </div>
     </>
   );
