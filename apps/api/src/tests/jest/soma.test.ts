@@ -1,4 +1,4 @@
-import { soma } from '../utils/soma';
+import { soma } from '../../utils/soma';
 
 describe('Função soma', () => {
   it('deve somar 2 + 3 e retornar 5', () => {
