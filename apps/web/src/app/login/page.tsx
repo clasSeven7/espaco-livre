@@ -71,7 +71,7 @@ export default function Login() {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center h-screen relative bg-[#DDF0EF]">
+      <div className="flex flex-col items-center justify-center min-h-screen relative bg-[#DDF0EF] px-4">
         <Image
           src="/background.png"
           alt="Fundo"
@@ -79,25 +79,25 @@ export default function Login() {
           className="absolute top-0 left-0 z-0 opacity-10 object-cover"
         />
 
-        <div className="flex items-center justify-center gap-4 mb-10">
-          <Image
-            src="/icon-logo.png"
-            width={103.8}
-            height={98.49}
-            alt="Icon"
-            className="z-10 text-zinc-950"
-          />
-          <span className="text-8xl font-bold mb-6 z-10 text-zinc-950">
+        {/* Logo + Título */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10 max-w-full">
+          <div className="relative w-16 sm:w-20 md:w-28 lg:w-32 aspect-[103.8/98.49] z-10">
+            <Image
+              src="/icon-logo.png"
+              alt="Icon"
+              fill
+              className="object-contain"
+            />
+          </div>
+          <span className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold z-10 text-zinc-950 text-center sm:text-left break-words">
             Login
           </span>
         </div>
-        <form onSubmit={handleLogin} className="w-[30%] z-10">
+
+        {/* Formulário */}
+        <form onSubmit={handleLogin} className="w-full max-w-md z-10 px-4">
           <div className="mb-8 relative">
-            <User
-              width={25}
-              height={25}
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
-            />
+            <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50" />
             <Input
               name="nome_usuario"
               value={formData.nome_usuario}
@@ -108,11 +108,7 @@ export default function Login() {
             />
           </div>
           <div className="mb-8 relative">
-            <Lock
-              width={25}
-              height={25}
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
-            />
+            <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50" />
             <Input
               type="password"
               name="senha"
@@ -158,10 +154,14 @@ export default function Login() {
           </Button>
         </form>
 
-        <div className="mt-9 mb-6 z-10 flex items-center">
-          <div className="flex items-center cursor-pointer gap-96">
-            <span className="mr-2 font-bold">Salvar senha</span>
-            <div className="relative">
+        {/* Salvar senha */}
+        <div className="mt-9 mb-6 z-10 w-full max-w-md px-4">
+          <div className="flex justify-between items-center">
+            <span className="font-bold">Salvar senha</span>
+            <div
+              className="relative cursor-pointer"
+              onClick={() => setIsSaved(!isSaved)}
+            >
               <input
                 type="checkbox"
                 className="hidden"
@@ -172,7 +172,6 @@ export default function Login() {
                 className={`w-12 h-6 pl-1 py-1 rounded-full transition-colors duration-300 ${
                   isSaved ? 'bg-zinc-950' : 'bg-zinc-300'
                 }`}
-                onClick={() => setIsSaved(!isSaved)}
               >
                 <div
                   className={`w-4 h-4 bg-zinc-50 rounded-full shadow-md transform transition-transform duration-300 ${
@@ -184,10 +183,13 @@ export default function Login() {
           </div>
         </div>
 
-        <div className="z-10 w-[500px] flex flex-col justify-center items-center mt-4 gap-10 border-t-[1.5px] border-zinc-950 py-4">
-          <span className="mt-4 font-bold">Não tem conta? Crie agora!</span>
+        {/* Rodapé com alerta */}
+        <div className="z-10 w-full max-w-md px-4 mt-4 border-t-[1.5px] border-zinc-950 py-6 flex flex-col justify-center items-center gap-6">
+          <span className="font-bold text-center">
+            Não tem conta? Crie agora!
+          </span>
           <AlertDialog>
-            <AlertDialogTrigger className="w-72 z-10 text-zinc-950 text-base py-2 cursor-pointer font-bold bg-transparent border-2 border-zinc-950 transition-colors duration-300 hover:text-zinc-50 hover:bg-zinc-950 rounded-md">
+            <AlertDialogTrigger className="w-full max-w-[300px] z-10 text-zinc-950 text-base py-2 cursor-pointer font-bold bg-transparent border-2 border-zinc-950 transition-colors duration-300 hover:text-zinc-50 hover:bg-zinc-950 rounded-md">
               Criar Agora
             </AlertDialogTrigger>
             <AlertDialogContent>
@@ -217,7 +219,7 @@ export default function Login() {
               <AlertDialogFooter className="flex flex-col gap-2">
                 <Link href="/cadastro/locatario" className="w-full">
                   <AlertDialogAction className="w-full cursor-pointer">
-                    locatario
+                    Locatário
                   </AlertDialogAction>
                 </Link>
                 <Link href="/cadastro/cliente" className="w-full">
