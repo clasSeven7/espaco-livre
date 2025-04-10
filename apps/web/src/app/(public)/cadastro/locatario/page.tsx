@@ -307,6 +307,11 @@ export default function Locatario() {
           </div>
         </form>
         <div className="flex gap-6 justify-center items-center mt-6">
+          <Link href="/" className="z-0">
+            <Button className="w-44 bg-red-400 hover:bg-red-400 cursor-pointer py-5 text-[18px] font-bold">
+              Voltar
+            </Button>
+          </Link>
           <Button
             type="submit"
             form="cadastro-form"
@@ -341,11 +346,6 @@ export default function Locatario() {
               'Cadastrar'
             )}
           </Button>
-          <Link href="/" className="z-0">
-            <Button className="w-44 bg-red-400 hover:bg-red-400 cursor-pointer py-5 text-[18px] font-bold">
-              Voltar
-            </Button>
-          </Link>
         </div>
       </div>
     </>
