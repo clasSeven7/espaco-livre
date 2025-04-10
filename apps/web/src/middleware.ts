@@ -1,23 +1,50 @@
-import type { NextRequest } from 'next/server';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse, type MiddlewareConfig } from 'next/server';
+
+const publicRoutes = [
+  { path: '/login', whenAuthenticated: 'redirect' },
+  { path: '/cadastro', whenAuthenticated: 'redirect' },
+] as const;
+
+const REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE = '/login';
 
 export function middleware(request: NextRequest) {
-  const token = request.cookies.get('token');
-  const isLoginPage = request.nextUrl.pathname === '/login';
+  const path = request.nextUrl.pathname;
+  const publicRoute = publicRoutes.find((route) => route.path === path);
+  const authToken = request.cookies.get('token');
 
-  // Se não estiver autenticado e não estiver na página de login, redireciona para login
-  if (!token && !isLoginPage) {
-    return NextResponse.redirect(new URL('/login', request.url));
+  if (!authToken && publicRoute) {
+    return NextResponse.next();
   }
 
-  // Se estiver autenticado e tentar acessar a página de login, redireciona para home
-  if (token && isLoginPage) {
-    return NextResponse.redirect(new URL('/', request.url));
+  if (!authToken && !publicRoute) {
+    const redirectUrl = request.nextUrl.clone();
+
+    redirectUrl.pathname = REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE;
+
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  if (
+    authToken &&
+    publicRoute &&
+    publicRoute.whenAuthenticated === 'redirect'
+  ) {
+    const redirectUrl = request.nextUrl.clone();
+
+    redirectUrl.pathname = '/';
+
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  if (!authToken && !publicRoute) {
+    return NextResponse.next();
   }
 
   return NextResponse.next();
 }
 
-export const config = {
-  matcher: ['/', '/login'],
+export const config: MiddlewareConfig = {
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
+  ],
 };
