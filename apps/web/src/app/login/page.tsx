@@ -81,7 +81,7 @@ export default function Login() {
 
         {/* Logo + Título */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10 max-w-full">
-          <div className="relative w-16 sm:w-20 md:w-28 lg:w-32 aspect-[103.8/98.49] z-10">
+          <div className="relative w-16 sm:w-20 md:w-24 lg:w-28 aspect-[103.8/98.49] z-10">
             <Image
               src="/icon-logo.png"
               alt="Icon"
@@ -95,7 +95,7 @@ export default function Login() {
         </div>
 
         {/* Formulário */}
-        <form onSubmit={handleLogin} className="w-full max-w-md z-10 px-4">
+        <form onSubmit={handleLogin} className="w-full max-w-[600px] z-10 px-4">
           <div className="mb-8 relative">
             <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50" />
             <Input
@@ -155,7 +155,7 @@ export default function Login() {
         </form>
 
         {/* Salvar senha */}
-        <div className="mt-9 mb-6 z-10 w-full max-w-md px-4">
+        <div className="mt-14 mb-6 z-10 w-full max-w-[600px] px-4">
           <div className="flex justify-between items-center">
             <span className="font-bold">Salvar senha</span>
             <div
