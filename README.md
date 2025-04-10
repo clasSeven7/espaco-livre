@@ -1,7 +1,7 @@
-<div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+<!-- <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
     <img src=".github/icon-logo.png" width="5%"/>
     <h1 style="font-size: 2rem;">Espaço Livre</h1>
-</div>
+</div> -->
 
 <div align="center">
   <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/clasSeven7/espaco-livre.svg" />
