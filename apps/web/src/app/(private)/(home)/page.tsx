@@ -74,7 +74,7 @@ export default function Home() {
             <CircleUserRound size={35} />
             <Button
               onClick={handleLogout}
-              className="text-white font-semibold bg-red-400 cursor-pointer hover:text-white hover:bg-[#2E7AB8]"
+              className="text-white font-semibold bg-red-800 cursor-pointer hover:text-white hover:bg-red-900"
             >
               <LogOut />
               Sair
