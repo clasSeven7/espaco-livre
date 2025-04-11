@@ -2,9 +2,8 @@
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Progress } from '@/components/ui/progress';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, List, Megaphone, UploadCloud, Wrench } from 'lucide-react';
+import { List, Megaphone, UploadCloud, Wrench } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 
@@ -31,36 +30,13 @@ export default function InformacoesIniciais() {
   };
 
   const avancar = () => {
-    setProgressPercentage((prev) => Math.min(prev + 20, 100));
+    setProgressPercentage((prev) => Math.min(prev + 25, 100));
   };
 
   return (
     <div className="flex bg-[#F3FBF9] text-black relative overflow-hidden min-h-screen">
-      {/* Sidebar */}
-      <div className="w-[80px] flex flex-col items-center py-4 shrink-0">
-        <Link href="/">
-          <Button
-            variant="outline"
-            size="icon"
-            className="border-[#2C7DA0] bg-transparent cursor-pointer"
-          >
-            <ArrowLeft className="text-[#2C7DA0]" />
-          </Button>
-        </Link>
-        <div className="flex-1 flex flex-col justify-center mt-4">
-          <Progress
-            value={progressPercentage}
-            className="w-2 h-3/4 bg-white [&>div]:bg-[#2C7DA0] rotate-180"
-            style={{ writingMode: 'vertical-rl' }}
-          />
-        </div>
-      </div>
-
-      {/* Main Content */}
       <div className="flex-1 flex flex-col p-4 lg:p-6 justify-between overflow-y-auto">
-        {/* Header */}
         <div className="flex items-center space-x-4">
-          <div className="w-6 h-6 bg-[#2C7DA0] rounded-full" />
           <h1 className="text-2xl font-bold">Informações Iniciais</h1>
         </div>
 
@@ -146,7 +122,7 @@ export default function InformacoesIniciais() {
             className="bg-[#2176AE] hover:bg-[#1b5d8e] px-8 text-white text-lg font-bold rounded-md cursor-pointer"
             onClick={avancar}
           >
-            <Link href="#">Avançar</Link>
+            <Link href="/espaco/cadastro/2">Avançar</Link>
           </Button>
         </div>
       </div>

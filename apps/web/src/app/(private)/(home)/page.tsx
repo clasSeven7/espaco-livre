@@ -122,7 +122,7 @@ export default function Home() {
                   variant="default"
                   className="bg-[#2E7AB8] hover:bg-blue-600 px-11 py-6 text-lg rounded-sm cursor-pointer"
                 >
-                  <Link href="/espaco/cadastrar">Cadastre seu Espaço</Link>
+                  <Link href="/espaco/cadastro/1">Cadastre seu Espaço</Link>
                 </Button>
               </div>
             </div>
