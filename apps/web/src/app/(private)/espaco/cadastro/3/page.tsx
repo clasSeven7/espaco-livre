@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 import { Clock } from 'lucide-react';
+import Link from 'next/link';
 import { useState } from 'react';
 
 export default function HorarioFuncionamento() {
@@ -37,12 +38,13 @@ export default function HorarioFuncionamento() {
   return (
     <div className="flex bg-[#F3FBF9] text-black relative overflow-hidden min-h-screen">
       <div className="flex-1 flex flex-col p-4 lg:p-6 justify-between overflow-y-auto">
-        <div className="flex items-center space-x-4">
-          <h1 className="text-2xl font-bold">Horário de Funcionamento</h1>
+        <div className="flex items-center space-x-4 mb-6">
+          <h1 className="text-2xl font-bold bg-[#6ea7ca] px-8 py-4">
+            Horário de Funcionamento
+          </h1>
         </div>
 
         <div className="flex flex-1 gap-8">
-          {/* Coluna Esquerda */}
           <div className="flex-1">
             <h2 className="font-bold text-[#0061A3] text-lg mb-2">
               Horário Disponível
@@ -111,7 +113,6 @@ export default function HorarioFuncionamento() {
             )}
           </div>
 
-          {/* Coluna Direita */}
           <div className="flex-1">
             <h2 className="font-bold text-[#0061A3] text-lg mb-2">
               Dias Disponíveis
@@ -156,8 +157,11 @@ export default function HorarioFuncionamento() {
         </div>
 
         <div className="mt-8 flex justify-center">
-          <Button className="bg-[#1681B0] text-white w-48 rounded-md text-base font-semibold">
-            Avançar
+          <Button className="bg-red-800 hover:bg-red-900 text-white text-lg font-bold px-10 py-6 rounded-md cursor-pointer">
+            <Link href="/espaco/cadastro/2">Voltar</Link>
+          </Button>
+          <Button className="bg-[#127BBF] hover:bg-[#0f65a0] text-white text-lg font-bold px-22 py-6 rounded-md cursor-pointer">
+            <Link href="/espaco/cadastro/4">Avançar</Link>
           </Button>
         </div>
       </div>

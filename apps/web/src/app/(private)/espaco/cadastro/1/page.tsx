@@ -8,12 +8,11 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 export default function InformacoesIniciais() {
-  const [progressPercentage, setProgressPercentage] = useState(5);
   const [messagemTitulo, setMessagemTitulo] = useState('');
   const [messagemDescricao, setMessagemDescricao] = useState('');
 
-  const maxMessagemTitulo = 30;
-  const maxMessagemDescricao = 300;
+  const maxMessagemTitulo = 100;
+  const maxMessagemDescricao = 500;
 
   const handleTituloChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -29,15 +28,13 @@ export default function InformacoesIniciais() {
     }
   };
 
-  const avancar = () => {
-    setProgressPercentage((prev) => Math.min(prev + 25, 100));
-  };
-
   return (
     <div className="flex bg-[#F3FBF9] text-black relative overflow-hidden min-h-screen">
       <div className="flex-1 flex flex-col p-4 lg:p-6 justify-between overflow-y-auto">
-        <div className="flex items-center space-x-4">
-          <h1 className="text-2xl font-bold">Informações Iniciais</h1>
+        <div className="flex items-center space-x-4 mb-6">
+          <h1 className="text-2xl font-bold bg-[#6ea7ca] px-8 py-4">
+            Informações Iniciais
+          </h1>
         </div>
 
         {/* Form & Upload */}
@@ -68,14 +65,13 @@ export default function InformacoesIniciais() {
                 Descrição do Espaço
               </label>
               <div className="relative">
-                <List className="absolute left-3 top-8 text-white/80" />
+                <List className="absolute left-3 top-6 text-white/80" />
                 <Textarea
                   id="descricao"
                   placeholder="Escreva uma breve descrição do Espaço"
-                  className="bg-[#1178B9] text-white placeholder:text-white/50 pl-10 py-8 h-96 rounded-lg border-0 focus:ring-2 focus:ring-blue-500"
                   value={messagemDescricao}
                   onChange={handleDescricaoChange}
-                  rows={8}
+                  className="bg-[#127BBF] text-white placeholder:text-white/80 pl-10 px-10 py-6 h-96 rounded-lg border-none resize-none overflow-y-auto break-all"
                 />
               </div>
               <div className="text-sm text-[#2176AE] mt-1 text-right">
@@ -118,10 +114,7 @@ export default function InformacoesIniciais() {
 
         {/* Footer */}
         <div className="flex justify-end mt-4">
-          <Button
-            className="bg-[#2176AE] hover:bg-[#1b5d8e] px-8 text-white text-lg font-bold rounded-md cursor-pointer"
-            onClick={avancar}
-          >
+          <Button className="bg-[#127BBF] hover:bg-[#0f65a0] text-white text-lg font-bold px-22 py-6 rounded-md cursor-pointer">
             <Link href="/espaco/cadastro/2">Avançar</Link>
           </Button>
         </div>
