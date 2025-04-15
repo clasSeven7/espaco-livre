@@ -1,5 +1,6 @@
 'use client';
 
+import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import {
   ResizableHandle,
@@ -8,11 +9,9 @@ import {
 } from '@/components/ui/resizable';
 import Cookies from 'js-cookie';
 import {
-  CircleUserRound,
   Facebook,
   Github,
   Instagram,
-  LogOut,
   MessageCircle,
   Star,
   Twitter,
@@ -21,67 +20,73 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+
+const testimonials = [
+  {
+    name: 'Rafael Lima',
+    role: 'Gerente de Marketing',
+    image: '/icon_1.png',
+    content:
+      'Utilizamos a plataforma para organizar uma série de workshops para o nosso núcleo. A escolha do espaço e a facilidade de contato com os responsáveis pelo local foi excelente. O processo foi muito simples e certamente vamos usar novamente.',
+  },
+  {
+    name: 'Felipe Martins',
+    role: 'Diretor de Vendas',
+    image: '/icon_2.png',
+    content:
+      'Encontramos uma maneira de vendas com clientes importantes e escolhemos um espaço através da plataforma. A experiência foi excepcional e tudo era perfeito, desde a localização até os equipamentos disponíveis para apresentar. Definitivamente, uma solução que facilita nossa rotina.',
+  },
+  {
+    name: 'Laura Santos',
+    role: 'Coordenadora de Projetos',
+    image: '/icon_3.png',
+    content:
+      'Nossa equipe precisou de um espaço bem equipado para um workshop de treinamento e encontramos tudo que precisávamos na plataforma. A interface fácil de usar e a comunicação rápida com os proprietários foram um ponto muito positivo no processo muito mais eficiente.',
+  },
+];
 
 export default function Home() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const router = useRouter();
+  const token = Cookies.get('token') || null;
 
   useEffect(() => {
-    const token = Cookies.get('token');
-    if (!token) {
-      router.push('/login');
+    const storedTheme = localStorage.getItem('theme');
+    if (storedTheme === 'dark') {
+      setIsDarkMode(true);
+      document.documentElement.classList.add('dark');
+    } else {
+      setIsDarkMode(false);
+      document.documentElement.classList.remove('dark');
     }
-  }, [router]);
+  }, []);
 
-  const testimonials = [
-    {
-      name: 'Rafael Lima',
-      role: 'Gerente de Marketing',
-      image: '/icon_1.png',
-      content:
-        'Utilizamos a plataforma para organizar uma série de workshops para o nosso núcleo. A escolha do espaço e a facilidade de contato com os responsáveis pelo local foi excelente. O processo foi muito simples e certamente vamos usar novamente.',
-    },
-    {
-      name: 'Felipe Martins',
-      role: 'Diretor de Vendas',
-      image: '/icon_2.png',
-      content:
-        'Encontramos uma maneira de vendas com clientes importantes e escolhemos um espaço através da plataforma. A experiência foi excepcional e tudo era perfeito, desde a localização até os equipamentos disponíveis para apresentar. Definitivamente, uma solução que facilita nossa rotina.',
-    },
-    {
-      name: 'Laura Santos',
-      role: 'Coordenadora de Projetos',
-      image: '/icon_3.png',
-      content:
-        'Nossa equipe precisou de um espaço bem equipado para um workshop de treinamento e encontramos tudo que precisávamos na plataforma. A interface fácil de usar e a comunicação rápida com os proprietários foram um ponto muito positivo no processo muito mais eficiente.',
-    },
-  ];
+  const toggleTheme = () => {
+    const newTheme = !isDarkMode;
+    setIsDarkMode(newTheme);
+    localStorage.setItem('theme', newTheme ? 'dark' : 'light');
+    document.documentElement.classList.toggle('dark');
+  };
 
   const handleLogout = () => {
     Cookies.remove('token');
     localStorage.clear();
-    router.push('/login');
+    router.push('/');
   };
 
   return (
-    <main className="min-h-screen bg-[#DDF0EF]">
-      <header className="bg-[#f2f7f6] shadow-sm">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <Link href="/">
-            <Image src="/icon-logo.png" alt="Logo" width={50} height={50} />
-          </Link>
-          <div className="flex items-center gap-4">
-            <CircleUserRound size={35} />
-            <Button
-              onClick={handleLogout}
-              className="text-white font-semibold bg-red-800 cursor-pointer hover:text-white hover:bg-red-900"
-            >
-              <LogOut />
-              Sair
-            </Button>
-          </div>
-        </div>
-      </header>
+    <main
+      className={`min-h-screen transition-colors duration-300 ${
+        isDarkMode ? 'bg-zinc-900 text-white' : 'bg-[#DDF0EF] text-black'
+      }`}
+    >
+      <Header
+        isDarkMode={isDarkMode}
+        toggleTheme={toggleTheme}
+        handleLogout={handleLogout}
+        token={token}
+      />
 
       {/* Hero Section */}
       <section className="relative min-h-[700px] w-full">
@@ -89,17 +94,21 @@ export default function Home() {
           <Image
             src="/background_home.png"
             alt="Background"
-            fill
-            className="object-cover opacity-10"
+            width={1920}
+            height={1080}
+            className="object-cover opacity-10 w-full h-full"
             priority
-            sizes="100vw"
           />
         </div>
         <div className="container mx-auto px-4 py-16 relative z-10">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div className="space-y-6">
-              <h1 className="text-4xl font-bold text-[#1E3A8A] leading-tight">
-                <span className="text-[#2E7AB8] drop-shadow-sm">
+              <h1 className="text-4xl font-bold leading-tight">
+                <span
+                  className={`drop-shadow-sm ${
+                    isDarkMode ? 'text-white' : 'text-[#2E7AB8]'
+                  }`}
+                >
                   Do seu jeito, no seu tempo.
                   <br />
                   Alugue espaços perfeitos
@@ -107,7 +116,11 @@ export default function Home() {
                   para qualquer ocasião.
                 </span>
               </h1>
-              <p className="text-gray-600 text-lg mb-60">
+              <p
+                className={`text-lg mb-60 ${
+                  isDarkMode ? 'text-gray-300' : 'text-gray-600'
+                }`}
+              >
                 Escolha o espaço certo para cada momento. Use os filtros e
                 encontre a melhor opção!
               </p>
@@ -120,7 +133,11 @@ export default function Home() {
                 </Button>
                 <Button
                   variant="default"
-                  className="bg-[#2E7AB8] hover:bg-blue-600 px-11 py-6 text-lg rounded-sm cursor-pointer"
+                  className={`px-11 py-6 text-lg rounded-sm cursor-pointer ${
+                    isDarkMode
+                      ? 'bg-white hover:bg-gray-300'
+                      : 'bg-[#2E7AB8] hover:bg-blue-600'
+                  }`}
                 >
                   <Link href="/espaco/cadastro/1">Cadastre seu Espaço</Link>
                 </Button>
@@ -167,13 +184,22 @@ export default function Home() {
       {/* Testimonials Section */}
       <section className="container mx-auto px-4 py-16">
         <h2 className="text-2xl font-bold text-center mb-8">Comentários</h2>
-        <p className="text-center text-gray-600 mb-12">
+        <p
+          className={`text-center mb-12 ${
+            isDarkMode ? 'text-gray-300' : 'text-gray-600'
+          }`}
+        >
           Opiniões dos clientes que usaram a plataforma.
         </p>
 
         <div className="grid md:grid-cols-3 gap-8">
           {testimonials.map((testimonial, index) => (
-            <div key={index} className="bg-white p-6 rounded-lg shadow-lg">
+            <div
+              key={index}
+              className={`p-6 rounded-lg shadow-lg ${
+                isDarkMode ? 'bg-[#212a30]' : 'bg-white'
+              }`}
+            >
               <div className="flex items-center gap-4 mb-4">
                 <Image
                   src={testimonial.image}
@@ -183,8 +209,20 @@ export default function Home() {
                   className="rounded-full"
                 />
                 <div>
-                  <h3 className="font-semibold">{testimonial.name}</h3>
-                  <p className="text-sm text-gray-600">{testimonial.role}</p>
+                  <h3
+                    className={`font-semibold ${
+                      isDarkMode ? 'text-white' : 'text-black'
+                    }`}
+                  >
+                    {testimonial.name}
+                  </h3>
+                  <p
+                    className={`text-sm ${
+                      isDarkMode ? 'text-gray-500' : 'text-gray-600'
+                    }`}
+                  >
+                    {testimonial.role}
+                  </p>
                 </div>
               </div>
               <div className="flex mb-4">
@@ -195,7 +233,13 @@ export default function Home() {
                   />
                 ))}
               </div>
-              <p className="text-gray-600 text-sm">{testimonial.content}</p>
+              <p
+                className={`text-sm ${
+                  isDarkMode ? 'text-gray-400' : 'text-gray-600'
+                }`}
+              >
+                {testimonial.content}
+              </p>
             </div>
           ))}
         </div>
@@ -251,7 +295,11 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-[#2E7AB8] text-white py-8">
+      <footer
+        className={` text-white py-8 ${
+          isDarkMode ? 'bg-[#212a30]' : 'bg-[#2E7AB8]'
+        }`}
+      >
         <div className="container mx-auto px-4">
           <div className="flex flex-col items-center gap-8">
             <div className="flex justify-center space-x-8">

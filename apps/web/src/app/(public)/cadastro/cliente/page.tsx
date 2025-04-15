@@ -1,5 +1,6 @@
 'use client';
 
+import ThemeToggleButton from '@/components/ThemeToggleButton';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { api } from '@/lib/axios';
@@ -8,7 +9,7 @@ import { Calendar, Lock, Mail, MapPin, Phone, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { IMaskInput } from 'react-imask';
 
@@ -28,6 +29,7 @@ interface FormData {
 export default function Cliente() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     email: '',
     senha: '',
@@ -40,6 +42,18 @@ export default function Cliente() {
     tipo_ocupacao: '',
     frequencia_uso: '',
   });
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      setIsDarkMode(true);
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+    localStorage.setItem('theme', isDarkMode ? 'light' : 'dark');
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target as unknown as { name: string; value: string };
@@ -97,7 +111,13 @@ export default function Cliente() {
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center h-screen relative bg-[#DDF0EF]">
+      <div
+        className={`flex flex-col items-center justify-center h-screen relative ${
+          isDarkMode
+            ? 'dark bg-zinc-900 text-white'
+            : 'bg-[#DDF0EF] text-zinc-950'
+        }`}
+      >
         <Image
           src="/background.png"
           alt="Fundo"
@@ -106,13 +126,17 @@ export default function Cliente() {
         />
         <div className="flex items-center justify-center gap-4 mb-10">
           <Image
-            src="/icon-logo.png"
+            src={isDarkMode ? '/icone_branco.png' : '/icone_preto.png'}
             width={103.8}
             height={98.49}
             alt="Icon"
             className="z-10 text-zinc-950"
           />
-          <span className="text-8xl font-bold mb-6 z-10 text-zinc-950">
+          <span
+            className={`text-8xl font-bold mb-6 z-10  ${
+              isDarkMode ? 'text-white' : 'text-zinc-950'
+            }`}
+          >
             Cadastro
           </span>
         </div>
@@ -135,7 +159,11 @@ export default function Cliente() {
                 placeholder="Digite seu email"
                 type="email"
                 required
-                className="w-full bg-[#1178B9] text-zinc-50 py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500  placeholder:text-white/50"
+                className={`w-full py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 ${
+                  isDarkMode
+                    ? 'bg-[#333333] text-zinc-50 focus:ring-zinc-500 placeholder:text-white/50'
+                    : 'bg-[#1178B9] text-zinc-50 focus:ring-blue-500 placeholder:text-white/50 '
+                }`}
               />
             </div>
             <div className="mb-4 relative">
@@ -151,7 +179,11 @@ export default function Cliente() {
                 onChange={handleInputChange}
                 placeholder="Digite sua senha"
                 required
-                className="w-full bg-[#1178B9] text-zinc-50 py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-white/50"
+                className={`w-full py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 ${
+                  isDarkMode
+                    ? 'bg-[#333333] text-zinc-50 focus:ring-zinc-500 placeholder:text-white/50'
+                    : 'bg-[#1178B9] text-zinc-50 focus:ring-blue-500 placeholder:text-white/50'
+                }`}
               />
             </div>
             <div className="mb-4 relative">
@@ -166,7 +198,11 @@ export default function Cliente() {
                 onChange={handleInputChange}
                 placeholder="Digite seu usuário"
                 required
-                className="w-full bg-[#1178B9] text-zinc-50 py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-white/50"
+                className={`w-full py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 ${
+                  isDarkMode
+                    ? 'bg-[#333333] text-zinc-50 focus:ring-zinc-500 placeholder:text-white/50'
+                    : 'bg-[#1178B9] text-zinc-50 focus:ring-blue-500 placeholder:text-white/50'
+                }`}
               />
             </div>
             <div className="mb-4 relative">
@@ -182,7 +218,11 @@ export default function Cliente() {
                 onChange={handleInputChange}
                 placeholder="Digite seu telefone"
                 required
-                className="w-full bg-[#1178B9] text-zinc-50 py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-white/50"
+                className={`w-full py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 ${
+                  isDarkMode
+                    ? 'bg-[#333333] text-zinc-50 focus:ring-zinc-500 placeholder:text-white/50'
+                    : 'bg-[#1178B9] text-zinc-50 focus:ring-blue-500 placeholder:text-white/50'
+                }`}
               />
             </div>
             <div className="mb-4 relative">
@@ -198,7 +238,11 @@ export default function Cliente() {
                 placeholder="Digite sua idade"
                 type="number"
                 required
-                className="w-full bg-[#1178B9] text-zinc-50 py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-white/50"
+                className={`w-full py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 ${
+                  isDarkMode
+                    ? 'bg-[#333333] text-zinc-50 focus:ring-zinc-500 placeholder:text-white/50'
+                    : 'bg-[#1178B9] text-zinc-50 focus:ring-blue-500 placeholder:text-white/50'
+                }`}
               />
             </div>
             <div className="mb-4 relative">
@@ -213,7 +257,11 @@ export default function Cliente() {
                 onChange={handleInputChange}
                 placeholder="Digite seu endereço"
                 required
-                className="w-full bg-[#1178B9] text-zinc-50 py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-white/50"
+                className={`w-full py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 ${
+                  isDarkMode
+                    ? 'bg-[#333333] text-zinc-50 focus:ring-zinc-500 placeholder:text-white/50'
+                    : 'bg-[#1178B9] text-zinc-50 focus:ring-blue-500 placeholder:text-white/50'
+                }`}
               />
             </div>
           </div>
@@ -230,7 +278,11 @@ export default function Cliente() {
                 onChange={handleInputChange}
                 placeholder="Digite sua cidade"
                 required
-                className="w-full bg-[#1178B9] text-zinc-50 py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-white/50"
+                className={`w-full py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 ${
+                  isDarkMode
+                    ? 'bg-[#333333] text-zinc-50 focus:ring-zinc-500 placeholder:text-white/50'
+                    : 'bg-[#1178B9] text-zinc-50 focus:ring-blue-500 placeholder:text-white/50'
+                }`}
               />
             </div>
             <div className="mb-4 relative">
@@ -246,7 +298,11 @@ export default function Cliente() {
                 onChange={handleInputChange}
                 placeholder="Digite o CEP"
                 required
-                className="w-full bg-[#1178B9] text-zinc-50 py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-white/50"
+                className={`w-full py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 ${
+                  isDarkMode
+                    ? 'bg-[#333333] text-zinc-50 focus:ring-zinc-500 placeholder:text-white/50'
+                    : 'bg-[#1178B9] text-zinc-50 focus:ring-blue-500 placeholder:text-white/50'
+                }`}
               />
             </div>
             <div className="flex gap-3">
@@ -400,14 +456,24 @@ export default function Cliente() {
         </form>
         <div className="flex gap-6 justify-center items-center mt-6">
           <Link href="/" className="z-0">
-            <Button className="w-44 bg-red-800 hover:bg-red-900 cursor-pointer py-5 text-[18px] font-bold">
+            <Button
+              className={`w-44 cursor-pointer py-5 text-[18px] font-bold ${
+                isDarkMode
+                  ? 'bg-red-800 hover:bg-red-900 text-white'
+                  : 'bg-red-800 hover:bg-red-900 text-white'
+              }`}
+            >
               Voltar
             </Button>
           </Link>
           <Button
             type="submit"
             form="cadastro-form"
-            className="w-72 z-10 py-5 cursor-pointer text-[18px] font-bold text-white hover:bg-zinc-800 bg-black !opacity-100"
+            className={`w-72 z-10 py-5 cursor-pointer text-[18px] font-bold !opacity-100 ${
+              isDarkMode
+                ? 'bg-white text-black hover:bg-zinc-200'
+                : 'bg-black text-white hover:bg-zinc-900'
+            }`}
             disabled={isLoading}
           >
             {isLoading ? (
@@ -439,6 +505,9 @@ export default function Cliente() {
             )}
           </Button>
         </div>
+      </div>
+      <div className="absolute top-4 right-4">
+        <ThemeToggleButton isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
       </div>
     </>
   );

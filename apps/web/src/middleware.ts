@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse, type MiddlewareConfig } from 'next/server';
 
 const publicRoutes = [
+  { path: '/', whenAuthenticated: 'next' },
   { path: '/login', whenAuthenticated: 'redirect' },
   { path: '/cadastro/cliente', whenAuthenticated: 'redirect' },
   { path: '/cadastro/locatario', whenAuthenticated: 'redirect' },
@@ -13,34 +14,26 @@ export function middleware(request: NextRequest) {
   const publicRoute = publicRoutes.find((route) => route.path === path);
   const authToken = request.cookies.get('token');
 
+  // 🔓 Rota pública, sem token → segue
   if (!authToken && publicRoute) {
     return NextResponse.next();
   }
 
+  // 🔐 Rota privada, sem token → redireciona pro login
   if (!authToken && !publicRoute) {
     const redirectUrl = request.nextUrl.clone();
-
     redirectUrl.pathname = REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE;
-
     return NextResponse.redirect(redirectUrl);
   }
 
-  if (
-    authToken &&
-    publicRoute &&
-    publicRoute.whenAuthenticated === 'redirect'
-  ) {
+  // ✅ Tem token e está acessando rota pública que deve redirecionar → vai pra home
+  if (authToken && publicRoute?.whenAuthenticated === 'redirect') {
     const redirectUrl = request.nextUrl.clone();
-
     redirectUrl.pathname = '/';
-
     return NextResponse.redirect(redirectUrl);
   }
 
-  if (!authToken && !publicRoute) {
-    return NextResponse.next();
-  }
-
+  // ✅ Qualquer outro caso → segue normalmente
   return NextResponse.next();
 }
 
