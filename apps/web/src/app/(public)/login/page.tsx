@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input';
 import { api } from '@/lib/axios';
 import { AxiosError } from 'axios';
 import Cookies from 'js-cookie';
-import { Lock, User } from 'lucide-react';
+import { Eye, EyeOff, Lock, User } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -38,6 +38,7 @@ export default function Login() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
@@ -128,25 +129,40 @@ export default function Login() {
             value={formData.nome_usuario}
             onChange={handleInputChange}
             placeholder="Digite aqui seu login!"
-            className={`${
-              isDarkMode ? 'bg-[#333333]' : 'bg-[#1178B9]'
-            } text-zinc-50 py-6 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/50`}
+            className={`py-6 rounded-lg border-0 pl-10 pr-10 text-white placeholder:text-white/40 focus:outline-none
+            transition-colors duration-300 ${
+              isDarkMode
+                ? 'bg-[#333333] focus:ring-2 focus:ring-white/40'
+                : 'bg-[#1178B9] focus:ring-2 focus:ring-[#0C5C8C]'
+            }`}
             required
           />
         </div>
         <div className="mb-8 relative">
           <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50" />
           <Input
-            type="password"
+            type={showPassword ? 'text' : 'password'}
             name="senha"
             value={formData.senha}
             onChange={handleInputChange}
             placeholder="Digite aqui a sua senha!"
-            className={`${
-              isDarkMode ? 'bg-[#333333]' : 'bg-[#1178B9]'
-            } text-zinc-50 py-6 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 pl-10 pr-10 placeholder:text-white/50`}
+            className={`py-6 rounded-lg border-0 pl-10 pr-10 w-full text-white placeholder:text-white/40 focus:outline-none
+            transition-colors duration-300 ${
+              isDarkMode
+                ? 'bg-[#333333] focus:ring-2 focus:ring-white/40'
+                : 'bg-[#1178B9] focus:ring-2 focus:ring-[#0C5C8C]'
+            }`}
             required
           />
+
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white hover:text-white/70 cursor-pointer"
+            aria-label={showPassword ? 'Esconder senha' : 'Mostrar senha'}
+          >
+            {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+          </button>
         </div>
         <Button
           type="submit"
