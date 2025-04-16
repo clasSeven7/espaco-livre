@@ -1,159 +1,257 @@
 'use client';
 
+import ThemeToggleButton from '@/components/ThemeToggleButton';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { ArrowLeft, List, Megaphone, UploadCloud, Wrench } from 'lucide-react';
-import Link from 'next/link';
-import { useState } from 'react';
+import {
+  CalendarClock,
+  ClipboardList,
+  DollarSign,
+  HelpCircle,
+  Home,
+  Link,
+  MapPin,
+  Wallet,
+} from 'lucide-react';
+import { useEffect, useState } from 'react';
 
-export default function InformacoesIniciais() {
-  const [progressPercentage, setProgressPercentage] = useState(5);
-  const [messagemTitulo, setMessagemTitulo] = useState('');
-  const [messagemDescricao, setMessagemDescricao] = useState('');
+export default function UltimosDetalhes() {
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
-  const maxMessagemTitulo = 30;
-  const maxMessagemDescricao = 300;
-
-  const handleTituloChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (value.length <= maxMessagemTitulo) {
-      setMessagemTitulo(value);
+  useEffect(() => {
+    const storedTheme = localStorage.getItem('theme');
+    if (storedTheme === 'dark') {
+      setIsDarkMode(true);
+      document.documentElement.classList.add('dark');
+    } else {
+      setIsDarkMode(false);
+      document.documentElement.classList.remove('dark');
     }
-  };
+  }, []);
 
-  const handleDescricaoChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value;
-    if (value.length <= maxMessagemDescricao) {
-      setMessagemDescricao(value);
-    }
-  };
-
-  const avancar = () => {
-    setProgressPercentage((prev) => Math.min(prev + 25, 100));
+  const toggleTheme = () => {
+    const newTheme = !isDarkMode;
+    setIsDarkMode(newTheme);
+    localStorage.setItem('theme', newTheme ? 'dark' : 'light');
+    document.documentElement.classList.toggle('dark');
   };
 
   return (
-    <div className="flex bg-[#F3FBF9] text-black relative overflow-hidden min-h-screen">
-      {/* Sidebar */}
-      <div className="w-[80px] flex flex-col items-center py-4 shrink-0">
-        <Link href="/">
-          <Button
-            variant="outline"
-            size="icon"
-            className="border-[#2C7DA0] bg-transparent cursor-pointer"
-          >
-            <ArrowLeft className="text-[#2C7DA0]" />
-          </Button>
-        </Link>
-        <div className="flex-1 flex flex-col justify-center mt-4">
-          <div className="w-2 h-3/4 bg-gray-200 shadow-2xl relative overflow-hidden rounded-full">
-            <div
-              className="absolute top-0 left-0 w-full bg-[#2C7DA0] transition-all duration-300"
-              style={{ height: `${progressPercentage}%` }}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Main Content */}
+    <div
+      className={`flex relative overflow-hidden min-h-screen ${
+        isDarkMode ? 'bg-zinc-900 text-white' : 'bg-[#DDF0EF] text-black'
+      }`}
+    >
       <div className="flex-1 flex flex-col p-4 lg:p-6 justify-between overflow-y-auto">
-        {/* Header */}
-        <div className="flex items-center space-x-4">
-          <div className="w-6 h-6 bg-[#2C7DA0] rounded-full" />
-          <h1 className="text-2xl font-bold">Informações Iniciais</h1>
-        </div>
-
-        {/* Form & Upload */}
-        <div className="flex flex-col lg:flex-row flex-1 gap-6 mt-4">
-          {/* Form */}
-          <div className="flex flex-col flex-1 space-y-4">
-            <div className="relative">
-              <label htmlFor="titulo" className="sr-only">
-                Título do Espaço
-              </label>
-              <div className="relative">
-                <Megaphone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80" />
-                <Input
-                  id="titulo"
-                  placeholder="Digite o título do Espaço"
-                  className="bg-[#1178B9] text-white placeholder:text-white/50 pl-10 py-8 rounded-lg border-0 focus:ring-2 focus:ring-blue-500"
-                  value={messagemTitulo}
-                  onChange={handleTituloChange}
-                />
-              </div>
-              <div className="text-sm text-[#2176AE] mt-1 text-right">
-                {messagemTitulo.length}/{maxMessagemTitulo}
-              </div>
-            </div>
-
-            <div className="relative">
-              <label htmlFor="descricao" className="sr-only">
-                Descrição do Espaço
-              </label>
-              <div className="relative">
-                <List className="absolute left-3 top-8 text-white/80" />
-                <Textarea
-                  id="descricao"
-                  placeholder="Escreva uma breve descrição do Espaço"
-                  className="bg-[#1178B9] text-white placeholder:text-white/50 pl-10 py-8 h-96 rounded-lg border-0 focus:ring-2 focus:ring-blue-500"
-                  value={messagemDescricao}
-                  onChange={handleDescricaoChange}
-                  rows={8}
-                />
-              </div>
-              <div className="text-sm text-[#2176AE] mt-1 text-right">
-                {messagemDescricao.length}/{maxMessagemDescricao}
-              </div>
-            </div>
-
-            <div className="relative">
-              <label htmlFor="equipamentos" className="sr-only">
-                Equipamentos
-              </label>
-              <div className="relative">
-                <Wrench className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80" />
-                <Input
-                  id="equipamentos"
-                  placeholder="Informe os equipamentos disponíveis"
-                  className="bg-[#1178B9] text-white placeholder:text-white/50 pl-10 py-8 rounded-lg border-0 focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-            </div>
-          </div>
-
-          {/* Upload Section */}
-          <div className="flex flex-col w-full lg:w-1/3 space-y-4">
-            <div className="w-full h-96 bg-[#2176AE] flex flex-col justify-center items-center rounded-md text-white text-center px-4 py-6">
-              <UploadCloud size={32} />
-              <span className="mt-2 font-medium">Adicione Fotos do local</span>
-            </div>
-
-            <div className="flex flex-col gap-4">
-              <Button className="bg-red-500 hover:bg-red-600 w-full">
-                Remover Fotos
-              </Button>
-              <Button className="bg-green-500 hover:bg-green-600 w-full">
-                Salvar
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="flex justify-end mt-4">
-          <Button
-            className="bg-[#2176AE] hover:bg-[#1b5d8e] px-8 text-white text-lg font-bold rounded-md cursor-pointer"
-            onClick={avancar}
+        {/* Cabeçalho */}
+        <div className="flex items-center space-x-4 mb-6">
+          <h1
+            className={`flex items-center text-2xl font-bold px-8 py-4 rounded-xl shadow ${
+              isDarkMode ? 'bg-zinc-800' : 'bg-[#6ea7ca]'
+            }`}
           >
-            <Link href="#">Avançar</Link>
+            <ClipboardList className="mr-2" /> Últimos Detalhes
+          </h1>
+        </div>
+
+        {/* Campos principais */}
+        <div className="flex flex-col lg:flex-row flex-1 gap-6 mt-4">
+          <div className="flex flex-col flex-1 space-y-6">
+            {/* Localização */}
+            <div>
+              <h2
+                className={`text-xl font-bold flex items-center gap-2 ${
+                  isDarkMode ? 'text-white' : 'text-blue-800 '
+                }`}
+              >
+                <MapPin className="w-5 h-5" /> Localização:
+              </h2>
+              <ul
+                className={`pl-6 list-disc text-base font-medium mt-2 ${
+                  isDarkMode ? 'text-zinc-500' : 'text-zinc-800'
+                }`}
+              >
+                <li>João Pessoa - PB</li>
+                <li>Rua Maria Caetana de Oliveira, 215</li>
+                <li>Bairro Tambauzinho</li>
+              </ul>
+            </div>
+
+            {/* Horário de Funcionamento */}
+            <div className="w-full">
+              <h2
+                className={`text-xl font-bold flex items-center gap-2 ${
+                  isDarkMode ? 'text-white' : 'text-blue-800'
+                }`}
+              >
+                <CalendarClock className="w-5 h-5" /> Horário de Funcionamento:
+              </h2>
+              <p
+                className={`text-base font-semibold mt-2 ${
+                  isDarkMode ? 'text-zinc-500' : 'text-black'
+                }`}
+              >
+                Segunda & Sexta
+              </p>
+
+              <div className="relative mt-4">
+                {/* Horários principais */}
+                <div
+                  className={`flex justify-between text-sm font-semibold ${
+                    isDarkMode ? 'dark:text-white' : 'text-blue-700'
+                  }`}
+                >
+                  <span>07:00</span>
+                  <span>19:00</span>
+                </div>
+
+                {/* Linha principal com marcadores */}
+                <div
+                  className={`relative mt-2 h-2  rounded-full ${
+                    isDarkMode ? 'dark:bg-zinc-600' : 'bg-blue-300'
+                  }`}
+                >
+                  <div
+                    className={`absolute left-[29.1%] right-[20.5%] top-0 h-2 rounded-full ${
+                      isDarkMode ? 'dark:bg-black' : 'bg-blue-700'
+                    }`}
+                  />
+                  <div
+                    className={`absolute top-1/2 -translate-y-1/2 left-[29.1%] w-3 h-3 border rounded-full ${
+                      isDarkMode
+                        ? 'bg-white border-black'
+                        : 'bg-white border-black'
+                    }`}
+                  />
+                  <div
+                    className={`absolute top-1/2 -translate-y-1/2 right-[20.5%] w-3 h-3  border rounded-full ${
+                      isDarkMode
+                        ? 'bg-white border-black'
+                        : 'bg-white border-black'
+                    }`}
+                  />
+                </div>
+
+                {/* Horários extremos */}
+                <div
+                  className={`flex justify-between text-xs font-semibold mt-2 ${
+                    isDarkMode ? 'dark:text-zinc-500' : 'text-black '
+                  }`}
+                >
+                  <span>00:00</span>
+                  <span>24:00</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Pagamento */}
+            <div>
+              <h2
+                className={`text-xl font-bold flex items-center gap-2 ${
+                  isDarkMode ? 'text-white' : 'text-blue-800'
+                }`}
+              >
+                <Wallet className="w-5 h-5" /> Valor e Preferência de Pagamento
+              </h2>
+              <p className="text-base font-medium flex items-center gap-2 mt-2">
+                <DollarSign className="w-4 h-4 text-green-600" />
+                Valor desejado:{' '}
+                <span
+                  className={`font-bold ${
+                    isDarkMode ? 'text-white' : 'text-black '
+                  }`}
+                >
+                  1000 R$
+                </span>
+              </p>
+              <h3
+                className={`text-lg font-semibold mt-4 ${
+                  isDarkMode ? 'text-white' : 'text-blue-800'
+                }`}
+              >
+                Métodos de Pagamento
+              </h3>
+              <Button
+                variant="secondary"
+                className={`mt-2 py-4 px-4 cursor-pointer ${
+                  isDarkMode
+                    ? 'dark:bg-zinc-800 dark:hover:bg-zinc-700'
+                    : 'bg-blue-500 text-white hover:bg-blue-600'
+                }`}
+              >
+                Selecionar métodos
+              </Button>
+            </div>
+          </div>
+
+          {/* Coluna da direita */}
+          <div className="flex flex-col w-full lg:w-1/3 space-y-6">
+            <div>
+              <h2
+                className={`text-xl font-bold flex items-center gap-2 ${
+                  isDarkMode ? 'text-white' : 'text-blue-800'
+                }`}
+              >
+                <Home className="w-5 h-5" /> Título do Anúncio
+              </h2>
+              <p
+                className={`text-lg font-light mt-2 ${
+                  isDarkMode ? 'text-zinc-500' : 'text-black'
+                }`}
+              >
+                Espaço Versátil para Eventos e Reuniões
+              </p>
+            </div>
+
+            <div>
+              <h2
+                className={`text-xl font-bold flex items-center gap-2 ${
+                  isDarkMode ? 'text-white' : 'text-blue-800'
+                }`}
+              >
+                <ClipboardList className="w-5 h-5" /> Recursos Disponíveis:
+              </h2>
+              <ul
+                className={`pl-6 list-disc text-base font-medium mt-2 ${
+                  isDarkMode ? 'text-zinc-500' : 'text-black'
+                }`}
+              >
+                <li>Ambiente climatizado</li>
+                <li>Wi-Fi de alta velocidade</li>
+                <li>Estacionamento gratuito</li>
+                <li>Mobília completa</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Botão de Publicar */}
+        <div className="flex justify-end">
+          <Button
+            className={`font-semibold px-22 py-6 text-lg cursor-pointer ${
+              isDarkMode
+                ? 'bg-green-800 hover:bg-green-900 text-white'
+                : 'bg-green-700 hover:bg-green-800 text-white'
+            }`}
+          >
+            Publicar Anúncio
           </Button>
         </div>
       </div>
 
-      {/* Header Right Options */}
-      <div className="absolute top-6 right-4 lg:right-8 flex space-x-8 text-lg font-bold underline">
-        <span className="cursor-pointer">Ajuda</span>
+      <div className="absolute top-6 right-4 lg:right-8 flex space-x-4 text-lg font-bold underline">
+        <Button
+          size="icon"
+          className={`px-[10px] py-2 ${
+            isDarkMode
+              ? 'bg-[#d3d61f] text-white hover:bg-[#bdc070] hover:text-black cursor-pointer'
+              : 'bg-[#d3d61f] text-white hover:bg-[#bdc070] hover:text-white cursor-pointer'
+          }`}
+        >
+          <Link href="/ajuda" className="flex items-center gap-1">
+            <HelpCircle size={18} />
+          </Link>
+        </Button>
+        <ThemeToggleButton isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
       </div>
     </div>
   );
