@@ -90,13 +90,13 @@ export default function Home() {
 
       {/* Hero Section */}
       <section className="relative min-h-[700px] w-full">
-        <div className="absolute inset-0 w-full h-full">
+        <div>
           <Image
             src="/background_home.png"
             alt="Background"
             width={1920}
             height={1080}
-            className="object-cover opacity-10 w-full h-full"
+            className="absolute opacity-10 w-full h-full"
             priority
           />
         </div>
@@ -143,35 +143,35 @@ export default function Home() {
                 </Button>
               </div>
             </div>
-            <div className="h-[500px] rounded-lg">
+            <div className="h-full">
               <ResizablePanelGroup
                 direction="horizontal"
                 className="w-full lg:w-1/2 h-64 mt-6 lg:mt-0"
               >
                 <ResizablePanel
                   defaultSize={50}
-                  className="flex justify-center items-center rounded-lg"
+                  className="flex justify-center items-center rounded-lg overflow-hidden"
                 >
                   <div className="relative w-full h-full">
                     <Image
-                      src="/home_image_1.jpg"
+                      src="/home_image_1.png"
                       alt="Imagem 1"
                       fill
-                      style={{ objectFit: 'contain' }}
+                      className="object-cover rounded-md"
                     />
                   </div>
                 </ResizablePanel>
                 <ResizableHandle />
                 <ResizablePanel
                   defaultSize={50}
-                  className="flex justify-center items-center"
+                  className="flex justify-center items-center overflow-hidden"
                 >
                   <div className="relative w-full h-full">
                     <Image
-                      src="/home_image_2.jpg"
+                      src="/home_image_2.png"
                       alt="Imagem 2"
                       fill
-                      style={{ objectFit: 'contain' }}
+                      className="object-cover rounded-md"
                     />
                   </div>
                 </ResizablePanel>
