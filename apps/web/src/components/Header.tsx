@@ -61,7 +61,7 @@ const Header: FC<HeaderProps> = ({
         </div>
       </header>
       <nav
-        className={`flex justify-center items-center  py-1 shadow-sm ${
+        className={`flex justify-center items-center py-[10px] shadow-sm ${
           isDarkMode ? 'bg-[#161c20]' : 'bg-[#DDF0EF]'
         }`}
       >
