@@ -50,7 +50,7 @@
 
 - **Shadcn/ui:** Conjunto de componentes modernos e acessíveis para construção de interfaces com React.
 
-- **Axios\*:** Cliente HTTP usado para comunicação entre frontend e backend, inclusive com suporte a streaming.
+- **Axios:** Cliente HTTP usado para comunicação entre frontend e backend, inclusive com suporte a streaming.
 
 - **Lucida.js** Biblioteca JavaScript para criação de gráficos interativos e ícones
 
