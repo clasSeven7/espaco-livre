@@ -262,7 +262,7 @@ export default function HorarioFuncionamento() {
                 : 'bg-[#11395e] hover:bg-[#1a222b] text-white '
             }`}
           >
-            <Link href="/espaco/cadastro/2">Avançar</Link>
+            <Link href="/espaco/cadastro/4">Avançar</Link>
           </Button>
         </div>
       </div>
