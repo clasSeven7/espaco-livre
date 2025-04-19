@@ -14,7 +14,7 @@ When(
 );
 
 Then(
-  'ele deve ver a mensagem {string}',
+  'ele deve ver a mensagem de login {string}',
   async function (mensagemEsperada: string) {
     let mensagemReal = '';
 
