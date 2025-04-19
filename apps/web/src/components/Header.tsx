@@ -1,5 +1,12 @@
 import { Button } from '@/components/ui/button';
-import { Contact, LogOut, User, UsersRound } from 'lucide-react';
+import {
+  Award,
+  House,
+  LogOut,
+  MessageSquare,
+  User,
+  UsersRound,
+} from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FC } from 'react';
@@ -68,8 +75,19 @@ const Header: FC<HeaderProps> = ({
         <ul className="flex items-center gap-4">
           <li>
             <Link
+              href="/"
+              className={`text-base font-semibold flex justify-center items-center gap-1 ${
+                isDarkMode ? 'text-white' : 'text-black'
+              }`}
+            >
+              <House className="w-5 h-5" />
+              Início
+            </Link>
+          </li>
+          <li>
+            <Link
               href="/sobre"
-              className={`text-lg font-semibold flex justify-center items-center gap-1 ${
+              className={`text-base font-semibold flex justify-center items-center gap-1 ${
                 isDarkMode ? 'text-white' : 'text-black'
               }`}
             >
@@ -79,13 +97,24 @@ const Header: FC<HeaderProps> = ({
           </li>
           <li>
             <Link
-              href="/contato"
-              className={`text-lg font-semibold flex justify-center items-center gap-1 ${
+              href="/blog"
+              className={`text-base font-semibold flex justify-center items-center gap-1 ${
                 isDarkMode ? 'text-white' : 'text-black'
               }`}
             >
-              <Contact className="w-5 h-5" />
-              Contato
+              <MessageSquare className="w-5 h-5" />
+              Blog
+            </Link>
+          </li>
+          <li>
+            <Link
+              href="/ranking"
+              className={`text-base font-semibold flex justify-center items-center gap-1 ${
+                isDarkMode ? 'text-white' : 'text-black'
+              }`}
+            >
+              <Award className="w-5 h-5" />
+              Ranking
             </Link>
           </li>
         </ul>
