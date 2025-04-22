@@ -45,7 +45,7 @@ DROP TABLE IF EXISTS locatarios CASCADE;
 CREATE TABLE locatarios (
   id SERIAL PRIMARY KEY,
   nome_usuario VARCHAR(100) NOT NULL,
-  senha_hash TEXT NOT NULL,
+  senha TEXT NOT NULL,
   email VARCHAR(255) UNIQUE NOT NULL,
   telefone VARCHAR(20),
   idade INT CHECK (idade >= 16),
