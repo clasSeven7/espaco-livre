@@ -44,7 +44,7 @@ const HeaderNav: FC<HeaderNavProps> = ({
         <div className="relative z-10">
           <div className="container mx-auto px-4 py-1 flex justify-center xl:justify-between lg:justify-between sm:justify-center md:justify-center items-center">
             <div>
-              <div className="flex justify-center space-x-5 hidden md:flex">
+              <div className="hidden md:flex justify-center space-x-5">
                 <Link
                   href="https://facebook.com"
                   target="_blank"
