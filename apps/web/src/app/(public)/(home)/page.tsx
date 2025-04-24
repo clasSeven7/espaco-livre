@@ -1,6 +1,6 @@
 'use client';
 
-import Header from '@/components/Header';
+import HeaderNav from '@/components/HeaderNav';
 import { Button } from '@/components/ui/button';
 import {
   ResizableHandle,
@@ -81,7 +81,7 @@ export default function Home() {
         isDarkMode ? 'bg-zinc-900 text-white' : 'bg-[#DDF0EF] text-black'
       }`}
     >
-      <Header
+      <HeaderNav
         isDarkMode={isDarkMode}
         toggleTheme={toggleTheme}
         handleLogout={handleLogout}
