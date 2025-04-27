@@ -19,12 +19,13 @@ $$ LANGUAGE plpgsql;
 DROP TABLE IF EXISTS clientes CASCADE;
 CREATE TABLE clientes (
   id SERIAL PRIMARY KEY,
+  foto_de_perfil TEXT,
   nome_usuario VARCHAR(100) NOT NULL,
   senha TEXT NOT NULL,
   email VARCHAR(255) UNIQUE NOT NULL,
   telefone VARCHAR(20),
-  idade INT CHECK (idade >= 16),
-  endereco TEXT,
+  data_de_nascimento DATE,
+  endereco_residencial TEXT,
   cidade VARCHAR(100),
   cep CHAR(8) CHECK (cep ~ '^\d{8}$'),
   tipo_ocupacao VARCHAR(50),
@@ -44,11 +45,12 @@ EXECUTE FUNCTION atualiza_timestamp();
 DROP TABLE IF EXISTS locatarios CASCADE;
 CREATE TABLE locatarios (
   id SERIAL PRIMARY KEY,
+  foto_de_perfil TEXT,
   nome_usuario VARCHAR(100) NOT NULL,
   senha TEXT NOT NULL,
   email VARCHAR(255) UNIQUE NOT NULL,
   telefone VARCHAR(20),
-  idade INT CHECK (idade >= 16),
+  data_de_nascimento VARCHAR(10) CHECK (data_de_nascimento ~ '^\d{2}/\d{2}/\d{4}$'),
   endereco TEXT,
   cidade VARCHAR(100),
   cpf CHAR(11) UNIQUE NOT NULL CHECK (cpf ~ '^\d{11}$'),
@@ -127,3 +129,45 @@ CREATE TABLE espaco_recursos (
   recurso_id INT NOT NULL REFERENCES recursos(id) ON DELETE RESTRICT,
   PRIMARY KEY (espaco_id, recurso_id)
 );
+
+-- =======================
+-- PERFIL DO CLIENTE
+-- =======================
+DROP TABLE IF EXISTS perfil_cliente CASCADE;
+CREATE TABLE perfil_cliente (
+  id SERIAL PRIMARY KEY,
+  cliente_id INT UNIQUE NOT NULL REFERENCES clientes(id) ON DELETE CASCADE,
+  frequencia_uso VARCHAR(50),    
+  intensidade_uso VARCHAR(100),     
+  tipo_espaco_preferido VARCHAR(100),    
+  tempo_medio_por_sessao INTERVAL,      
+  ultima_alocacao DATE,                   
+  criado_em TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+  atualizado_em TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TRIGGER trg_perfil_cliente_update
+BEFORE UPDATE ON perfil_cliente
+FOR EACH ROW
+EXECUTE FUNCTION atualiza_timestamp();
+
+-- =======================
+-- PERFIL DO LOCATÁRIO
+-- =======================
+DROP TABLE IF EXISTS perfil_locatario CASCADE;
+CREATE TABLE perfil_locatario (
+  id SERIAL PRIMARY KEY,
+  locatario_id INT UNIQUE NOT NULL REFERENCES locatarios(id) ON DELETE CASCADE,
+  frequencia_uso VARCHAR(50),
+  intensidade_uso VARCHAR(100),
+  tipo_espaco_preferido VARCHAR(100),
+  tempo_medio_por_sessao INTERVAL,
+  ultima_locacao DATE,
+  criado_em TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+  atualizado_em TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TRIGGER trg_perfil_locatario_update
+BEFORE UPDATE ON perfil_locatario
+FOR EACH ROW
+EXECUTE FUNCTION atualiza_timestamp();
