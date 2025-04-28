@@ -24,7 +24,7 @@ CREATE TABLE clientes (
   senha TEXT NOT NULL,
   email VARCHAR(255) UNIQUE NOT NULL,
   telefone VARCHAR(20),
-  data_de_nascimento DATE,
+  data_de_nascimento VARCHAR(10) CHECK (data_de_nascimento ~ '^\d{2}/\d{2}/\d{4}$'),
   endereco_residencial TEXT,
   cidade VARCHAR(100),
   cep CHAR(8) CHECK (cep ~ '^\d{8}$'),
