@@ -1,12 +1,3 @@
-import { Button } from '@/components/ui/button';
-import {
-  Award,
-  House,
-  LogOut,
-  MessageSquare,
-  User,
-  UsersRound,
-} from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FC } from 'react';
@@ -15,51 +6,40 @@ import ThemeToggleButton from './ThemeToggleButton';
 interface HeaderProps {
   isDarkMode: boolean;
   toggleTheme: () => void;
-  token: string | null;
-  handleLogout: () => void;
 }
 
-const Header: FC<HeaderProps> = ({
-  isDarkMode,
-  toggleTheme,
-  token,
-  handleLogout,
-}) => {
+const Header: FC<HeaderProps> = ({ isDarkMode, toggleTheme }) => {
   return (
     <>
       <header
-        className={`flex items-center justify-between px-6 py-4 shadow-sm transition-colors duration-300 ${
+        className={`flex items-center justify-between px-3 shadow-2xl transition-colors duration-300 ${
           isDarkMode ? 'bg-[#212a30]' : 'bg-[#f2f7f6]'
         }`}
       >
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <Link href="/">
-            <Image
-              src={isDarkMode ? '/icone_branco.png' : '/icone_preto.png'}
-              alt="Logo"
-              width={50}
-              height={50}
-              priority
-            />
-          </Link>
+        <div className="container mx-auto px-4 py-3 flex justify-between items-center">
+          <div></div>
+          <div>
+            <Link href="/" className="flex items-center gap-2">
+              <Image
+                src={isDarkMode ? '/icone_branco.png' : '/icone_preto_azul.png'}
+                alt="Logo"
+                width={50}
+                height={50}
+                priority
+              />
+              <span
+                className={`text-5xl font-bold  ${
+                  isDarkMode
+                    ? 'bg-gradient-to-r from-white to-[#1178B9] bg-clip-text text-transparent'
+                    : 'bg-gradient-to-r from-[#1178B9] to-[#0F2027] bg-clip-text text-transparent'
+                }`}
+              >
+                Cadastro
+              </span>
+            </Link>
+          </div>
 
           <div className="flex items-center gap-4">
-            {!token && (
-              <Link
-                href="/login"
-                className="flex items-center bg-[#2E7AB8] text-white font-semibold px-[10px] py-2 rounded-md hover:bg-blue-600"
-              >
-                <UsersRound size={20} />
-              </Link>
-            )}
-            {token && (
-              <Button
-                onClick={handleLogout}
-                className="text-white font-semibold bg-red-800 cursor-pointer px-[10px] py-2 hover:text-white hover:bg-red-900"
-              >
-                <LogOut className="h-5 w-5" />
-              </Button>
-            )}
             <ThemeToggleButton
               isDarkMode={isDarkMode}
               toggleTheme={toggleTheme}
@@ -67,58 +47,6 @@ const Header: FC<HeaderProps> = ({
           </div>
         </div>
       </header>
-      <nav
-        className={`flex justify-center items-center py-[10px] shadow-sm ${
-          isDarkMode ? 'bg-[#161c20]' : 'bg-[#DDF0EF]'
-        }`}
-      >
-        <ul className="flex items-center gap-4">
-          <li>
-            <Link
-              href="/"
-              className={`text-base font-semibold flex justify-center items-center gap-1 ${
-                isDarkMode ? 'text-white' : 'text-black'
-              }`}
-            >
-              <House className="w-5 h-5" />
-              Início
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/sobre"
-              className={`text-base font-semibold flex justify-center items-center gap-1 ${
-                isDarkMode ? 'text-white' : 'text-black'
-              }`}
-            >
-              <User className="w-5 h-5" />
-              Sobre
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/blog"
-              className={`text-base font-semibold flex justify-center items-center gap-1 ${
-                isDarkMode ? 'text-white' : 'text-black'
-              }`}
-            >
-              <MessageSquare className="w-5 h-5" />
-              Blog
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/ranking"
-              className={`text-base font-semibold flex justify-center items-center gap-1 ${
-                isDarkMode ? 'text-white' : 'text-black'
-              }`}
-            >
-              <Award className="w-5 h-5" />
-              Ranking
-            </Link>
-          </li>
-        </ul>
-      </nav>
     </>
   );
 };
