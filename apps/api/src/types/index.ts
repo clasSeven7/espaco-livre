@@ -3,7 +3,7 @@ export interface Locatario {
   senha: string;
   email: string;
   telefone?: string;
-  idade?: number;
+  data_de_nascimento?: number;
   endereco_residencial?: string;
   cidade?: string;
   cpf?: string;
@@ -15,7 +15,7 @@ export interface LocatarioData {
   senha: string;
   nome_usuario: string;
   telefone: string;
-  idade: number;
+  data_de_nascimento: number;
   endereco_residencial: string;
   cidade: string;
   cpf: string;
@@ -33,7 +33,8 @@ export interface Cliente {
   senha: string;
   email: string;
   telefone?: string;
-  idade?: number;
+  foto_de_perfil?: string;
+  data_de_nascimento?: number;
   endereco_residencial?: string;
   cidade?: string;
   cep?: string;
@@ -45,8 +46,9 @@ export interface ClienteData {
   email: string;
   senha: string;
   nome_usuario: string;
+  foto_de_perfil?: string;
   telefone: string;
-  idade: number;
+  data_de_nascimento: number;
   endereco_residencial: string;
   cidade: string;
   cep: string;
