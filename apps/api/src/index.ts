@@ -16,6 +16,7 @@ const routeEmojis: Record<string, string> = {
   '/clientes': '🏢',
 };
 
+// Middleware
 app.use(cors(SERVER.cors));
 app.use(express.json());
 
@@ -24,11 +25,16 @@ app.use('/auth', authRouter);
 app.use('/locatarios', locatarioRouter);
 app.use('/clientes', clienteRouter);
 
+// Iniciando o servidor
 app.listen(SERVER.port, () => {
   console.log(`🚀 Servidor iniciado com sucesso!`);
   console.log(`📡 Rodando na porta ${SERVER.port}`);
   console.log(`🔒 CORS configurado`);
-  console.log(`💿 Documentação: http://localhost:3001/api/docs`);
+
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`💿 Documentação: http://localhost:${SERVER.port}/api/docs`);
+  }
+
   console.log(`📝 Endpoints disponíveis:`);
   Object.keys(routeEmojis).forEach((route) => {
     console.log(`   - ${routeEmojis[route]} ${route}`);
