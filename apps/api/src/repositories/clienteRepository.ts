@@ -1,61 +1,63 @@
 import DB from '@/database/index';
 import { Cliente, ClienteResponse } from '@/types/index';
 
+function truncarCampos(cliente: Cliente): Cliente {
+  return {
+    ...cliente,
+    nome_usuario: cliente.nome_usuario?.substring(0, 100),
+    email: cliente.email?.substring(0, 255),
+    telefone: cliente.telefone?.substring(0, 20),
+    cidade: cliente.cidade?.substring(0, 100),
+    cep: cliente.cep?.substring(0, 8),
+    tipo_ocupacao: cliente.tipo_ocupacao?.substring(0, 50),
+    frequencia_uso: cliente.frequencia_uso?.substring(0, 50),
+  };
+}
+
 export const clienteRepository = {
   async criar(cliente: Cliente): Promise<ClienteResponse> {
     try {
-      // Validações básicas
       if (!cliente.nome_usuario || !cliente.senha || !cliente.email) {
-        throw new Error(
-          '❌ Dados obrigatórios não fornecidos. Por favor, preencha todos os campos necessários.'
-        );
+        throw { status: 400, message: '❌ Dados obrigatórios não fornecidos.' };
       }
 
-      // Trunca strings muito longas
-      const dadosTruncados = {
-        ...cliente,
-        nome_usuario: cliente.nome_usuario.substring(0, 100),
-        email: cliente.email.substring(0, 255),
-        telefone: cliente.telefone?.substring(0, 20),
-        cidade: cliente.cidade?.substring(0, 100),
-        cep: cliente.cep?.substring(0, 8),
-        tipo_ocupacao: cliente.tipo_ocupacao?.substring(0, 50),
-        frequencia_uso: cliente.frequencia_uso?.substring(0, 50),
-      };
+      const dados = truncarCampos(cliente);
 
       const query = `
         INSERT INTO clientes (
-          nome_usuario, senha, email, telefone, idade, 
-          endereco_residencial, cidade, cep, 
+          foto_de_perfil, nome_usuario, senha, email, telefone, 
+          data_de_nascimento, endereco_residencial, cidade, cep, 
           tipo_ocupacao, frequencia_uso
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
         RETURNING *
       `;
 
       const values = [
-        dadosTruncados.nome_usuario,
-        dadosTruncados.senha,
-        dadosTruncados.email,
-        dadosTruncados.telefone,
-        dadosTruncados.idade,
-        dadosTruncados.endereco_residencial,
-        dadosTruncados.cidade,
-        dadosTruncados.cep,
-        dadosTruncados.tipo_ocupacao,
-        dadosTruncados.frequencia_uso,
+        dados.foto_de_perfil || null,
+        dados.nome_usuario,
+        dados.senha,
+        dados.email,
+        dados.telefone || null,
+        dados.data_de_nascimento || null,
+        dados.endereco_residencial || null,
+        dados.cidade || null,
+        dados.cep || null,
+        dados.tipo_ocupacao || null,
+        dados.frequencia_uso || null,
       ];
 
       const result = await DB.query(query, values);
 
-      if (!result.rows[0]) {
-        throw new Error(
-          '❌ Erro ao criar cliente no banco de dados. Por favor, tente novamente.'
-        );
+      if (!result.rows.length) {
+        throw {
+          status: 500,
+          message: '❌ Erro ao criar cliente no banco de dados.',
+        };
       }
 
       return result.rows[0];
     } catch (error) {
-      console.error('🔴 Erro no repositório ao criar cliente:', error);
+      console.error('🔴 Erro ao criar cliente:', error);
       throw error;
     }
   },
@@ -66,10 +68,7 @@ export const clienteRepository = {
       const result = await DB.query(query, [email]);
       return result.rows[0] || null;
     } catch (error) {
-      console.error(
-        '🔴 Erro no repositório ao buscar cliente por email:',
-        error
-      );
+      console.error('🔴 Erro ao buscar cliente por email:', error);
       throw error;
     }
   },
@@ -82,10 +81,7 @@ export const clienteRepository = {
       const result = await DB.query(query, [nome_usuario]);
       return result.rows[0] || null;
     } catch (error) {
-      console.error(
-        '🔴 Erro no repositório ao buscar cliente por nome de usuário:',
-        error
-      );
+      console.error('🔴 Erro ao buscar cliente por nome de usuário:', error);
       throw error;
     }
   },
@@ -96,7 +92,7 @@ export const clienteRepository = {
       const result = await DB.query(query, [id]);
       return result.rows[0] || null;
     } catch (error) {
-      console.error('🔴 Erro no repositório ao buscar cliente por id:', error);
+      console.error('🔴 Erro ao buscar cliente por ID:', error);
       throw error;
     }
   },
@@ -107,7 +103,7 @@ export const clienteRepository = {
       const result = await DB.query(query);
       return result.rows;
     } catch (error) {
-      console.error('🔴 Erro no repositório ao listar clientes:', error);
+      console.error('🔴 Erro ao listar clientes:', error);
       throw error;
     }
   },
@@ -117,11 +113,14 @@ export const clienteRepository = {
     data: Partial<Cliente>
   ): Promise<ClienteResponse> {
     try {
+      const dados = truncarCampos(data as Cliente);
+
       const camposAtualizaveis = [
         'nome_usuario',
+        'foto_de_perfil',
         'email',
         'telefone',
-        'idade',
+        'data_de_nascimento',
         'endereco_residencial',
         'cidade',
         'cep',
@@ -131,19 +130,17 @@ export const clienteRepository = {
       ];
 
       const camposParaAtualizar = camposAtualizaveis.filter(
-        (campo) => data[campo as keyof Cliente] !== undefined
+        (campo) => dados[campo as keyof Cliente] !== undefined
       );
 
-      if (camposParaAtualizar.length === 0) {
-        throw new Error(
-          '⚠️ Nenhum campo para atualizar. Forneça pelo menos um campo para atualização.'
-        );
+      if (!camposParaAtualizar.length) {
+        throw { status: 400, message: '⚠️ Nenhum campo para atualizar.' };
       }
 
       const query = `
         UPDATE clientes 
         SET ${camposParaAtualizar
-          .map((campo, index) => `${campo} = $${index + 2}`)
+          .map((campo, idx) => `${campo} = $${idx + 2}`)
           .join(', ')}
         WHERE id = $1
         RETURNING *
@@ -151,18 +148,18 @@ export const clienteRepository = {
 
       const values = [
         id,
-        ...camposParaAtualizar.map((campo) => data[campo as keyof Cliente]),
+        ...camposParaAtualizar.map((campo) => dados[campo as keyof Cliente]),
       ];
 
       const result = await DB.query(query, values);
 
-      if (!result.rows[0]) {
-        throw new Error('❌ Cliente não encontrado. Verifique o ID fornecido.');
+      if (!result.rows.length) {
+        throw { status: 404, message: '❌ Cliente não encontrado.' };
       }
 
       return result.rows[0];
     } catch (error) {
-      console.error('🔴 Erro no repositório ao atualizar cliente:', error);
+      console.error('🔴 Erro ao atualizar cliente:', error);
       throw error;
     }
   },
@@ -172,13 +169,14 @@ export const clienteRepository = {
       const query = 'DELETE FROM clientes WHERE id = $1';
       const result = await DB.query(query, [id]);
 
-      if (result.rowCount === 0) {
-        throw new Error(
-          '❌ Cliente não encontrado para exclusão. Verifique o ID fornecido.'
-        );
+      if (!result.rowCount) {
+        throw {
+          status: 404,
+          message: '❌ Cliente não encontrado para exclusão.',
+        };
       }
     } catch (error) {
-      console.error('🔴 Erro no repositório ao deletar cliente:', error);
+      console.error('🔴 Erro ao deletar cliente:', error);
       throw error;
     }
   },
