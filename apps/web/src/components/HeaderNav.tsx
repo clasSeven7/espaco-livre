@@ -1,12 +1,5 @@
 import { Button } from '@/components/ui/button';
-import {
-  Facebook,
-  Instagram,
-  LogOut,
-  Twitter,
-  UsersRound,
-  Youtube,
-} from 'lucide-react';
+import { LogOut, UsersRound } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { FC } from 'react';
@@ -42,45 +35,14 @@ const HeaderNav: FC<HeaderNavProps> = ({
           }`}
         />
         <div className="relative z-10">
-          <div className="container mx-auto px-4 py-1 flex justify-center xl:justify-between lg:justify-between sm:justify-center md:justify-center items-center">
-            <div>
-              <div className="hidden md:flex justify-center space-x-5">
-                <Link
-                  href="https://facebook.com"
-                  target="_blank"
-                  className="text-white"
-                >
-                  <Facebook size={20} />
-                </Link>
-                <Link
-                  href="https://twitter.com"
-                  target="_blank"
-                  className="text-white"
-                >
-                  <Twitter size={20} />
-                </Link>
-                <Link
-                  href="https://instagram.com"
-                  target="_blank"
-                  className="text-white"
-                >
-                  <Instagram size={20} />
-                </Link>
-                <Link
-                  href="https://youtube.com"
-                  target="_blank"
-                  className="text-white"
-                >
-                  <Youtube size={20} />
-                </Link>
-              </div>
-            </div>
+          <div className="mx-auto px-4 py-1 flex xl:justify-between lg:justify-between md:justify-between sm:justify-between justify-between items-center">
+            <div className="md:flex justify-center space-x-5"></div>
             <nav
               className={`flex justify-center items-center py-[10px] ${
                 isDarkMode ? '' : ''
               }`}
             >
-              <ul className="flex items-center gap-6 md:gap-10">
+              <ul className="flex items-center gap-12">
                 <li>
                   <Link
                     href="/"
@@ -140,7 +102,7 @@ const HeaderNav: FC<HeaderNavProps> = ({
               </ul>
             </nav>
 
-            <div className="hidden md:flex items-center gap-4 ">
+            <div className="flex items-center gap-4">
               {!token && (
                 <Link
                   href="/login"
