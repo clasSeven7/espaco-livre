@@ -2,11 +2,14 @@
 
 import HeaderNav from '@/components/HeaderNav';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from '@/components/ui/resizable';
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from '@/components/ui/carousel';
 import Cookies from 'js-cookie';
 import {
   Facebook,
@@ -44,6 +47,12 @@ const testimonials = [
     content:
       'Nossa equipe precisou de um espaço bem equipado para um workshop de treinamento e encontramos tudo que precisávamos na plataforma. A interface fácil de usar e a comunicação rápida com os proprietários foram um ponto muito positivo no processo muito mais eficiente.',
   },
+];
+
+const images = [
+  { src: '/home_image_1.png', alt: 'Imagem 1' },
+  { src: '/home_image_2.png', alt: 'Imagem 2' },
+  // Pode adicionar quantas quiser
 ];
 
 export default function Home() {
@@ -143,39 +152,34 @@ export default function Home() {
                 </Button>
               </div>
             </div>
-            <div className="h-full">
-              <ResizablePanelGroup
-                direction="horizontal"
-                className="w-full lg:w-1/2 h-64 mt-6 lg:mt-0"
+            <div className="h-full w-full flex justify-center items-center">
+              <Carousel
+                opts={{ align: 'start' }}
+                orientation="horizontal"
+                className="w-full h-full"
+                defaultValue={0}
               >
-                <ResizablePanel
-                  defaultSize={50}
-                  className="flex justify-center items-center rounded-lg overflow-hidden"
-                >
-                  <div className="relative w-full h-full">
-                    <Image
-                      src="/home_image_1.png"
-                      alt="Imagem 1"
-                      fill
-                      className="object-cover rounded-md"
-                    />
-                  </div>
-                </ResizablePanel>
-                <ResizableHandle />
-                <ResizablePanel
-                  defaultSize={50}
-                  className="flex justify-center items-center overflow-hidden"
-                >
-                  <div className="relative w-full h-full">
-                    <Image
-                      src="/home_image_2.png"
-                      alt="Imagem 2"
-                      fill
-                      className="object-cover rounded-md"
-                    />
-                  </div>
-                </ResizablePanel>
-              </ResizablePanelGroup>
+                <CarouselContent className="h-[500px]">
+                  {images.map((image, index) => (
+                    <CarouselItem key={index} className="h-full w-full">
+                      <div className="h-full w-full">
+                        <Card className="h-full w-full bg-transparent border-none">
+                          <CardContent className="relative h-full w-ful">
+                            <Image
+                              src={image.src}
+                              alt={image.alt}
+                              fill
+                              className="rounded-md object-cover"
+                            />
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </CarouselItem>
+                  ))}
+                </CarouselContent>
+                <CarouselPrevious className="cursor-pointer" />
+                <CarouselNext className="cursor-pointer" />
+              </Carousel>
             </div>
           </div>
         </div>
