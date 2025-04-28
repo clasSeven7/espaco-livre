@@ -36,11 +36,23 @@ export async function validateCliente(
     });
   }
 
-  // Validação de idade
-  if (!clienteData.idade || clienteData.idade < 18) {
+  // Validação de idade baseada na data de nascimento
+  if (!clienteData.data_de_nascimento) {
+    return response.status(400).json({
+      error: '⚠️ Data de nascimento é obrigatória',
+      field: 'data_de_nascimento',
+    });
+  }
+
+  const nascimento = new Date(clienteData.data_de_nascimento);
+  const idade = new Date().getFullYear() - nascimento.getFullYear();
+  const mes = new Date().getMonth() - nascimento.getMonth();
+
+  // Verifica se o cliente tem 18 anos ou mais
+  if (idade < 18 || (idade === 18 && mes < 0)) {
     return response.status(400).json({
       error: '⚠️ É necessário ter 18 anos ou mais para se cadastrar',
-      field: 'idade',
+      field: 'data_de_nascimento',
     });
   }
 
