@@ -1,5 +1,6 @@
 import { clienteController } from '@/controllers/clienteController';
 import { validateCliente } from '@/middlewares/validateCliente';
+import upload from '@/services/uploadService';
 import { Router } from 'express';
 
 const router = Router();
@@ -10,7 +11,6 @@ const router = Router();
  *   name: Clientes
  *   description: Rotas para gerenciar clientes
  */
-
 /**
  * @swagger
  * components:
@@ -84,7 +84,59 @@ const router = Router();
  *       400:
  *         description: Dados inválidos
  */
-router.post('/', validateCliente, clienteController.criar);
+// 📌 Criar novo cliente (com possibilidade de upload de foto)
+router.post(
+  '/',
+  upload.single('foto_de_perfil'),
+  validateCliente,
+  clienteController.criar
+);
+
+/**
+ * @swagger
+ * /clientes/upload:
+ *   post:
+ *     summary: Upload de foto de perfil
+ *     tags: [Clientes]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               foto_de_perfil:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Foto carregada com sucesso
+ */
+// 📌 Upload de foto separado (se precisar disso isoladamente)
+router.post(
+  '/upload',
+  upload.single('foto_de_perfil'),
+  clienteController.uploadFoto
+);
+
+/**
+ * @swagger
+ * /clientes:
+ *   get:
+ *     summary: Listar todos os clientes
+ *     tags: [Clientes]
+ *     responses:
+ *       200:
+ *         description: Lista de clientes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Cliente'
+ */
+// 📌 Listar todos clientes
+router.get('/', clienteController.listarTodos);
 
 /**
  * @swagger
@@ -109,25 +161,8 @@ router.post('/', validateCliente, clienteController.criar);
  *       404:
  *         description: Cliente não encontrado
  */
+// 📌 Buscar cliente por ID
 router.get('/:id', clienteController.buscarPorId);
-
-/**
- * @swagger
- * /clientes:
- *   get:
- *     summary: Listar todos os clientes
- *     tags: [Clientes]
- *     responses:
- *       200:
- *         description: Lista de clientes
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Cliente'
- */
-router.get('/', clienteController.listarTodos);
 
 /**
  * @swagger
@@ -160,7 +195,13 @@ router.get('/', clienteController.listarTodos);
  *       404:
  *         description: Cliente não encontrado
  */
-router.put('/:id', validateCliente, clienteController.atualizar);
+// 📌 Atualizar cliente
+router.put(
+  '/:id',
+  upload.single('foto_de_perfil'),
+  validateCliente,
+  clienteController.atualizar
+);
 
 /**
  * @swagger
@@ -181,6 +222,7 @@ router.put('/:id', validateCliente, clienteController.atualizar);
  *       404:
  *         description: Cliente não encontrado
  */
+// 📌 Deletar cliente
 router.delete('/:id', clienteController.deletar);
 
 export default router;
