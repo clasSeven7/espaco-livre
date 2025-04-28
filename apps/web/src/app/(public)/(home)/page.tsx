@@ -1,5 +1,6 @@
 'use client';
 
+import Footer from '@/components/Footer';
 import HeaderNav from '@/components/HeaderNav';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -11,15 +12,7 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import Cookies from 'js-cookie';
-import {
-  Facebook,
-  Github,
-  Instagram,
-  MessageCircle,
-  Star,
-  Twitter,
-  Youtube,
-} from 'lucide-react';
+import { Star } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -311,77 +304,7 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer
-        className={` text-white py-8 ${
-          isDarkMode ? 'bg-[#212a30]' : 'bg-[#2E7AB8]'
-        }`}
-      >
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col items-center gap-8">
-            <div className="flex justify-center space-x-8">
-              <Link href="/sobre" className="hover:underline">
-                Sobre
-              </Link>
-              <Link href="/acessibilidade" className="hover:underline">
-                Acessibilidade
-              </Link>
-              <Link href="/parceiros" className="hover:underline">
-                Parceiros
-              </Link>
-              <Link href="/suporte" className="hover:underline">
-                Suporte
-              </Link>
-            </div>
-            <div className="flex justify-center space-x-6">
-              <Link
-                href="https://facebook.com"
-                target="_blank"
-                className="hover:text-gray-200"
-              >
-                <Facebook size={24} />
-              </Link>
-              <Link
-                href="https://instagram.com"
-                target="_blank"
-                className="hover:text-gray-200"
-              >
-                <Instagram size={24} />
-              </Link>
-              <Link
-                href="https://twitter.com"
-                target="_blank"
-                className="hover:text-gray-200"
-              >
-                <Twitter size={24} />
-              </Link>
-              <Link
-                href="https://github.com"
-                target="_blank"
-                className="hover:text-gray-200"
-              >
-                <Github size={24} />
-              </Link>
-              <Link
-                href="https://youtube.com"
-                target="_blank"
-                className="hover:text-gray-200"
-              >
-                <Youtube size={24} />
-              </Link>
-              <Link
-                href="https://whatsapp.com"
-                target="_blank"
-                className="hover:text-gray-200"
-              >
-                <MessageCircle size={24} />
-              </Link>
-            </div>
-            <div className="text-center">
-              <p>© 2025 Espaço Livre. Todos os direitos reservados.</p>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <Footer isDarkMode={isDarkMode} />
     </main>
   );
 }
