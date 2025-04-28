@@ -1,11 +1,24 @@
 'use client';
 
-import ThemeToggleButton from '@/components/ThemeToggleButton';
+import Header from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { api } from '@/lib/axios';
+import { FormDataCLiente } from '@/types/index';
 import { AxiosError } from 'axios';
-import { Calendar, Lock, Mail, MapPin, Phone, User } from 'lucide-react';
+import {
+  ArrowRight,
+  Calendar,
+  Earth,
+  Eye,
+  EyeOff,
+  Mail,
+  MapPin,
+  Phone,
+  RectangleEllipsis,
+  Upload,
+  User,
+} from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -13,32 +26,25 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { IMaskInput } from 'react-imask';
 
-interface FormData {
-  email: string;
-  senha: string;
-  nome_usuario: string;
-  telefone: string;
-  idade: string;
-  endereco_residencial: string;
-  cidade: string;
-  cep: string;
-  tipo_ocupacao: string;
-  frequencia_uso: string;
-}
-
 export default function Cliente() {
   const router = useRouter();
+
   const [isLoading, setIsLoading] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [formData, setFormData] = useState<FormData>({
+  const [showPassword, setShowPassword] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const [formData, setFormData] = useState<FormDataCLiente>({
+    foto_de_perfil: null,
+    nome_usuario: '',
     email: '',
     senha: '',
-    nome_usuario: '',
-    telefone: '',
-    idade: '',
-    endereco_residencial: '',
+    data_de_nascimento: '',
     cidade: '',
+    endereco_residencial: '',
     cep: '',
+    telefone: '',
     tipo_ocupacao: '',
     frequencia_uso: '',
   });
@@ -64,6 +70,25 @@ export default function Cliente() {
     }));
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFormData((prev) => ({
+        ...prev,
+        foto_de_perfil: file,
+      }));
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        setFile(file);
+      };
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleCheckboxChange = (
     value: string,
     field: 'tipo_ocupacao' | 'frequencia_uso'
@@ -81,12 +106,21 @@ export default function Cliente() {
     try {
       const dadosFormatados = {
         ...formData,
-        idade: Number(formData.idade),
+        email: formData.email.toLowerCase(),
+        data_de_nascimento: formData.data_de_nascimento,
         cep: formData.cep.replace(/\D/g, ''),
         telefone: formData.telefone.replace(/\D/g, ''),
       };
 
-      await api.post('/clientes', dadosFormatados);
+      if (file) {
+        dadosFormatados.foto_de_perfil = file;
+      }
+
+      await api.post('/clientes', dadosFormatados, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
 
       toast.success('Cadastro realizado com sucesso!');
       router.push('/login');
@@ -111,341 +145,487 @@ export default function Cliente() {
 
   return (
     <>
+      <Header isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
       <div
-        className={`flex flex-col items-center justify-center h-screen relative ${
+        className={`items-center justify-center h-full w-full relative ${
           isDarkMode
-            ? 'dark bg-zinc-900 text-white'
-            : 'bg-[#DDF0EF] text-zinc-950'
+            ? 'bg-gradient-to-tl from-[#212a30] to-[#161c20]'
+            : 'bg-gradient-to-tl from-[#1178B9] to-[#0d6196]'
         }`}
       >
-        <Image
-          src="/background.png"
-          alt="Fundo"
-          fill
-          className="absolute top-0 left-0 z-0 opacity-10 object-cover"
+        <div
+          className={`absolute inset-0 z-0 opacity-5 bg-no-repeat bg-cover bg-center ${
+            isDarkMode
+              ? 'bg-[url("/bg_textura_login_escuro.png")]'
+              : 'bg-[url("/bg_textura_login_claro.png")]'
+          }`}
         />
-        <div className="flex items-center justify-center gap-4 mb-10">
-          <Image
-            src={isDarkMode ? '/icone_branco.png' : '/icone_preto.png'}
-            width={103.8}
-            height={98.49}
-            alt="Icon"
-            className="z-10 text-zinc-950"
-          />
-          <span
-            className={`text-8xl font-bold mb-6 z-10  ${
-              isDarkMode ? 'text-white' : 'text-zinc-950'
-            }`}
-          >
-            Cadastro
-          </span>
-        </div>
+
         <form
           id="cadastro-form"
           onSubmit={handleSubmit}
-          className="w-[50%] z-10 grid grid-cols-2 gap-4"
+          encType="multipart/form-data"
+          method="post"
         >
-          <div>
-            <div className="mb-4 relative">
-              <Mail
-                width={25}
-                height={25}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
-              />
-              <IMaskInput
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                placeholder="Digite seu email"
-                type="email"
-                required
-                className={`w-full py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 ${
-                  isDarkMode
-                    ? 'bg-[#333333] text-zinc-50 focus:ring-zinc-500 placeholder:text-white/50'
-                    : 'bg-[#1178B9] text-zinc-50 focus:ring-blue-500 placeholder:text-white/50 '
-                }`}
-              />
+          <div className="border-b-2 border-white mb-4 pt-4 pb-3 mx-8">
+            <h1 className="text-3xl text-white pl-12">Perfil</h1>
+          </div>
+          <div
+            id="pefil_inputs"
+            className="mx-8 my-8 border-b-2 border-white grid grid-cols-2 z-10"
+          >
+            <div id="lado_esquerdo" className="flex flex-col gap-2 mx-15">
+              <div id="nome_usuario">
+                <h1 className="text-lg font-semibold text-white mb-2">
+                  Usuário
+                </h1>
+                <div className="mb-4 relative">
+                  <User
+                    width={25}
+                    height={25}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white"
+                  />
+
+                  <IMaskInput
+                    name="nome_usuario"
+                    value={formData.nome_usuario}
+                    onChange={handleInputChange}
+                    placeholder="ex: exemplo"
+                    required
+                    className={`w-full py-3 px-10 rounded-lg focus:outline-none border-1 border-white ${
+                      isDarkMode
+                        ? 'bg-transparent text-zinc-50 placeholder:text-white/50'
+                        : 'bg-transparent text-zinc-50 placeholder:text-white/50'
+                    }`}
+                  />
+                </div>
+              </div>
+              <div id="email">
+                <h1 className="text-lg font-semibold text-white mb-2">Email</h1>
+                <div className="mb-4 relative">
+                  <Mail
+                    width={25}
+                    height={25}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
+                  />
+                  <IMaskInput
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="exemplo@gmail.com"
+                    type="email"
+                    required
+                    className={`w-full py-3 px-10 rounded-lg focus:outline-none border-1 border-white ${
+                      isDarkMode
+                        ? 'bg-transparent text-white placeholder:text-white/50'
+                        : 'bg-transparent text-white placeholder:text-white/50 '
+                    }`}
+                  />
+                </div>
+              </div>
+              <div id="senha">
+                <h1 className="text-lg font-semibold text-white mb-2">Senha</h1>
+                <div className="mb-4 relative">
+                  <RectangleEllipsis
+                    width={25}
+                    height={25}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white"
+                  />
+                  <IMaskInput
+                    name="senha"
+                    type={showPassword ? 'text' : 'password'}
+                    value={formData.senha}
+                    onChange={handleInputChange}
+                    placeholder="1234@$678"
+                    required
+                    className={`w-full py-3 px-10 rounded-lg focus:outline-none border-1 border-white ${
+                      isDarkMode
+                        ? 'bg-transparent text-white focus:ring-zinc-500 placeholder:text-white/50'
+                        : 'bg-transparent text-white focus:ring-blue-500 placeholder:text-white/50'
+                    }`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white cursor-pointer"
+                  >
+                    {showPassword ? <EyeOff size={24} /> : <Eye size={24} />}
+                  </button>
+                </div>
+              </div>
             </div>
-            <div className="mb-4 relative">
-              <Lock
-                width={25}
-                height={25}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
-              />
-              <IMaskInput
-                type="password"
-                name="senha"
-                value={formData.senha}
-                onChange={handleInputChange}
-                placeholder="Digite sua senha"
-                required
-                className={`w-full py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 ${
-                  isDarkMode
-                    ? 'bg-[#333333] text-zinc-50 focus:ring-zinc-500 placeholder:text-white/50'
-                    : 'bg-[#1178B9] text-zinc-50 focus:ring-blue-500 placeholder:text-white/50'
-                }`}
-              />
-            </div>
-            <div className="mb-4 relative">
-              <User
-                width={25}
-                height={25}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
-              />
-              <IMaskInput
-                name="nome_usuario"
-                value={formData.nome_usuario}
-                onChange={handleInputChange}
-                placeholder="Digite seu usuário"
-                required
-                className={`w-full py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 ${
-                  isDarkMode
-                    ? 'bg-[#333333] text-zinc-50 focus:ring-zinc-500 placeholder:text-white/50'
-                    : 'bg-[#1178B9] text-zinc-50 focus:ring-blue-500 placeholder:text-white/50'
-                }`}
-              />
-            </div>
-            <div className="mb-4 relative">
-              <Phone
-                width={25}
-                height={25}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
-              />
-              <IMaskInput
-                mask="(00) 00000-0000"
-                name="telefone"
-                value={formData.telefone}
-                onChange={handleInputChange}
-                placeholder="Digite seu telefone"
-                required
-                className={`w-full py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 ${
-                  isDarkMode
-                    ? 'bg-[#333333] text-zinc-50 focus:ring-zinc-500 placeholder:text-white/50'
-                    : 'bg-[#1178B9] text-zinc-50 focus:ring-blue-500 placeholder:text-white/50'
-                }`}
-              />
-            </div>
-            <div className="mb-4 relative">
-              <Calendar
-                width={25}
-                height={25}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
-              />
-              <IMaskInput
-                name="idade"
-                value={formData.idade}
-                onChange={handleInputChange}
-                placeholder="Digite sua idade"
-                type="number"
-                required
-                className={`w-full py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 ${
-                  isDarkMode
-                    ? 'bg-[#333333] text-zinc-50 focus:ring-zinc-500 placeholder:text-white/50'
-                    : 'bg-[#1178B9] text-zinc-50 focus:ring-blue-500 placeholder:text-white/50'
-                }`}
-              />
-            </div>
-            <div className="mb-4 relative">
-              <MapPin
-                width={25}
-                height={25}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
-              />
-              <IMaskInput
-                name="endereco_residencial"
-                value={formData.endereco_residencial}
-                onChange={handleInputChange}
-                placeholder="Digite seu endereço"
-                required
-                className={`w-full py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 ${
-                  isDarkMode
-                    ? 'bg-[#333333] text-zinc-50 focus:ring-zinc-500 placeholder:text-white/50'
-                    : 'bg-[#1178B9] text-zinc-50 focus:ring-blue-500 placeholder:text-white/50'
-                }`}
-              />
+            <div id="lado_direito" className="flex flex-col gap-2 mx-15">
+              <div id="foto_de_perfil" className="mb-8 relative">
+                <h1 className="flex justify-center text-2xl text-white border-b-2 border-white pb-4 mx-40">
+                  Foto de Perfil
+                </h1>
+                <div className="flex justify-center items-center mt-4">
+                  <div className="relative w-28 h-28 bg-white text-white rounded-full cursor-pointer hover:bg-gray-100">
+                    <IMaskInput
+                      type="file"
+                      onChange={handleFileChange}
+                      className="w-full h-full opacity-0 cursor-pointer"
+                    />
+                    <Upload className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[#1178B9] font-bold w-10 h-10" />
+                  </div>
+
+                  {imagePreview && <ArrowRight className="text-white" />}
+                  {imagePreview && (
+                    <Image
+                      src={imagePreview}
+                      alt="Preview of uploaded profile picture"
+                      width={112}
+                      height={112}
+                      className="rounded-full object-cover w-28 h-28 border-2 border-white"
+                      style={{ borderRadius: '50%' }}
+                    />
+                  )}
+                </div>
+              </div>
+              <div id="data_de_nascimento" className="mb-4 relative">
+                <h1 className="text-lg font-semibold text-white mb-2">
+                  Data de Nascimento
+                </h1>
+                <div className="mb-8 relative">
+                  <Calendar
+                    width={25}
+                    height={25}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white"
+                  />
+                  <IMaskInput
+                    mask="00/00/0000"
+                    name="data_de_nascimento"
+                    value={formData.data_de_nascimento}
+                    onChange={handleInputChange}
+                    placeholder="DD/MM/AAAA"
+                    required
+                    className={`w-full py-3 px-10 rounded-lg focus:outline-none border-1 border-white ${
+                      isDarkMode
+                        ? 'bg-transparent text-white placeholder:text-white/50'
+                        : 'bg-transparent text-white placeholder:text-white/50'
+                    }`}
+                  />
+                </div>
+              </div>
             </div>
           </div>
-          <div>
-            <div className="mb-4 relative">
-              <MapPin
-                width={25}
-                height={25}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
-              />
-              <IMaskInput
-                name="cidade"
-                value={formData.cidade}
-                onChange={handleInputChange}
-                placeholder="Digite sua cidade"
-                required
-                className={`w-full py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 ${
-                  isDarkMode
-                    ? 'bg-[#333333] text-zinc-50 focus:ring-zinc-500 placeholder:text-white/50'
-                    : 'bg-[#1178B9] text-zinc-50 focus:ring-blue-500 placeholder:text-white/50'
-                }`}
-              />
+
+          <div
+            id="endereco_inputs"
+            className="gap-4 mx-8 my-8 pb-8 border-b-2 border-white grid grid-cols-2 z-10"
+          >
+            <div id="cidade" className="flex flex-col gap-2 mx-15">
+              <h1 className="text-lg font-semibold text-white">Cidade</h1>
+              <div className="mb-4 relative">
+                <MapPin
+                  width={25}
+                  height={25}
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
+                />
+                <IMaskInput
+                  name="cidade"
+                  value={formData.cidade}
+                  onChange={handleInputChange}
+                  placeholder="ex: São Paulo"
+                  required
+                  className={`w-full py-3 px-10 rounded-lg focus:outline-none border-1 border-white ${
+                    isDarkMode
+                      ? 'bg-transparent text-white placeholder:text-white/50'
+                      : 'bg-transparent text-white placeholder:text-white/50'
+                  }`}
+                />
+              </div>
             </div>
-            <div className="mb-4 relative">
-              <MapPin
-                width={25}
-                height={25}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
-              />
-              <IMaskInput
-                mask="00000-000"
-                name="cep"
-                value={formData.cep}
-                onChange={handleInputChange}
-                placeholder="Digite o CEP"
-                required
-                className={`w-full py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 ${
-                  isDarkMode
-                    ? 'bg-[#333333] text-zinc-50 focus:ring-zinc-500 placeholder:text-white/50'
-                    : 'bg-[#1178B9] text-zinc-50 focus:ring-blue-500 placeholder:text-white/50'
-                }`}
-              />
+            <div id="cep" className="flex flex-col gap-2 mx-15">
+              <h1 className="text-lg font-semibold text-white">CEP</h1>
+              <div className="mb-4 relative">
+                <Earth
+                  width={25}
+                  height={25}
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white"
+                />
+                <IMaskInput
+                  mask="00000-000"
+                  name="cep"
+                  value={formData.cep}
+                  onChange={handleInputChange}
+                  placeholder="00000-000"
+                  required
+                  className={`w-full py-3 px-10 rounded-lg focus:outline-none border-1 border-white ${
+                    isDarkMode
+                      ? 'bg-transparent text-white placeholder:text-white/50'
+                      : 'bg-transparent text-white placeholder:text-white/50'
+                  }`}
+                />
+              </div>
             </div>
-            <div className="flex gap-3">
-              <div className="flex-1 border-r-2 border-zinc-800 pr-15">
-                <span className="text-2xl text-nowrap font-bold mb-4 block">
+            <div id="endereco" className="flex flex-col gap-2 mx-15">
+              <h1 className="text-lg font-semibold text-white">
+                Endereço Residencial
+              </h1>
+              <div className="mb-4 relative">
+                <MapPin
+                  width={25}
+                  height={25}
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white"
+                />
+                <IMaskInput
+                  name="endereco_residencial"
+                  value={formData.endereco_residencial}
+                  onChange={handleInputChange}
+                  placeholder="rua: pedro feliz,43"
+                  required
+                  className={`w-full py-3 px-10 rounded-lg focus:outline-none border-1 border-white ${
+                    isDarkMode
+                      ? 'bg-transparent text-white placeholder:text-white/50'
+                      : 'bg-transparent text-white placeholder:text-white/50'
+                  }`}
+                />
+              </div>
+            </div>
+            <div id="telefone" className="flex flex-col gap-2 mx-15">
+              <h1 className="text-lg font-semibold text-white">Telefone</h1>
+              <div className="mb-4 relative">
+                <Phone
+                  width={25}
+                  height={25}
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white"
+                />
+                <IMaskInput
+                  mask="(00) 00000-0000"
+                  name="telefone"
+                  value={formData.telefone}
+                  onChange={handleInputChange}
+                  placeholder="(00) 00000-0000"
+                  required
+                  className={`w-full py-3 px-10 rounded-lg focus:outline-none border-1 border-white ${
+                    isDarkMode
+                      ? 'bg-transparent text-white placeholder:text-white/50'
+                      : 'bg-transparent text-white placeholder:text-white/50'
+                  }`}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div
+            id="checkboks"
+            className="gap-4 mx-8 my-8 pb-8 border-b-2 border-white z-10"
+          >
+            <div className="grid grid-cols-2 gap-3 z-10 mx-22">
+              <div
+                id="tipo_ocupacao"
+                className="border-r-2 border-white pr-8 z-10"
+              >
+                <span className="text-2xl text-white text-nowrap font-bold mb-10 block">
                   Tipo de Ocupação
                 </span>
                 <div className="grid grid-cols-2 gap-x-15 gap-y-3">
                   <div className="flex items-center space-x-2">
                     <Checkbox
-                      className="bg-zinc-400 border-0"
+                      className="bg-white"
                       id="startup"
                       checked={formData.tipo_ocupacao === 'startup'}
                       onClick={() =>
                         handleCheckboxChange('startup', 'tipo_ocupacao')
                       }
                     />
-                    <label htmlFor="startup" className="text-base">
+                    <label
+                      htmlFor="startup"
+                      className={`text-base font-medium transition-colors ${
+                        formData.tipo_ocupacao === 'startup'
+                          ? 'text-black'
+                          : 'text-white'
+                      }`}
+                    >
                       Startup
                     </label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Checkbox
-                      className="bg-zinc-400 border-0"
+                      className="bg-white"
                       id="influencer"
                       checked={formData.tipo_ocupacao === 'influencer'}
                       onClick={() =>
                         handleCheckboxChange('influencer', 'tipo_ocupacao')
                       }
                     />
-                    <label htmlFor="influencer" className="text-base">
+                    <label
+                      htmlFor="influencer"
+                      className={`text-base font-medium transition-colors ${
+                        formData.tipo_ocupacao === 'influencer'
+                          ? 'text-black'
+                          : 'text-white'
+                      }`}
+                    >
                       Influencer
                     </label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Checkbox
-                      className="bg-zinc-400 border-0"
+                      className="bg-white"
                       id="produtor"
                       checked={formData.tipo_ocupacao === 'produtor'}
                       onClick={() =>
                         handleCheckboxChange('produtor', 'tipo_ocupacao')
                       }
                     />
-                    <label htmlFor="produtor" className="text-base">
+                    <label
+                      htmlFor="produtor"
+                      className={`text-base font-medium transition-colors ${
+                        formData.tipo_ocupacao === 'produtor'
+                          ? 'text-black'
+                          : 'text-white'
+                      }`}
+                    >
                       Produtor
                     </label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Checkbox
-                      className="bg-zinc-400 border-0"
+                      className="bg-white"
                       id="gerente"
                       checked={formData.tipo_ocupacao === 'gerente'}
                       onClick={() =>
                         handleCheckboxChange('gerente', 'tipo_ocupacao')
                       }
                     />
-                    <label htmlFor="gerente" className="text-base">
+                    <label
+                      htmlFor="gerente"
+                      className={`text-base font-medium transition-colors ${
+                        formData.tipo_ocupacao === 'gerente'
+                          ? 'text-black'
+                          : 'text-white'
+                      }`}
+                    >
                       Gerente
                     </label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Checkbox
-                      className="bg-zinc-400 border-0"
+                      className="bg-white"
                       id="freelancer"
                       checked={formData.tipo_ocupacao === 'freelancer'}
                       onClick={() =>
                         handleCheckboxChange('freelancer', 'tipo_ocupacao')
                       }
                     />
-                    <label htmlFor="freelancer" className="text-base">
+                    <label
+                      htmlFor="freelancer"
+                      className={`text-base font-medium transition-colors ${
+                        formData.tipo_ocupacao === 'freelancer'
+                          ? 'text-black'
+                          : 'text-white'
+                      }`}
+                    >
                       Freelancer
                     </label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Checkbox
-                      className="bg-zinc-400 border-0"
+                      className="bg-white"
                       id="fotografo"
                       checked={formData.tipo_ocupacao === 'fotografo'}
                       onClick={() =>
                         handleCheckboxChange('fotografo', 'tipo_ocupacao')
                       }
                     />
-                    <label htmlFor="fotografo" className="text-base">
+                    <label
+                      htmlFor="fotografo"
+                      className={`text-base font-medium transition-colors ${
+                        formData.tipo_ocupacao === 'fotografo'
+                          ? 'text-black'
+                          : 'text-white'
+                      }`}
+                    >
                       Fotógrafo
                     </label>
                   </div>
                 </div>
               </div>
-              <div className="h-full w-[2px] bg-zinc-800"></div>
-              <div className="flex-1">
-                <span className="text-2xl text-nowrap font-bold mb-4 block">
+
+              <div id="frequencia_uso" className="pl-10 z-10">
+                <span className="text-2xl text-white text-nowrap font-bold mb-10 block">
                   Frequência de Uso
                 </span>
                 <div className="grid grid-cols-2 gap-x-15 gap-y-3">
                   <div className="flex items-center space-x-2">
                     <Checkbox
-                      className="bg-zinc-400 border-0"
+                      className="bg-white"
                       id="ocasional"
                       checked={formData.frequencia_uso === 'ocasional'}
                       onClick={() =>
                         handleCheckboxChange('ocasional', 'frequencia_uso')
                       }
                     />
-                    <label htmlFor="ocasional" className="text-base">
+                    <label
+                      htmlFor="ocasional"
+                      className={`text-base font-medium transition-colors ${
+                        formData.frequencia_uso === 'ocasional'
+                          ? 'text-black'
+                          : 'text-white'
+                      }`}
+                    >
                       Ocasional
                     </label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Checkbox
-                      className="bg-zinc-400 border-0"
+                      className="bg-white"
                       id="semanal"
                       checked={formData.frequencia_uso === 'semanal'}
                       onClick={() =>
                         handleCheckboxChange('semanal', 'frequencia_uso')
                       }
                     />
-                    <label htmlFor="semanal" className="text-base">
+                    <label
+                      htmlFor="semanal"
+                      className={`text-base font-medium transition-colors ${
+                        formData.frequencia_uso === 'semanal'
+                          ? 'text-black'
+                          : 'text-white'
+                      }`}
+                    >
                       Semanal
                     </label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Checkbox
-                      className="bg-zinc-400 border-0"
+                      className="bg-white"
                       id="diario"
                       checked={formData.frequencia_uso === 'diario'}
                       onClick={() =>
                         handleCheckboxChange('diario', 'frequencia_uso')
                       }
                     />
-                    <label htmlFor="diario" className="text-base">
+                    <label
+                      htmlFor="diario"
+                      className={`text-base font-medium transition-colors ${
+                        formData.frequencia_uso === 'diario'
+                          ? 'text-black'
+                          : 'text-white'
+                      }`}
+                    >
                       Diário
                     </label>
                   </div>
                   <div className="flex items-center space-x-2">
                     <Checkbox
-                      className="bg-zinc-400 border-0"
+                      className="bg-white"
                       id="mensal"
                       checked={formData.frequencia_uso === 'mensal'}
                       onClick={() =>
                         handleCheckboxChange('mensal', 'frequencia_uso')
                       }
                     />
-                    <label htmlFor="mensal" className="text-base">
+                    <label
+                      htmlFor="mensal"
+                      className={`text-base font-medium transition-colors ${
+                        formData.frequencia_uso === 'mensal'
+                          ? 'text-black'
+                          : 'text-white'
+                      }`}
+                    >
                       Mensal
                     </label>
                   </div>
@@ -454,10 +634,10 @@ export default function Cliente() {
             </div>
           </div>
         </form>
-        <div className="flex gap-6 justify-center items-center mt-6">
+        <div className="flex gap-6 justify-around items-center mt-8 pb-8">
           <Link href="/" className="z-0">
             <Button
-              className={`w-44 cursor-pointer py-5 text-[18px] font-bold ${
+              className={`w-60 z-10 py-4 cursor-pointer text-base font-bold ${
                 isDarkMode
                   ? 'bg-red-800 hover:bg-red-900 text-white'
                   : 'bg-red-800 hover:bg-red-900 text-white'
@@ -469,10 +649,10 @@ export default function Cliente() {
           <Button
             type="submit"
             form="cadastro-form"
-            className={`w-72 z-10 py-5 cursor-pointer text-[18px] font-bold !opacity-100 ${
+            className={`w-60 z-10 py-4 cursor-pointer text-base font-bold !opacity-100 ${
               isDarkMode
-                ? 'bg-white text-black hover:bg-zinc-200'
-                : 'bg-black text-white hover:bg-zinc-900'
+                ? 'bg-green-800 text-white hover:bg-green-900'
+                : 'bg-green-800 text-white hover:bg-green-900'
             }`}
             disabled={isLoading}
           >
@@ -498,16 +678,13 @@ export default function Cliente() {
                     d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4l-3 3-3-3h4z"
                   ></path>
                 </svg>
-                Cadastrando...
+                Salvando...
               </>
             ) : (
-              'Cadastrar'
+              'Salvar'
             )}
           </Button>
         </div>
-      </div>
-      <div className="absolute top-4 right-4">
-        <ThemeToggleButton isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
       </div>
     </>
   );
