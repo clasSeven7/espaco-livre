@@ -51,7 +51,7 @@ CREATE TABLE locatarios (
   email VARCHAR(255) UNIQUE NOT NULL,
   telefone VARCHAR(20),
   data_de_nascimento VARCHAR(10) CHECK (data_de_nascimento ~ '^\d{2}/\d{2}/\d{4}$'),
-  endereco TEXT,
+  endereco_residencial TEXT,
   cidade VARCHAR(100),
   cpf CHAR(11) UNIQUE NOT NULL CHECK (cpf ~ '^\d{11}$'),
   cep CHAR(8) CHECK (cep ~ '^\d{8}$'),
