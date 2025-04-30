@@ -1,17 +1,21 @@
 'use client';
 
-import ThemeToggleButton from '@/components/ThemeToggleButton';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { api } from '@/lib/axios';
 import { AxiosError } from 'axios';
 import {
+  ArrowRight,
   Calendar,
   CreditCard,
-  Lock,
+  Earth,
+  Eye,
+  EyeOff,
   Mail,
   MapPin,
   Phone,
+  RectangleEllipsis,
+  Upload,
   User,
 } from 'lucide-react';
 import Image from 'next/image';
@@ -21,29 +25,25 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { IMaskInput } from 'react-imask';
 
-interface FormData {
-  email: string;
-  senha: string;
-  nome_usuario: string;
-  telefone: string;
-  idade: string;
-  endereco_residencial: string;
-  cidade: string;
-  cpf: string;
-  cep: string;
-  aceitar_termos: boolean;
-}
+import Header from '@/components/Header';
+import { FormDataLocatario } from '@/types/index';
 
 export default function Locatario() {
   const router = useRouter();
+
   const [isLoading, setIsLoading] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [formData, setFormData] = useState<FormData>({
+  const [showPassword, setShowPassword] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const [formData, setFormData] = useState<FormDataLocatario>({
+    foto_de_perfil: null,
     email: '',
     senha: '',
     nome_usuario: '',
     telefone: '',
-    idade: '',
+    data_de_nascimento: '',
     endereco_residencial: '',
     cidade: '',
     cpf: '',
@@ -72,40 +72,52 @@ export default function Locatario() {
     }));
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setFormData((prev) => ({
+        ...prev,
+        foto_de_perfil: file,
+      }));
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        setFile(file);
+      };
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!formData.aceitar_termos) {
       toast.error('Você precisa aceitar os termos para continuar');
       return;
     }
-
     setIsLoading(true);
+
     try {
-      const {
-        email,
-        senha,
-        nome_usuario,
-        telefone,
-        idade,
-        endereco_residencial,
-        cidade,
-        cpf,
-        cep,
-      } = formData;
       const dadosFormatados = {
-        email,
-        senha,
-        nome_usuario,
-        telefone: telefone.replace(/\D/g, ''),
-        idade: Number(idade),
-        endereco_residencial,
-        cidade,
-        cpf: cpf.replace(/\D/g, ''),
-        cep: cep.replace(/\D/g, ''),
+        ...formData,
+        email: formData.email.toLowerCase(),
+        cpf: formData.cpf.replace(/\D/g, ''),
+        cep: formData.cep.replace(/\D/g, ''),
+        telefone: formData.telefone.replace(/\D/g, ''),
       };
 
-      await api.post('/locatarios', dadosFormatados);
+      if (file) {
+        dadosFormatados.foto_de_perfil = file;
+      }
+
+      await api.post('/locatarios', dadosFormatados, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
       toast.success('Cadastro realizado com sucesso!');
       router.push('/login');
     } catch (error) {
@@ -129,247 +141,325 @@ export default function Locatario() {
 
   return (
     <>
+      <Header isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
       <div
-        className={`flex flex-col items-center justify-center h-screen relative ${
+        className={`items-center justify-center h-full w-full relative ${
           isDarkMode
-            ? 'dark bg-zinc-900 text-white'
-            : 'bg-[#DDF0EF] text-zinc-950'
+            ? 'bg-gradient-to-tl from-[#212a30] to-[#161c20]'
+            : 'bg-gradient-to-tl from-[#1178B9] to-[#0d6196]'
         }`}
       >
-        <Image
-          src="/background.png"
-          alt="Fundo"
-          fill
-          className="absolute top-0 left-0 z-0 opacity-10 object-cover"
+        <div
+          className={`absolute inset-0 z-0 opacity-5 bg-no-repeat bg-cover bg-center ${
+            isDarkMode
+              ? 'bg-[url("/bg_textura_login_escuro.png")]'
+              : 'bg-[url("/bg_textura_login_claro.png")]'
+          }`}
         />
 
-        <div className="flex items-center justify-center gap-4 mb-10">
-          <Image
-            src={isDarkMode ? '/icone_branco.png' : '/icone_preto.png'}
-            width={103.8}
-            height={98.49}
-            alt="Icon"
-            className="z-10 text-zinc-950"
-          />
-          <span
-            className={`text-8xl font-bold mb-6 z-10  ${
-              isDarkMode ? 'text-white' : 'text-zinc-950'
-            }`}
-          >
-            Cadastro
-          </span>
-        </div>
         <form
           id="cadastro-form"
           onSubmit={handleSubmit}
-          className="w-[50%] z-10 grid grid-cols-2 gap-4"
+          encType="multipart/form-data"
+          method="post"
         >
-          <div>
-            <div className="mb-4 relative">
-              <Mail
-                width={25}
-                height={25}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
-              />
-              <IMaskInput
-                name="email"
-                value={formData.email}
-                onChange={handleInputChange}
-                placeholder="Digite seu email"
-                type="email"
-                required
-                className={`w-full bg-[#1178B9] text-zinc-50 py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-white/50 ${
-                  isDarkMode
-                    ? 'bg-[#333333] text-zinc-50 focus:ring-zinc-500 placeholder:text-white/50'
-                    : 'bg-[#1178B9] text-zinc-50 focus:ring-blue-500 placeholder:text-white/50'
-                }`}
-              />
+          <div className="border-b-2 border-white mb-4 pt-4 pb-3 mx-8">
+            <h1 className="text-3xl text-white pl-12">Perfil</h1>
+          </div>
+          <div
+            id="perfil_inputs"
+            className="mx-8 my-8 border-b-2 border-white grid grid-cols-2 z-10"
+          >
+            <div id="lado_esquerdo" className="flex flex-col gap-2 mx-15">
+              <div id="nome_usuario">
+                <h1 className="text-lg font-semibold text-white mb-2">
+                  Usuário
+                </h1>
+                <div className="mb-4 relative">
+                  <User
+                    width={25}
+                    height={25}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white"
+                  />
+                  <IMaskInput
+                    name="nome_usuario"
+                    value={formData.nome_usuario}
+                    onChange={handleInputChange}
+                    placeholder="Digite seu usuário"
+                    required
+                    className={`w-full py-3 px-10 rounded-lg focus:outline-none border-1 border-white ${
+                      isDarkMode
+                        ? 'bg-transparent text-white placeholder:text-white/50'
+                        : 'bg-transparent text-white placeholder:text-white/50 '
+                    }`}
+                  />
+                </div>
+              </div>
+              <div id="email">
+                <h1 className="text-lg font-semibold text-white mb-2">Email</h1>
+                <div className="mb-4 relative">
+                  <Mail
+                    width={25}
+                    height={25}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white"
+                  />
+                  <IMaskInput
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="exemplo@gmail.com"
+                    type="email"
+                    required
+                    className={`w-full py-3 px-10 rounded-lg focus:outline-none border-1 border-white ${
+                      isDarkMode
+                        ? 'bg-transparent text-white placeholder:text-white/50'
+                        : 'bg-transparent text-white placeholder:text-white/50 '
+                    }`}
+                  />
+                </div>
+              </div>
+              <div id="senha">
+                <h1 className="text-lg font-semibold text-white mb-2">Senha</h1>
+                <div className="mb-4 relative">
+                  <RectangleEllipsis
+                    width={25}
+                    height={25}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white"
+                  />
+                  <IMaskInput
+                    name="senha"
+                    type={showPassword ? 'text' : 'password'}
+                    value={formData.senha}
+                    onChange={handleInputChange}
+                    placeholder="1234@$678"
+                    required
+                    className={`w-full py-3 px-10 rounded-lg focus:outline-none border-1 border-white ${
+                      isDarkMode
+                        ? 'bg-transparent text-white placeholder:text-white/50'
+                        : 'bg-transparent text-white placeholder:text-white/50 '
+                    }`}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white cursor-pointer"
+                  >
+                    {showPassword ? <EyeOff size={24} /> : <Eye size={24} />}
+                  </button>
+                </div>
+              </div>
+              <div id="cpf" className="mb-8">
+                <h1 className="text-lg font-semibold text-white mb-2">CPF</h1>
+                <div className="mb-4 relative">
+                  <CreditCard
+                    width={25}
+                    height={25}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white"
+                  />
+                  <IMaskInput
+                    mask="000.000.000-00"
+                    name="cpf"
+                    value={formData.cpf}
+                    onChange={handleInputChange}
+                    placeholder="000.000.000-00"
+                    required
+                    className={`w-full py-3 px-10 rounded-lg focus:outline-none border-1 border-white ${
+                      isDarkMode
+                        ? 'bg-transparent text-white placeholder:text-white/50'
+                        : 'bg-transparent text-white placeholder:text-white/50 '
+                    }`}
+                  />
+                </div>
+              </div>
             </div>
-            <div className="mb-4 relative">
-              <Lock
-                width={25}
-                height={25}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
-              />
-              <IMaskInput
-                type="password"
-                name="senha"
-                value={formData.senha}
-                onChange={handleInputChange}
-                placeholder="Digite sua senha"
-                required
-                className={`w-full py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 ${
-                  isDarkMode
-                    ? 'bg-[#333333] text-zinc-50 focus:ring-zinc-500 placeholder:text-white/50'
-                    : 'bg-[#1178B9] text-zinc-50 focus:ring-blue-500 placeholder:text-white/50 '
-                }`}
-              />
-            </div>
-            <div className="mb-4 relative">
-              <User
-                width={25}
-                height={25}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
-              />
-              <IMaskInput
-                name="nome_usuario"
-                value={formData.nome_usuario}
-                onChange={handleInputChange}
-                placeholder="Digite seu usuário"
-                required
-                className={`w-full bg-[#1178B9] text-zinc-50 py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-white/50 ${
-                  isDarkMode
-                    ? 'bg-[#333333] text-zinc-50 focus:ring-zinc-500 placeholder:text-white/50'
-                    : 'bg-[#1178B9] text-zinc-50 focus:ring-blue-500 placeholder:text-white/50'
-                }`}
-              />
-            </div>
-            <div className="mb-4 relative">
-              <Phone
-                width={25}
-                height={25}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
-              />
-              <IMaskInput
-                mask="(00) 00000-0000"
-                name="telefone"
-                value={formData.telefone}
-                onChange={handleInputChange}
-                placeholder="Digite seu telefone"
-                required
-                className={`w-full bg-[#1178B9] text-zinc-50 py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-white/50 ${
-                  isDarkMode
-                    ? 'bg-[#333333] text-zinc-50 focus:ring-zinc-500 placeholder:text-white/50'
-                    : 'bg-[#1178B9] text-zinc-50 focus:ring-blue-500 placeholder:text-white/50'
-                }`}
-              />
-            </div>
-            <div className="mb-4 relative">
-              <Calendar
-                width={25}
-                height={25}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
-              />
-              <IMaskInput
-                name="idade"
-                value={formData.idade}
-                onChange={handleInputChange}
-                placeholder="Digite sua idade"
-                type="number"
-                required
-                className={`w-full bg-[#1178B9] text-zinc-50 py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-white/50 ${
-                  isDarkMode
-                    ? 'bg-[#333333] text-zinc-50 focus:ring-zinc-500 placeholder:text-white/50'
-                    : 'bg-[#1178B9] text-zinc-50 focus:ring-blue-500 placeholder:text-white/50'
-                }`}
-              />
-            </div>
-            <div className="mb-4 relative">
-              <MapPin
-                width={25}
-                height={25}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
-              />
-              <IMaskInput
-                name="endereco_residencial"
-                value={formData.endereco_residencial}
-                onChange={handleInputChange}
-                placeholder="Digite seu endereço"
-                required
-                className={`w-full bg-[#1178B9] text-zinc-50 py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-white/50 ${
-                  isDarkMode
-                    ? 'bg-[#333333] text-zinc-50 focus:ring-zinc-500 placeholder:text-white/50'
-                    : 'bg-[#1178B9] text-zinc-50 focus:ring-blue-500 placeholder:text-white/50'
-                }`}
-              />
+            <div id="lado_direito" className="flex flex-col gap-2 mx-15">
+              <div id="foto_de_perfil" className="mb-8 relative">
+                <h1 className="flex justify-center text-2xl text-white border-b-2 border-white pb-4 mx-40">
+                  Foto de Perfil
+                </h1>
+                <div className="flex justify-center items-center mt-4">
+                  <div className="relative w-28 h-28 bg-white text-white rounded-full cursor-pointer hover:bg-gray-100">
+                    <IMaskInput
+                      type="file"
+                      onChange={handleFileChange}
+                      className="w-full h-full opacity-0 cursor-pointer"
+                    />
+                    <Upload className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[#1178B9] font-bold w-10 h-10" />
+                  </div>
+
+                  {imagePreview && <ArrowRight className="text-white" />}
+                  {imagePreview && (
+                    <Image
+                      src={imagePreview}
+                      alt="Preview of uploaded profile picture"
+                      width={112}
+                      height={112}
+                      className="rounded-full object-cover w-28 h-28 border-2 border-white"
+                      style={{ borderRadius: '50%' }}
+                    />
+                  )}
+                </div>
+              </div>
+              <div id="data_de_nascimento">
+                <h1 className="text-lg font-semibold text-white mb-2">
+                  Data de Nascimento
+                </h1>
+                <div className="mb-4 relative">
+                  <Calendar
+                    width={25}
+                    height={25}
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white"
+                  />
+                  <IMaskInput
+                    mask="00/00/0000"
+                    placeholder="DD/MM/AAAA"
+                    name="data_de_nascimento"
+                    value={formData.data_de_nascimento}
+                    onChange={handleInputChange}
+                    required
+                    className={`w-full py-3 px-10 rounded-lg focus:outline-none border-1 border-white ${
+                      isDarkMode
+                        ? 'bg-transparent text-white placeholder:text-white/50'
+                        : 'bg-transparent text-white placeholder:text-white/50 '
+                    }`}
+                  />
+                </div>
+              </div>
+              <div id="aceitar_termos" className="mb-8">
+                <div className="flex items-center space-x-2 mt-8">
+                  <Checkbox
+                    id="aceitar_termos"
+                    name="aceitar_termos"
+                    checked={formData.aceitar_termos}
+                    onCheckedChange={(checked: boolean) => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        aceitar_termos: checked === true,
+                      }));
+                    }}
+                    className="bg-white border-0 z-10 cursor-pointer"
+                  />
+                  <label
+                    htmlFor="aceitar_termos"
+                    className="text-base text-white z-10"
+                  >
+                    Eu,{' '}
+                    <span className="font-bold uppercase">
+                      {formData.nome_usuario || '[Nome do Locatário]'}
+                    </span>
+                    , CPF/CNPJ{' '}
+                    <span className="font-bold uppercase">
+                      {formData.cpf || '[Número]'}
+                    </span>
+                    , declaro estar ciente e de acordo com as seguintes
+                    responsabilidades ao disponibilizar meu espaço para aluguel
+                  </label>
+                </div>
+              </div>
             </div>
           </div>
-          <div>
-            <div className="mb-4 relative">
-              <MapPin
-                width={25}
-                height={25}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
-              />
-              <IMaskInput
-                name="cidade"
-                value={formData.cidade}
-                onChange={handleInputChange}
-                placeholder="Digite sua cidade"
-                required
-                className={`w-full bg-[#1178B9] text-zinc-50 py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-white/50 ${
-                  isDarkMode
-                    ? 'bg-[#333333] text-zinc-50 focus:ring-zinc-500 placeholder:text-white/50'
-                    : 'bg-[#1178B9] text-zinc-50 focus:ring-blue-500 placeholder:text-white/50'
-                }`}
-              />
+          <div
+            id="endereco_inputs"
+            className="gap-4 mx-8 my-8 pb-8 border-b-2 border-white grid grid-cols-2 z-10"
+          >
+            <div id="cidade" className="flex flex-col gap-2 mx-15">
+              <h1 className="text-lg font-semibold text-white">Cidade</h1>
+              <div className="mb-4 relative">
+                <MapPin
+                  width={25}
+                  height={25}
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
+                />
+                <IMaskInput
+                  name="cidade"
+                  value={formData.cidade}
+                  onChange={handleInputChange}
+                  placeholder="ex: São Paulo"
+                  required
+                  className={`w-full py-3 px-10 rounded-lg focus:outline-none border-1 border-white ${
+                    isDarkMode
+                      ? 'bg-transparent text-white placeholder:text-white/50'
+                      : 'bg-transparent text-white placeholder:text-white/50'
+                  }`}
+                />
+              </div>
             </div>
-            <div className="mb-4 relative">
-              <CreditCard
-                width={25}
-                height={25}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
-              />
-              <IMaskInput
-                mask="000.000.000-00"
-                name="cpf"
-                value={formData.cpf}
-                onChange={handleInputChange}
-                placeholder="Digite seu CPF"
-                required
-                className={`w-full bg-[#1178B9] text-zinc-50 py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-white/50 ${
-                  isDarkMode
-                    ? 'bg-[#333333] text-zinc-50 focus:ring-zinc-500 placeholder:text-white/50'
-                    : 'bg-[#1178B9] text-zinc-50 focus:ring-blue-500 placeholder:text-white/50'
-                }`}
-              />
+            <div id="cep" className="flex flex-col gap-2 mx-15">
+              <h1 className="text-lg font-semibold text-white">CEP</h1>
+              <div className="mb-4 relative">
+                <Earth
+                  width={25}
+                  height={25}
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white"
+                />
+                <IMaskInput
+                  mask="00000-000"
+                  name="cep"
+                  value={formData.cep}
+                  onChange={handleInputChange}
+                  placeholder="00000-000"
+                  required
+                  className={`w-full py-3 px-10 rounded-lg focus:outline-none border-1 border-white ${
+                    isDarkMode
+                      ? 'bg-transparent text-white placeholder:text-white/50'
+                      : 'bg-transparent text-white placeholder:text-white/50'
+                  }`}
+                />
+              </div>
             </div>
-            <div className="mb-4 relative">
-              <MapPin
-                width={25}
-                height={25}
-                className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
-              />
-              <IMaskInput
-                mask="00000-000"
-                name="cep"
-                value={formData.cep}
-                onChange={handleInputChange}
-                placeholder="Digite o CEP"
-                required
-                className={`w-full bg-[#1178B9] text-zinc-50 py-3 px-10 rounded-lg border-0 focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder:text-white/50 ${
-                  isDarkMode
-                    ? 'bg-[#333333] text-zinc-50 focus:ring-zinc-500 placeholder:text-white/50'
-                    : 'bg-[#1178B9] text-zinc-50 focus:ring-blue-500 placeholder:text-white/50'
-                }`}
-              />
+            <div id="endereco" className="flex flex-col gap-2 mx-15">
+              <h1 className="text-lg font-semibold text-white">
+                Endereço Residencial
+              </h1>
+              <div className="mb-4 relative">
+                <MapPin
+                  width={25}
+                  height={25}
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white"
+                />
+                <IMaskInput
+                  name="endereco_residencial"
+                  value={formData.endereco_residencial}
+                  onChange={handleInputChange}
+                  placeholder="rua: pedro feliz,43"
+                  required
+                  className={`w-full py-3 px-10 rounded-lg focus:outline-none border-1 border-white ${
+                    isDarkMode
+                      ? 'bg-transparent text-white placeholder:text-white/50'
+                      : 'bg-transparent text-white placeholder:text-white/50'
+                  }`}
+                />
+              </div>
             </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox
-                id="aceitar_termos"
-                name="aceitar_termos"
-                checked={formData.aceitar_termos}
-                onCheckedChange={(checked: boolean) => {
-                  setFormData((prev) => ({
-                    ...prev,
-                    aceitar_termos: checked === true,
-                  }));
-                }}
-                className="bg-zinc-400 border-0"
-              />
-              <label htmlFor="aceitar_termos" className="text-base">
-                Eu, {formData.nome_usuario || '[Nome do Locador]'}, CPF/CNPJ{' '}
-                {formData.cpf || '[Número]'}, declaro estar ciente e de acordo
-                com as seguintes responsabilidades ao disponibilizar meu espaço
-                para aluguel
-              </label>
+            <div id="telefone" className="flex flex-col gap-2 mx-15">
+              <h1 className="text-lg font-semibold text-white">Telefone</h1>
+              <div className="mb-4 relative">
+                <Phone
+                  width={25}
+                  height={25}
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white"
+                />
+                <IMaskInput
+                  mask="(00) 00000-0000"
+                  name="telefone"
+                  value={formData.telefone}
+                  onChange={handleInputChange}
+                  placeholder="(00) 00000-0000"
+                  required
+                  className={`w-full py-3 px-10 rounded-lg focus:outline-none border-1 border-white ${
+                    isDarkMode
+                      ? 'bg-transparent text-white placeholder:text-white/50'
+                      : 'bg-transparent text-white placeholder:text-white/50'
+                  }`}
+                />
+              </div>
             </div>
           </div>
         </form>
-        <div className="flex gap-6 justify-center items-center mt-6">
-          <Link href="/" className="z-0">
+        <div className="flex gap-6 justify-around items-center mt-8 pb-8">
+          <Link href="/login" className="z-0">
             <Button
-              className={`w-44 cursor-pointer py-5 text-[18px] font-bold ${
+              className={`w-60 z-10 py-4 cursor-pointer text-base font-bold ${
                 isDarkMode
                   ? 'bg-red-800 hover:bg-red-900 text-white'
                   : 'bg-red-800 hover:bg-red-900 text-white'
@@ -381,10 +471,10 @@ export default function Locatario() {
           <Button
             type="submit"
             form="cadastro-form"
-            className={`w-72 z-10 py-5 cursor-pointer text-[18px] font-bold !opacity-100 ${
+            className={`w-60 z-10 py-4 cursor-pointer text-base font-bold !opacity-100 ${
               isDarkMode
-                ? 'bg-white text-black hover:bg-zinc-200'
-                : 'bg-black text-white hover:bg-zinc-900'
+                ? 'bg-green-800 text-white hover:bg-green-900'
+                : 'bg-green-800 text-white hover:bg-green-900'
             }`}
             disabled={isLoading}
           >
@@ -410,16 +500,13 @@ export default function Locatario() {
                     d="M4 12a8 8 0 018-8v4l3-3-3-3v4a8 8 0 00-8 8h4l-3 3-3-3h4z"
                   ></path>
                 </svg>
-                Cadastrando...
+                Salvando...
               </>
             ) : (
-              'Cadastrar'
+              'Salvar'
             )}
           </Button>
         </div>
-      </div>
-      <div className="absolute top-4 right-4">
-        <ThemeToggleButton isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
       </div>
     </>
   );
