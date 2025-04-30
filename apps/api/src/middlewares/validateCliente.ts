@@ -7,7 +7,6 @@ export async function validateCliente(
 ) {
   const clienteData = request.body as any;
 
-  // Validações básicas
   if (!clienteData.email || !clienteData.senha || !clienteData.nome_usuario) {
     return response.status(400).json({
       error: '❌ Campos obrigatórios não preenchidos',
