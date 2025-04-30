@@ -1,4 +1,5 @@
 export interface Locatario {
+  foto_de_perfil?: string;
   nome_usuario: string;
   senha: string;
   email: string;
@@ -6,11 +7,12 @@ export interface Locatario {
   data_de_nascimento?: number;
   endereco_residencial?: string;
   cidade?: string;
-  cpf?: string;
+  cpf: string;
   cep?: string;
 }
 
 export interface LocatarioData {
+  foto_de_perfil?: string;
   email: string;
   senha: string;
   nome_usuario: string;
@@ -28,12 +30,18 @@ export interface LocatarioResponse extends LocatarioData {
   atualizado_em: Date;
 }
 
+export interface LocatarioCreate extends Partial<LocatarioData> {
+  email: string;
+  senha: string;
+  nome_usuario: string;
+}
+
 export interface Cliente {
+  foto_de_perfil?: string;
   nome_usuario: string;
   senha: string;
   email: string;
   telefone?: string;
-  foto_de_perfil?: string;
   data_de_nascimento?: number;
   endereco_residencial?: string;
   cidade?: string;
@@ -43,10 +51,10 @@ export interface Cliente {
 }
 
 export interface ClienteData {
+  foto_de_perfil?: string;
   email: string;
   senha: string;
   nome_usuario: string;
-  foto_de_perfil?: string;
   telefone: string;
   data_de_nascimento: number;
   endereco_residencial: string;
@@ -66,13 +74,6 @@ export interface ClienteResponse extends ClienteData {
   id: number;
   criado_em: Date;
   atualizado_em: Date;
-}
-
-// Interfaces para criação com campos opcionais
-export interface LocatarioCreate extends Partial<LocatarioData> {
-  email: string;
-  senha: string;
-  nome_usuario: string;
 }
 
 export interface ClienteCreate extends Partial<ClienteData> {
