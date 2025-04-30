@@ -25,3 +25,32 @@ export interface FormDataLocatario {
   cep: string;
   aceitar_termos: boolean;
 }
+
+export interface InfoItemPerfilProps {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+}
+
+export interface SpaceCardProps {
+  nome: string;
+  disponivel: string;
+  preco: string;
+  localizacao: string;
+  imagem: string;
+  destaque?: boolean;
+  nota: number;
+  url?: string;
+}
+
+export interface CommentProps {
+  isDarkMode: boolean;
+}
+
+export interface SpaceProps {
+  isDarkMode: boolean;
+}
+
+export interface FeatureProps {
+  isDarkMode: boolean;
+}
