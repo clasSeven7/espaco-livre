@@ -1,59 +1,60 @@
 import DB from '@/database/index';
 import { Locatario, LocatarioResponse } from '@/types/index';
 
+function truncarCampos(locatario: Locatario): Locatario {
+  return {
+    ...locatario,
+    nome_usuario: locatario.nome_usuario?.substring(0, 100),
+    email: locatario.email?.substring(0, 255),
+    telefone: locatario.telefone?.substring(0, 20),
+    cidade: locatario.cidade?.substring(0, 100),
+    cep: locatario.cep?.substring(0, 8),
+    cpf: locatario.cpf?.substring(0, 11),
+  };
+}
+
 export const locatarioRepository = {
   async criar(locatario: Locatario): Promise<LocatarioResponse> {
     try {
-      // Validações básicas
-      if (
-        !locatario.nome_usuario ||
-        !locatario.senha ||
-        !locatario.email ||
-        !locatario.cpf
-      ) {
-        throw new Error('❌ Dados obrigatórios não fornecidos');
+      if (!locatario.nome_usuario || !locatario.senha || !locatario.email) {
+        throw { status: 400, message: '❌ Dados obrigatórios não fornecidos.' };
       }
 
-      // Trunca strings muito longas
-      const dadosTruncados = {
-        ...locatario,
-        nome_usuario: locatario.nome_usuario.substring(0, 100),
-        email: locatario.email.substring(0, 255),
-        telefone: locatario.telefone?.substring(0, 20),
-        cidade: locatario.cidade?.substring(0, 100),
-        cpf: locatario.cpf.substring(0, 11),
-        cep: locatario.cep?.substring(0, 8),
-      };
+      const dados = truncarCampos(locatario);
 
       const query = `
         INSERT INTO locatarios (
-          nome_usuario, senha, email, telefone, idade, 
+          foto_de_perfil, nome_usuario, senha, email, telefone, data_de_nascimento, 
           endereco_residencial, cidade, cpf, cep
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
         RETURNING *
       `;
 
       const values = [
-        dadosTruncados.nome_usuario,
-        dadosTruncados.senha,
-        dadosTruncados.email,
-        dadosTruncados.telefone,
-        dadosTruncados.idade,
-        dadosTruncados.endereco_residencial,
-        dadosTruncados.cidade,
-        dadosTruncados.cpf,
-        dadosTruncados.cep,
+        dados.foto_de_perfil || null,
+        dados.nome_usuario,
+        dados.senha,
+        dados.email,
+        dados.telefone || null,
+        dados.data_de_nascimento || null,
+        dados.endereco_residencial || null,
+        dados.cidade || null,
+        dados.cpf,
+        dados.cep || null,
       ];
 
       const result = await DB.query(query, values);
 
-      if (!result.rows[0]) {
-        throw new Error('❌ Erro ao criar locatario no banco de dados');
+      if (!result.rows.length) {
+        throw {
+          status: 500,
+          message: '❌ Erro ao criar locatário no banco de dados.',
+        };
       }
 
       return result.rows[0];
     } catch (error) {
-      console.error('🚨 Erro no repositório ao criar locatario:', error);
+      console.error('🔴 Erro ao criar locatário:', error);
       throw error;
     }
   },
@@ -133,6 +134,7 @@ export const locatarioRepository = {
   ): Promise<LocatarioResponse> {
     try {
       const camposAtualizaveis = [
+        'foto_de_perfil',
         'nome_usuario',
         'email',
         'telefone',
@@ -168,13 +170,13 @@ export const locatarioRepository = {
 
       const result = await DB.query(query, values);
 
-      if (!result.rows[0]) {
-        throw new Error('❌ locatario não encontrado');
+      if (!result.rows.length) {
+        throw { status: 404, message: '❌ Locatário não encontrado.' };
       }
 
       return result.rows[0];
     } catch (error) {
-      console.error('🚨 Erro no repositório ao atualizar locatario:', error);
+      console.error('🔴 Erro ao listar locatario:', error);
       throw error;
     }
   },
@@ -184,11 +186,14 @@ export const locatarioRepository = {
       const query = 'DELETE FROM locatarios WHERE id = $1';
       const result = await DB.query(query, [id]);
 
-      if (result.rowCount === 0) {
-        throw new Error('❌ locatario não encontrado');
+      if (!result.rowCount) {
+        throw {
+          status: 404,
+          message: '❌ Locatário não encontrado para exclusão.',
+        };
       }
     } catch (error) {
-      console.error('🚨 Erro no repositório ao deletar locatario:', error);
+      console.error('🔴 Erro ao deletar locatario:', error);
       throw error;
     }
   },
