@@ -1,9 +1,7 @@
-import { Button } from '@/components/ui/button';
-import { LogOut, UsersRound } from 'lucide-react';
+import { KeyRound, LogOut, Moon, UserCircle } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { FC } from 'react';
-import ThemeToggleButton from './ThemeToggleButton';
+import { FC, useState } from 'react';
 
 interface HeaderNavProps {
   isDarkMode: boolean;
@@ -18,10 +16,13 @@ const HeaderNav: FC<HeaderNavProps> = ({
   token,
   handleLogout,
 }) => {
+  const [isUserMenuOpenEnter, setIsUserMenuOpenEnter] = useState(false);
+  const [isUserMenuOpenLogout, setIsUserMenuOpenLogout] = useState(false);
+
   return (
     <>
       <header
-        className={`relative overflow-hidden px-6 shadow-sm transition-colors duration-300 ${
+        className={`relative overflow-visible px-6 shadow-sm transition-colors duration-300 ${
           isDarkMode
             ? 'bg-gradient-to-tl from-[#212a30] to-[#161c20]'
             : 'bg-gradient-to-tl from-[#1178B9] to-[#0d4f7d]'
@@ -35,7 +36,7 @@ const HeaderNav: FC<HeaderNavProps> = ({
           }`}
         />
         <div className="relative z-10">
-          <div className="mx-auto px-4 py-1 flex xl:justify-between lg:justify-between md:justify-between sm:justify-between justify-between items-center">
+          <div className="mx-auto px-32 py-1 flex xl:justify-between lg:justify-between md:justify-between sm:justify-between justify-between items-center">
             <div className="md:flex justify-center space-x-5"></div>
             <nav
               className={`flex justify-center items-center py-[10px] ${
@@ -102,29 +103,115 @@ const HeaderNav: FC<HeaderNavProps> = ({
               </ul>
             </nav>
 
-            <div className="flex items-center gap-4">
+            <div className="relative flex items-center gap-4">
+              <button>
+                <Image
+                  src="/notification.svg"
+                  width={25}
+                  height={25}
+                  alt="Notification"
+                  className="rounded-full cursor-pointer"
+                />
+              </button>
+
               {!token && (
-                <Link
-                  href="/login"
-                  className="flex items-center text-white text-sm font-medium bg-[#173d5c] cursor-pointer px-2.5 py-2 rounded-md gap-1 hover:text-white hover:bg-blue-600"
-                >
-                  <UsersRound className="h-4 w-4" />
-                  Login
-                </Link>
+                <>
+                  <button
+                    onClick={() => {
+                      setIsUserMenuOpenLogout(!isUserMenuOpenLogout);
+                      setIsUserMenuOpenEnter(false);
+                    }}
+                  >
+                    <Image
+                      src="/user.svg"
+                      width={35}
+                      height={35}
+                      alt="User"
+                      className="rounded-full border-1 border-red-400 p-[2px] cursor-pointer"
+                    />
+                  </button>
+
+                  {isUserMenuOpenLogout && (
+                    <div
+                      role="menu"
+                      aria-label="Menu do usuário"
+                      className="absolute top-full right-0 mt-2 w-52 bg-white dark:bg-gray-800 rounded-lg shadow-lg z-[9999] py-2"
+                    >
+                      <Link
+                        href="/login"
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                      >
+                        <UserCircle className="w-4 h-4 mr-2" />
+                        Login
+                      </Link>
+
+                      <button
+                        onClick={toggleTheme}
+                        className="w-full flex items-center px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                      >
+                        <Moon className="w-4 h-4 mr-2" />
+                        Modo Escuro
+                      </button>
+                    </div>
+                  )}
+                </>
               )}
+
               {token && (
-                <Button
-                  onClick={handleLogout}
-                  className="flex items-center text-white text-sm font-medium bg-red-800 cursor-pointer px-2.5 py-2 rounded-md gap-1 hover:text-white hover:bg-red-900"
-                >
-                  <LogOut className="h-4 w-4" />
-                  Sair
-                </Button>
+                <>
+                  <button
+                    onClick={() => {
+                      setIsUserMenuOpenEnter(!isUserMenuOpenEnter);
+                      setIsUserMenuOpenLogout(false);
+                    }}
+                  >
+                    <Image
+                      src="/user.svg"
+                      width={35}
+                      height={35}
+                      alt="User"
+                      className="rounded-full border-1 border-green-400 p-[2px] cursor-pointer"
+                    />
+                  </button>
+
+                  {isUserMenuOpenEnter && (
+                    <div
+                      role="menu"
+                      aria-label="Menu logado"
+                      className="absolute top-full right-0 mt-2 w-52 bg-white dark:bg-gray-800 rounded-lg shadow-lg z-[9999] py-2"
+                    >
+                      <Link
+                        href="/perfil/cliente"
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                      >
+                        <UserCircle className="w-4 h-4 mr-2" />
+                        Meu Perfil
+                      </Link>
+                      <Link
+                        href="/alterar-senha"
+                        className="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700"
+                      >
+                        <KeyRound className="w-4 h-4 mr-2" />
+                        Alterar senha
+                      </Link>
+                      <button
+                        onClick={toggleTheme}
+                        className="w-full flex items-center px-4 py-2 text-sm text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                      >
+                        <Moon className="w-4 h-4 mr-2" />
+                        Modo Escuro
+                      </button>
+                      <button
+                        onClick={handleLogout}
+                        className="w-full text-left flex items-center px-4 py-2 text-sm text-red-700 dark:text-red-400 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                      >
+                        <LogOut className="w-4 h-4 mr-2" />
+                        Sair
+                      </button>
+                    </div>
+                  )}
+                </>
               )}
-              <ThemeToggleButton
-                isDarkMode={isDarkMode}
-                toggleTheme={toggleTheme}
-              />
             </div>
           </div>
         </div>
