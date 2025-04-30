@@ -2,6 +2,9 @@
 
 import Footer from '@/components/Footer';
 import HeaderNav from '@/components/HeaderNav';
+import Comment from '@/components/sections/Comment';
+import Feature from '@/components/sections/Feature';
+import Space from '@/components/sections/Space';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import {
@@ -12,40 +15,14 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import Cookies from 'js-cookie';
-import { Star } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-const testimonials = [
-  {
-    name: 'Rafael Lima',
-    role: 'Gerente de Marketing',
-    image: '/icon_1.png',
-    content:
-      'Utilizamos a plataforma para organizar uma série de workshops para o nosso núcleo. A escolha do espaço e a facilidade de contato com os responsáveis pelo local foi excelente. O processo foi muito simples e certamente vamos usar novamente.',
-  },
-  {
-    name: 'Felipe Martins',
-    role: 'Diretor de Vendas',
-    image: '/icon_2.png',
-    content:
-      'Encontramos uma maneira de vendas com clientes importantes e escolhemos um espaço através da plataforma. A experiência foi excepcional e tudo era perfeito, desde a localização até os equipamentos disponíveis para apresentar. Definitivamente, uma solução que facilita nossa rotina.',
-  },
-  {
-    name: 'Laura Santos',
-    role: 'Coordenadora de Projetos',
-    image: '/icon_3.png',
-    content:
-      'Nossa equipe precisou de um espaço bem equipado para um workshop de treinamento e encontramos tudo que precisávamos na plataforma. A interface fácil de usar e a comunicação rápida com os proprietários foram um ponto muito positivo no processo muito mais eficiente.',
-  },
-];
-
 const images = [
   { src: '/home_image_1.png', alt: 'Imagem 1' },
   { src: '/home_image_2.png', alt: 'Imagem 2' },
-  // Pode adicionar quantas quiser
 ];
 
 export default function Home() {
@@ -80,7 +57,7 @@ export default function Home() {
   return (
     <main
       className={`min-h-screen transition-colors duration-300 ${
-        isDarkMode ? 'bg-zinc-900 text-white' : 'bg-[#DDF0EF] text-black'
+        isDarkMode ? 'bg-zinc-900 text-white' : 'bg-gray-100 text-black'
       }`}
     >
       <HeaderNav
@@ -91,7 +68,11 @@ export default function Home() {
       />
 
       {/* Hero Section */}
-      <section className="relative min-h-[700px] w-full">
+      <section
+        className={`relative min-h-[700px] w-full ${
+          isDarkMode ? 'text-white bg-zinc-900' : 'text-black bg-gray-100 '
+        }`}
+      >
         <div>
           <Image
             src="/background_home.png"
@@ -102,7 +83,7 @@ export default function Home() {
             priority
           />
         </div>
-        <div className="container mx-auto px-4 py-16 relative z-10">
+        <div className="container mx-auto px-4 py-16 relative">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div className="space-y-6">
               <h1 className="text-4xl font-bold leading-tight">
@@ -157,7 +138,7 @@ export default function Home() {
                     <CarouselItem key={index} className="h-full w-full">
                       <div className="h-full w-full">
                         <Card className="h-full w-full bg-transparent border-none">
-                          <CardContent className="relative h-full w-ful">
+                          <CardContent className="relative h-full w-full">
                             <Image
                               src={image.src}
                               alt={image.alt}
@@ -178,132 +159,16 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Testimonials Section */}
-      <section className="container mx-auto px-4 py-16">
-        <h2 className="text-2xl font-bold text-center mb-8">Comentários</h2>
-        <p
-          className={`text-center mb-12 ${
-            isDarkMode ? 'text-gray-300' : 'text-gray-600'
-          }`}
-        >
-          Opiniões dos clientes que usaram a plataforma.
-        </p>
+      {/* Comments Section */}
+      <Space isDarkMode={isDarkMode} />
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
-            <div
-              key={index}
-              className={`p-6 rounded-lg shadow-lg ${
-                isDarkMode ? 'bg-[#212a30]' : 'bg-white'
-              }`}
-            >
-              <div className="flex items-center gap-4 mb-4">
-                <Image
-                  src={testimonial.image}
-                  alt={testimonial.name}
-                  width={48}
-                  height={48}
-                  className="rounded-full"
-                />
-                <div>
-                  <h3
-                    className={`font-semibold ${
-                      isDarkMode ? 'text-white' : 'text-black'
-                    }`}
-                  >
-                    {testimonial.name}
-                  </h3>
-                  <p
-                    className={`text-sm ${
-                      isDarkMode ? 'text-gray-500' : 'text-gray-600'
-                    }`}
-                  >
-                    {testimonial.role}
-                  </p>
-                </div>
-              </div>
-              <div className="flex mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className="w-4 h-4 fill-yellow-400 text-yellow-400"
-                  />
-                ))}
-              </div>
-              <p
-                className={`text-sm ${
-                  isDarkMode ? 'text-gray-400' : 'text-gray-600'
-                }`}
-              >
-                {testimonial.content}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* Comments Section */}
+      <Comment isDarkMode={isDarkMode} />
 
       {/* Features Section */}
-      <section className="container mx-auto px-4 py-16">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-          <div className="space-y-6">
-            <p className="text-2xl text-justify font-extralight tracking-wide">
-              Enquanto um andar está movimentado, o outro permanece vazio. Que
-              tal aproveitar essa oportunidade? Cadastre seu espaço na nossa
-              plataforma e conecte-se com pessoas que estão em busca do lugar
-              ideal para suas necessidades. Não deixe o potencial do seu espaço
-              parado!{' '}
-              <span className="text-blue-600 font-medium">
-                <Link
-                  href="#"
-                  className="relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-current after:transition-all after:duration-300 hover:after:w-full"
-                >
-                  Dê vida ao seu espaço e faça ele trabalhar por você!
-                </Link>
-              </span>
-            </p>
-          </div>
-          <div>
-            <Image
-              src="/image_1.png"
-              alt="Espaço de coworking"
-              width={500}
-              height={300}
-              className="rounded-lg w-full "
-            />
-          </div>
-        </div>
+      <Feature isDarkMode={isDarkMode} />
 
-        <div className="grid md:grid-cols-2 gap-12 items-center mt-16">
-          <div>
-            <Image
-              src="/image_2.png"
-              alt="Usuário usando laptop"
-              width={500}
-              height={300}
-              className="rounded-lg w-full"
-            />
-          </div>
-          <div className="space-y-6">
-            <p className="text-2xl text-justify font-extralight tracking-wide">
-              Encontrar o espaço ideal sem uma plataforma adequada pode consumir
-              horas do seu dia. Nossa plataforma torna isso rápido e fácil: com
-              apenas alguns cliques, você encontra o local perfeito, com todas
-              as informações e fotos de que precisa. Tudo isso em um só lugar,
-              feito para facilitar sua experiência do início ao fim.{' '}
-              <span className="text-blue-600 font-medium">
-                <Link
-                  href="#"
-                  className="relative inline-block after:content-[''] after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-current after:transition-all after:duration-300 hover:after:w-full"
-                >
-                  Encontre e reserve com facilidade, poupando tempo!
-                </Link>
-              </span>
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Footer */}
+      {/* Footer Section */}
       <Footer isDarkMode={isDarkMode} />
     </main>
   );
