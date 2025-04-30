@@ -206,7 +206,7 @@ export default function Cliente() {
                   <Mail
                     width={25}
                     height={25}
-                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-zinc-50"
+                    className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white"
                   />
                   <IMaskInput
                     name="email"
@@ -635,7 +635,7 @@ export default function Cliente() {
           </div>
         </form>
         <div className="flex gap-6 justify-around items-center mt-8 pb-8">
-          <Link href="/" className="z-0">
+          <Link href="/login" className="z-0">
             <Button
               className={`w-60 z-10 py-4 cursor-pointer text-base font-bold ${
                 isDarkMode
