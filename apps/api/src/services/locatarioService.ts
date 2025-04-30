@@ -4,7 +4,6 @@ import { LocatarioData, LocatarioResponse } from '@/types/index';
 export const locatarioService = {
   async criarLocatario(data: LocatarioData) {
     try {
-      // Verifica se já existe um locatario com o mesmo email
       const locatarioExistente = await locatarioRepository.buscarPorEmail(
         data.email
       );
@@ -16,7 +15,6 @@ export const locatarioService = {
         };
       }
 
-      // Verifica se já existe um locatario com o mesmo CPF
       const cpfExistente = await locatarioRepository.buscarPorCpf(data.cpf);
       if (cpfExistente) {
         throw {
@@ -26,10 +24,7 @@ export const locatarioService = {
         };
       }
 
-      // Cria o locatario no banco de dados
       const locatario = await locatarioRepository.criar(data);
-
-      // Remove a senha do objeto retornado
       const { senha, ...locatarioSemSenha } = locatario as LocatarioResponse;
 
       return {
@@ -37,17 +32,17 @@ export const locatarioService = {
         locatario: locatarioSemSenha,
       };
     } catch (error: any) {
-      if (error.status) {
-        throw error;
-      }
-      throw {
-        status: 500,
-        message: '❌ Erro ao criar locatario no banco de dados',
-      };
+      console.error('❌ Erro ao criar locatario:', error);
+      throw error.status
+        ? error
+        : {
+            status: 500,
+            message: '❌ Erro interno ao criar locatario.',
+          };
     }
   },
 
-  async buscarPorId(id: number) {
+  async buscarPorId(id: number): Promise<Omit<LocatarioResponse, 'senha'>> {
     try {
       const locatario = await locatarioRepository.buscarPorId(id);
       if (!locatario) {
@@ -56,56 +51,79 @@ export const locatarioService = {
           message: '🔍 Locatario não encontrado',
         };
       }
-      return locatario;
+
+      const { senha, ...locatarioSemSenha } = locatario;
+      return locatarioSemSenha;
     } catch (error: any) {
-      if (error.status) {
-        throw error;
-      }
-      throw {
-        status: 500,
-        message: '❌ Erro ao buscar locatario',
-      };
+      console.error('❌ Erro ao buscar locatario por ID:', error);
+      throw error.status
+        ? error
+        : {
+            status: 500,
+            message: '❌ Erro interno ao buscar locatario por ID.',
+          };
     }
   },
 
-  async listarTodos() {
+  async listarLocatarios() {
     try {
-      return await locatarioRepository.listarTodos();
-    } catch (error) {
-      throw {
-        status: 500,
-        message: '❌ Erro ao listar os locatarios',
-      };
-    }
-  },
-
-  async atualizar(id: number, data: Partial<LocatarioData>) {
-    try {
-      const locatario = await locatarioRepository.atualizar(id, data);
-      return locatario;
+      const locatarios = await locatarioRepository.listarTodos();
+      return locatarios.map(({ senha, ...locatario }) => locatario);
     } catch (error: any) {
-      if (error.status) {
-        throw error;
-      }
+      console.error('❌ Erro ao listar locatario:', error);
       throw {
         status: 500,
-        message: '❌ Erro ao atualizar locatario',
+        message: '❌ Erro interno ao listar locatario.',
       };
     }
   },
 
-  async deletar(id: number) {
+  async atualizarLocatario(
+    id: number,
+    data: Partial<LocatarioData>
+  ): Promise<Omit<LocatarioResponse, 'senha'>> {
     try {
+      const cliente = await locatarioRepository.buscarPorId(id);
+      if (!cliente) {
+        throw {
+          status: 404,
+          message: '🔍 Locatário não encontrado.',
+        };
+      }
+
+      const locatarioAtualizado = await locatarioRepository.atualizar(id, data);
+      const { senha, ...locatarioSemSenha } = locatarioAtualizado;
+      return locatarioSemSenha;
+    } catch (error: any) {
+      console.error('❌ Erro ao atualizar locatário:', error);
+      throw error.status
+        ? error
+        : {
+            status: 500,
+            message: '❌ Erro interno ao atualizar locatário.',
+          };
+    }
+  },
+
+  async deletarLocatario(id: number) {
+    try {
+      const cliente = await locatarioRepository.buscarPorId(id);
+      if (!cliente) {
+        throw {
+          status: 404,
+          message: '🔍 Cliente não encontrado.',
+        };
+      }
+
       await locatarioRepository.deletar(id);
-      return { message: '🗑️ Locatario deletado com sucesso' };
     } catch (error: any) {
-      if (error.status) {
-        throw error;
-      }
-      throw {
-        status: 500,
-        message: '❌ Erro ao deletar locatario',
-      };
+      console.error('❌ Erro ao deletar locatário:', error);
+      throw error.status
+        ? error
+        : {
+            status: 500,
+            message: '❌ Erro interno ao deletar locatário.',
+          };
     }
   },
 };
