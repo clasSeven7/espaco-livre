@@ -116,8 +116,8 @@ export const clienteRepository = {
       const dados = truncarCampos(data as Cliente);
 
       const camposAtualizaveis = [
-        'nome_usuario',
         'foto_de_perfil',
+        'nome_usuario',
         'email',
         'telefone',
         'data_de_nascimento',
