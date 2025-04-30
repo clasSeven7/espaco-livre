@@ -1,8 +1,34 @@
 import { locatarioService } from '@/services/locatarioService';
+import upload from '@/services/uploadService';
 import { LocatarioData } from '@/types/index';
 import { Request, Response } from 'express';
 
 export const locatarioController = {
+  // Upload da foto de perfil
+  async uploadFoto(req: Request, res: Response) {
+    try {
+      upload.single('foto_de_perfil')(req, res, async (err: any) => {
+        if (err) {
+          console.error('❌ Erro ao fazer upload:', err);
+          return res.status(400).json({
+            error: 'Erro ao fazer upload da foto.',
+            message: err.message,
+          });
+        }
+
+        return res.status(200).json({
+          message: 'Foto carregada com sucesso!',
+          filePath: req.file?.path || null,
+        });
+      });
+    } catch (error: any) {
+      console.error('❌ Erro ao carregar foto:', error);
+      return res.status(error.status || 500).json({
+        error: `❌ ${error.message}`,
+      });
+    }
+  },
+
   async criar(request: Request, response: Response) {
     try {
       const locatarioData = request.body as LocatarioData;
@@ -40,7 +66,7 @@ export const locatarioController = {
 
   async listarTodos(request: Request, response: Response) {
     try {
-      const locatarios = await locatarioService.listarTodos();
+      const locatarios = await locatarioService.listarLocatarios();
       return response.status(200).json({
         message: '📋 Lista de locatarios recuperada com sucesso!',
         data: locatarios,
@@ -58,7 +84,7 @@ export const locatarioController = {
     try {
       const { id } = request.params;
       const locatarioData = request.body as Partial<LocatarioData>;
-      const locatario = await locatarioService.atualizar(
+      const locatario = await locatarioService.atualizarLocatario(
         Number(id),
         locatarioData
       );
@@ -78,7 +104,7 @@ export const locatarioController = {
   async deletar(request: Request, response: Response) {
     try {
       const { id } = request.params;
-      const resultado = await locatarioService.deletar(Number(id));
+      const resultado = await locatarioService.deletarLocatario(Number(id));
       return response.status(200).json({
         message: '🗑️ Locatario removido com sucesso!',
         data: resultado,
