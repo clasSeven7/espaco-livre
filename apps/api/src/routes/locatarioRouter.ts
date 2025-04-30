@@ -1,5 +1,6 @@
 import { locatarioController } from '@/controllers/locatarioController';
 import { validateLocatario } from '@/middlewares/validateLocatario';
+import upload from '@/services/uploadService';
 import { Router } from 'express';
 
 const router = Router();
@@ -81,7 +82,59 @@ const router = Router();
  *       400:
  *         description: Dados inválidos
  */
-router.post('/', validateLocatario, locatarioController.criar);
+// 📌 Criar novo locatário (com possibilidade de upload de foto)
+router.post(
+  '/',
+  upload.single('foto_de_perfil'),
+  validateLocatario,
+  locatarioController.criar
+);
+
+/**
+ * @swagger
+ * /clientes/upload:
+ *   post:
+ *     summary: Upload de foto de perfil
+ *     tags: [Locatarios]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               foto_de_perfil:
+ *                 type: string
+ *                 format: binary
+ *     responses:
+ *       200:
+ *         description: Foto carregada com sucesso
+ */
+// 📌 Upload de foto separado (se precisar disso isoladamente)
+router.post(
+  '/upload',
+  upload.single('foto_de_perfil'),
+  locatarioController.uploadFoto
+);
+
+/**
+ * @swagger
+ * /locatarios:
+ *   get:
+ *     summary: Listar todos os locatários
+ *     tags: [Locatarios]
+ *     responses:
+ *       200:
+ *         description: Lista de locatários
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Locatario'
+ */
+// 📌 Listar todos locatários
+router.get('/', locatarioController.listarTodos);
 
 /**
  * @swagger
@@ -106,25 +159,8 @@ router.post('/', validateLocatario, locatarioController.criar);
  *       404:
  *         description: Locatário não encontrado
  */
+// 📌 Buscar locatário por ID
 router.get('/:id', locatarioController.buscarPorId);
-
-/**
- * @swagger
- * /locatarios:
- *   get:
- *     summary: Listar todos os locatários
- *     tags: [Locatarios]
- *     responses:
- *       200:
- *         description: Lista de locatários
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Locatario'
- */
-router.get('/', locatarioController.listarTodos);
 
 /**
  * @swagger
@@ -157,7 +193,13 @@ router.get('/', locatarioController.listarTodos);
  *       404:
  *         description: Locatário não encontrado
  */
-router.put('/:id', validateLocatario, locatarioController.atualizar);
+// 📌 Atualizar locatário
+router.put(
+  '/:id',
+  upload.single('foto_de_perfil'),
+  validateLocatario,
+  locatarioController.atualizar
+);
 
 /**
  * @swagger
@@ -178,6 +220,7 @@ router.put('/:id', validateLocatario, locatarioController.atualizar);
  *       404:
  *         description: Locatário não encontrado
  */
+// 📌 Deletar locatário
 router.delete('/:id', locatarioController.deletar);
 
 export default router;
