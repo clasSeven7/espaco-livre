@@ -27,7 +27,7 @@ const comments = [
   },
 ];
 
-const Comment: React.FC<CommentProps> = ({ isDarkMode }) => {
+export const Comment: React.FC<CommentProps> = ({ isDarkMode }) => {
   return (
     <section id="comentarios" className="container mx-auto px-4 py-16">
       <div className="text-center mb-12">
@@ -103,5 +103,3 @@ const Comment: React.FC<CommentProps> = ({ isDarkMode }) => {
     </section>
   );
 };
-
-export default Comment;
