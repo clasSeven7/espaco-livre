@@ -72,7 +72,7 @@ A aplicação possui uma API RESTful para gerenciar usuários, espaços e reserv
 ##### 🔐 Autenticação
 
 - `POST /login/`: Realiza o login do usuário.
-- `POST /cadastro/clinte`: Cadastra um novo cliente.
+- `POST /cadastro/cliente`: Cadastra um novo cliente.
 - `POST /cadastro/locatario`: Cadastra um novo locatário.
 
 ##### 🧑‍💼 Locatários
