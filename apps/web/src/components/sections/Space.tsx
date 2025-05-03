@@ -4,17 +4,17 @@ import Image from 'next/image';
 import { useState } from 'react';
 
 const categorias = [
-  { nome: 'Auditório', icon: '/group.svg' },
-  { nome: 'Estúdio de Fotografia', icon: '/photo.svg' },
-  { nome: 'Estúdio de Podcast', icon: '/microphone.svg' },
-  { nome: 'Sala de Reunião', icon: '/cinema.svg' },
-  { nome: 'Coworking', icon: '/coworking.svg' },
+  { nome: 'Auditório', icon: '/space/icone/group.svg' },
+  { nome: 'Estúdio de Fotografia', icon: '/space/icone/photo.svg' },
+  { nome: 'Estúdio de Podcast', icon: '/space/icone/microphone.svg' },
+  { nome: 'Sala de Reunião', icon: '/space/icone/cinema.svg' },
+  { nome: 'Coworking', icon: '/space/icone/coworking.svg' },
 ];
 
 const espacos = [
   {
     nome: 'WorkHub Alpha',
-    imagem: '/workhub_alpha.png',
+    imagem: '/space/workhub_alpha.png',
     disponivel: 'Disponível Hoje',
     preco: 'R$ 70/h',
     localizacao: 'Tambaú, João Pessoa - PB',
@@ -24,7 +24,7 @@ const espacos = [
   },
   {
     nome: 'Espaço Lumière',
-    imagem: '/espaco_lumiere.png',
+    imagem: '/space/espaco_lumiere.png',
     disponivel: 'Disponível Hoje',
     preco: 'R$ 70/h',
     localizacao: 'Altiplano, João Pessoa - PB',
@@ -34,7 +34,7 @@ const espacos = [
   },
   {
     nome: 'Studio Voz Alta',
-    imagem: '/studio_voz_alta.png',
+    imagem: '/space/studio_voz_alta.png',
     disponivel: 'Disponível Hoje',
     preco: 'R$ 70/h',
     localizacao: 'Bessa, João Pessoa - PB',
@@ -44,7 +44,7 @@ const espacos = [
   },
   {
     nome: 'Sala Connect',
-    imagem: '/sala_connect.png',
+    imagem: '/space/sala_connect.png',
     disponivel: 'Disponível Hoje',
     preco: 'R$ 70/h',
     localizacao: 'Bancários, João Pessoa - PB',
@@ -54,7 +54,7 @@ const espacos = [
   },
   {
     nome: 'Auditório Prisma',
-    imagem: '/auditorio_prisma.png',
+    imagem: '/space/auditorio_prisma.png',
     disponivel: 'Disponível Hoje',
     preco: 'R$ 70/h',
     localizacao: 'Torre, João Pessoa - PB',
@@ -64,7 +64,7 @@ const espacos = [
   },
   {
     nome: 'Auditório Versatille',
-    imagem: '/auditorio_versatille.png',
+    imagem: '/space/auditorio_versatille.png',
     disponivel: 'Disponível Hoje',
     preco: 'R$ 70/h',
     localizacao: 'Manaíra, João Pessoa - PB',
@@ -72,9 +72,29 @@ const espacos = [
     nota: 5.0,
     categoria: 'Auditório',
   },
+  {
+    nome: 'Auditório Versatille',
+    imagem: '/space/auditorio_versatille.png',
+    disponivel: 'Disponível Hoje',
+    preco: 'R$ 70/h',
+    localizacao: 'Manaíra, João Pessoa - PB',
+    destaque: true,
+    nota: 5.0,
+    categoria: 'Auditório',
+  },
+  {
+    nome: 'Studio Voz Alta',
+    imagem: '/space/studio_voz_alta.png',
+    disponivel: 'Disponível Hoje',
+    preco: 'R$ 70/h',
+    localizacao: 'Bessa, João Pessoa - PB',
+    destaque: true,
+    nota: 5.0,
+    categoria: 'Estúdio de Podcast',
+  },
 ];
 
-const Space: React.FC<SpaceProps> = ({ isDarkMode }) => {
+export const Space: React.FC<SpaceProps> = ({ isDarkMode }) => {
   const [categoriaSelecionada, setCategoriaSelecionada] = useState<
     string | null
   >(null);
@@ -124,5 +144,3 @@ const Space: React.FC<SpaceProps> = ({ isDarkMode }) => {
     </section>
   );
 };
-
-export default Space;
