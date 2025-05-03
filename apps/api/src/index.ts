@@ -1,6 +1,7 @@
 import SERVER from '@/config/server.js';
 import authRouter from '@/routes/authRouter';
 import clienteRouter from '@/routes/clienteRouter';
+import espacoRouter from '@/routes/espacoRouter';
 import locatarioRouter from '@/routes/locatarioRouter';
 import setupSwagger from './config/swagger';
 
@@ -14,6 +15,7 @@ const routeEmojis: Record<string, string> = {
   '/auth': '🔑',
   '/locatarios': '👥',
   '/clientes': '🏢',
+  '/espacos': '🏠',
 };
 
 // Middleware
@@ -24,6 +26,7 @@ app.use(express.json());
 app.use('/auth', authRouter);
 app.use('/locatarios', locatarioRouter);
 app.use('/clientes', clienteRouter);
+app.use('/espacos', espacoRouter);
 
 // Iniciando o servidor
 app.listen(SERVER.port, () => {
