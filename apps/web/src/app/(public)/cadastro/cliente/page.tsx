@@ -1,6 +1,6 @@
 'use client';
 
-import Header from '@/components/Header';
+import { HeaderSimple } from '@/components/HeaderSimple';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { api } from '@/lib/axios';
@@ -145,7 +145,7 @@ export default function Cliente() {
 
   return (
     <>
-      <Header isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+      <HeaderSimple isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
       <div
         className={`items-center justify-center h-full w-full relative ${
           isDarkMode
