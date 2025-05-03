@@ -31,7 +31,7 @@ export default function CadastroLayout({
 
   return (
     <div
-      className={`flex bg-[#DDF0EF] dark:bg-zinc-900 relative overflow-hidden min-h-screen transition-colors`}
+      className={`flex bg-white dark:bg-zinc-900 relative overflow-hidden min-h-screen transition-colors`}
     >
       <div className="w-[80px] flex flex-col items-center py-4 shrink-0">
         <button
@@ -44,7 +44,7 @@ export default function CadastroLayout({
 
         {/* Barra de progresso */}
         <div className="flex-1 flex flex-col justify-center mt-4">
-          <div className="w-2 h-3/4 bg-gray-50 dark:bg-gray-400 shadow-2xl relative overflow-hidden rounded-full">
+          <div className="w-2 h-3/4 bg-gray-200 dark:bg-gray-400 shadow-2xl relative overflow-hidden rounded-full">
             <div
               className="absolute top-0 left-0 w-full bg-[#2C7DA0] dark:bg-zinc-800 transition-all duration-300"
               style={{ height: `${progressPercentage}%` }}
