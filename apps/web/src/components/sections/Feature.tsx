@@ -2,7 +2,7 @@ import { FeatureProps } from '@/types/index';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const Feature: React.FC<FeatureProps> = ({ isDarkMode }) => {
+export const Feature: React.FC<FeatureProps> = ({ isDarkMode }) => {
   return (
     <section className="container mx-auto px-4 py-16">
       {/* Primeiro bloco */}
@@ -77,5 +77,3 @@ const Feature: React.FC<FeatureProps> = ({ isDarkMode }) => {
     </section>
   );
 };
-
-export default Feature;
