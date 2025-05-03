@@ -25,7 +25,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { IMaskInput } from 'react-imask';
 
-import Header from '@/components/Header';
+import { HeaderSimple } from '@/components/HeaderSimple';
 import { FormDataLocatario } from '@/types/index';
 
 export default function Locatario() {
@@ -141,7 +141,7 @@ export default function Locatario() {
 
   return (
     <>
-      <Header isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+      <HeaderSimple isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
       <div
         className={`items-center justify-center h-full w-full relative ${
           isDarkMode
