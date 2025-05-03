@@ -81,3 +81,62 @@ export interface ClienteCreate extends Partial<ClienteData> {
   senha: string;
   nome_usuario: string;
 }
+
+export interface Espaco {
+  locatario_id: number;
+  titulo: string;
+  descricao?: string;
+  cidade: string;
+  rua: string;
+  bairro?: string;
+  observacoes?: string;
+  valor_imovel: number;
+  taxa_limpeza: number;
+  disponivel_24h: boolean;
+  hora_inicio?: string;
+  hora_fim?: string;
+  recursos_imovel: string[];
+  fotos_imovel: string[];
+  todos_dias?: boolean;
+  dias_disponiveis: string;
+  metodos_pagamento: string[];
+}
+
+export interface EspacoData {
+  locatario_id: number;
+  titulo: string;
+  descricao?: string;
+  fotos_imovel?: string[];
+  cidade: string;
+  rua: string;
+  bairro?: string;
+  observacoes?: string;
+  valor_imovel: number;
+  taxa_limpeza?: number;
+  disponivel_24h?: boolean;
+  hora_inicio?: string;
+  hora_fim?: string;
+  todos_dias?: boolean;
+  dias_disponiveis?:
+    | 'segunda'
+    | 'terca'
+    | 'quarta'
+    | 'quinta'
+    | 'sexta'
+    | 'sabado'
+    | 'domingo';
+  recursos_imovel?: string[];
+  metodos_pagamento?: string[];
+}
+
+export interface EspacoResponse extends EspacoData {
+  id: number;
+  criado_em: Date;
+  atualizado_em: Date;
+}
+export interface EspacoCreate extends Partial<EspacoData> {
+  locatario_id: number;
+  titulo: string;
+  descricao: string;
+  fotos_imovel: string[];
+}
