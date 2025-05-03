@@ -26,6 +26,26 @@ export interface FormDataLocatario {
   aceitar_termos: boolean;
 }
 
+export interface FormDataEspaco {
+  locatario_id: number;
+  titulo: string;
+  descricao?: string;
+  cidade: string;
+  rua: string;
+  bairro?: string;
+  observacoes?: string;
+  valor_imovel: number;
+  taxa_limpeza: number;
+  disponivel_24h: boolean;
+  hora_inicio?: string;
+  hora_fim?: string;
+  recursos_imovel: string[];
+  fotos_imovel: File | null;
+  todos_dias?: boolean;
+  dias_disponiveis: string;
+  metodos_pagamento: string[];
+}
+
 export interface InfoItemPerfilProps {
   icon: React.ReactNode;
   label: string;
@@ -43,6 +63,13 @@ export interface SpaceCardProps {
   url?: string;
 }
 
+export interface HeaderProps {
+  isDarkMode: boolean;
+  token: string | null;
+  toggleTheme: () => void;
+  handleLogout: () => void;
+}
+
 export interface CommentProps {
   isDarkMode: boolean;
 }
@@ -53,4 +80,12 @@ export interface SpaceProps {
 
 export interface FeatureProps {
   isDarkMode: boolean;
+}
+
+export interface HeroProps {
+  isDarkMode: boolean;
+}
+export interface HeaderSimpleProps {
+  isDarkMode: boolean;
+  toggleTheme: () => void;
 }
