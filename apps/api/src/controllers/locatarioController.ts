@@ -4,7 +4,6 @@ import { LocatarioData } from '@/types/index';
 import { Request, Response } from 'express';
 
 export const locatarioController = {
-  // Upload da foto de perfil
   async uploadFoto(req: Request, res: Response) {
     try {
       upload.single('foto_de_perfil')(req, res, async (err: any) => {
