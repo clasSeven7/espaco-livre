@@ -7,7 +7,6 @@ const JWT_SECRET = process.env.JWT_SECRET || 'sua-chave-secreta';
 export const authService = {
   async login(nome_usuario: string, senha: string) {
     try {
-      // Tenta encontrar o usuário como cliente
       const cliente = await clienteRepository.buscarPorNomeUsuario(
         nome_usuario
       );
@@ -20,11 +19,10 @@ export const authService = {
         return {
           token,
           usuario: { ...cliente, tipo: 'cliente' },
-          message: '✅ Login realizado com sucesso! Bem-vindo(a)!',
+          message: '✅ Login do Cliente realizado com sucesso! Bem-vindo(a)!',
         };
       }
 
-      // Tenta encontrar o usuário como locatario
       const locatario = await locatarioRepository.buscarPorNomeUsuario(
         nome_usuario
       );
@@ -37,7 +35,7 @@ export const authService = {
         return {
           token,
           usuario: { ...locatario, tipo: 'locatario' },
-          message: '✅ Login realizado com sucesso! Bem-vindo(a)!',
+          message: '✅ Login do Locatário realizado com sucesso! Bem-vindo(a)!',
         };
       }
 
