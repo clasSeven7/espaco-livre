@@ -4,24 +4,80 @@ import ThemeToggleButton from '@/components/ThemeToggleButton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { api } from '@/lib/axios';
+import { FormDataEspaco } from '@/types/index';
+import { AxiosError } from 'axios';
 import {
   Book,
+  Camera,
+  ChevronsUpDown,
+  Hammer,
   HelpCircle,
   List,
   Megaphone,
+  Trash2,
   UploadCloud,
-  Wrench,
+  X,
 } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
+import router from 'next/router';
 import { useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
+
+const itens = [
+  'Ambiente Climatizado',
+  'Estacionamento',
+  'Wi-fi de alta velocidade',
+  'Projetor e Tela Retrátil',
+  'Controle de Acesso Digital',
+  'Mobiliário Ergonômico',
+  'Painéis de Iluminação Profissional',
+  'Equipamentos de Áudio Profissional',
+];
 
 export default function InformacoesIniciais() {
   const [messagemTitulo, setMessagemTitulo] = useState('');
   const [messagemDescricao, setMessagemDescricao] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [recurso, setRecurso] = useState('');
+  const [selected, setSelected] = useState<string[]>([]);
+  const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
+
+  const [formData, setFormData] = useState<FormDataEspaco>({
+    fotos_imovel: null,
+    locatario_id: 0,
+    titulo: '',
+    descricao: '',
+    cidade: '',
+    rua: '',
+    bairro: '',
+    observacoes: '',
+    valor_imovel: 0,
+    taxa_limpeza: 0,
+    disponivel_24h: false,
+    hora_inicio: '',
+    hora_fim: '',
+    recursos_imovel: [],
+    todos_dias: false,
+    dias_disponiveis: '',
+    metodos_pagamento: [],
+  });
 
   const maxMessagemTitulo = 100;
   const maxMessagemDescricao = 500;
+
+  const toggleItem = (item: string) => {
+    setSelected((prev) =>
+      prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item]
+    );
+  };
+
+  const removeItem = (item: string) => {
+    setSelected((prev) => prev.filter((i) => i !== item));
+  };
 
   const handleTituloChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -55,15 +111,69 @@ export default function InformacoesIniciais() {
     document.documentElement.classList.toggle('dark');
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setFile(e.target.files[0]);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const dadosFormatados = {
+        ...formData,
+        metodos_pagamento: formData.metodos_pagamento.map((metodo) => ({
+          metodo_pagamento: metodo,
+        })),
+        recursos_imovel: selected.map((item) => ({
+          recurso: item,
+        })),
+        todos_dias: formData.todos_dias,
+        fotos_imovel: file ? [file] : [],
+      };
+
+      if (file) {
+        dadosFormatados.fotos_imovel = [file];
+      }
+
+      await api.post('/espacos', dadosFormatados, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      toast.success('Espaço cadastrado com sucesso!');
+      router.push('/login');
+    } catch (error) {
+      console.error('Erro ao cadastrar:', error);
+      const axiosError = error as AxiosError<{ error: string; field?: string }>;
+
+      if (axiosError.response?.data?.field) {
+        toast.error(
+          `Erro no campo ${axiosError.response.data.field}: ${axiosError.response.data.error}`
+        );
+      } else {
+        toast.error(
+          axiosError.response?.data?.error ||
+            'Erro ao realizar cadastro. Tente novamente.'
+        );
+      }
+    } finally {
+      setTimeout(() => setIsLoading(false), 1000);
+    }
+  };
+
   return (
     <div
       className={`flex relative overflow-hidden min-h-screen ${
-        isDarkMode ? 'bg-zinc-900 text-white' : 'bg-[#DDF0EF] text-black'
+        isDarkMode ? 'bg-zinc-900 text-white' : 'bg-white text-black'
       }`}
     >
-      <div className="flex-1 flex flex-col p-4 lg:p-6 justify-between overflow-y-auto">
+      <div className="flex flex-1 flex-col p-4 lg:p-6 overflow-y-auto">
         {/* Cabeçalho */}
-        <div className="flex items-center space-x-4 mb-6">
+        <div id="cabecalho" className="flex items-center space-x-4 mb-6">
           <h1
             className={`flex items-center text-2xl font-bold px-8 py-4 rounded-xl shadow ${
               isDarkMode ? 'bg-zinc-800' : 'bg-[#6ea7ca]'
@@ -74,10 +184,19 @@ export default function InformacoesIniciais() {
           </h1>
         </div>
 
-        {/* Campos principais */}
-        <div className="flex flex-col lg:flex-row flex-1 gap-6 mt-4">
-          <div className="flex flex-col flex-1 space-y-4">
-            <div className="relative">
+        {/* Conteúdo em duas colunas */}
+        <form
+          action="espaco-form"
+          onSubmit={handleSubmit}
+          encType="multipart/form-data"
+          method="post"
+          className="flex flex-col lg:flex-row gap-6"
+        >
+          <div
+            id="lado_esquerdo"
+            className="w-full lg:w-2/3 flex flex-col gap-6"
+          >
+            <div id="titulo" className="relative">
               <label htmlFor="titulo" className="sr-only">
                 Título do Espaço
               </label>
@@ -86,7 +205,7 @@ export default function InformacoesIniciais() {
                 <Input
                   id="titulo"
                   placeholder="Digite o título do Espaço"
-                  className={`pl-10 py-8 rounded-lg border-0  ${
+                  className={`pl-10 py-8 rounded-lg border-0 ${
                     isDarkMode
                       ? 'dark:bg-zinc-800 text-white focus:ring-2 focus:ring-gray-500 placeholder:text-white/50'
                       : 'bg-[#1178B9] text-white focus:ring-2 focus:ring-blue-500 placeholder:text-white/50'
@@ -104,7 +223,7 @@ export default function InformacoesIniciais() {
               </div>
             </div>
 
-            <div className="relative">
+            <div id="descricao" className="relative">
               <label htmlFor="descricao" className="sr-only">
                 Descrição do Espaço
               </label>
@@ -131,89 +250,211 @@ export default function InformacoesIniciais() {
               </div>
             </div>
 
-            <div className="relative">
-              <label htmlFor="equipamentos" className="sr-only">
-                Equipamentos
-              </label>
-              <div className="relative">
-                <Wrench className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80" />
-                <Input
-                  id="equipamentos"
-                  placeholder="Informe os equipamentos disponíveis"
-                  className={`pl-10 py-8 rounded-lg border-0  ${
-                    isDarkMode
-                      ? 'dark:bg-zinc-800 text-white focus:ring-2 focus:ring-gray-500 placeholder:text-white/50'
-                      : 'bg-[#1178B9] text-white focus:ring-2 focus:ring-blue-500 placeholder:text-white/50'
-                  }`}
-                />
+            <div id="equipamentos" className="relative">
+              {selected.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-2 bg-[#2176AE] dark:bg-zinc-800 text-white p-4 rounded-sm">
+                  {selected.map((item) => (
+                    <div
+                      key={item}
+                      className="flex items-center bg-yellow-400 text-black px-3 py-1 rounded-full text-sm"
+                    >
+                      {item}
+                      <button
+                        onClick={() => removeItem(item)}
+                        className="ml-1 cursor-pointer"
+                      >
+                        <X size={14} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <div className="flex gap-4 items-end">
+                <div className="w-full max-w-md">
+                  <div className="relative w-full max-w-md">
+                    <button
+                      onClick={() => setOpen((prev) => !prev)}
+                      className="w-full h-full justify-between bg-[#2176AE] dark:bg-zinc-800 text-white text-sm cursor-pointer rounded-lg px-4 py-3 flex items-center"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Hammer className="ml-2 h-6 w-6" />
+                        Selecionar Equipamentos
+                      </div>
+                      <ChevronsUpDown className="ml-2 h-4 w-4" />
+                    </button>
+
+                    {open && (
+                      <div className="absolute left-0 top-full mt-2 z-50 w-full bg-[#2176AE] dark:bg-zinc-800 text-white rounded-md shadow-lg overflow-hidden">
+                        <ul className="max-h-auto overflow-y-auto w-full p-2">
+                          {itens.map((option) => (
+                            <li
+                              key={option}
+                              className="flex items-center gap-2 px-2 py-2 cursor-pointer rounded-md transition"
+                              onClick={() => toggleItem(option)}
+                            >
+                              <label className="relative flex items-center cursor-pointer">
+                                <input
+                                  type="checkbox"
+                                  checked={selected.includes(option)}
+                                  onChange={() => toggleItem(option)}
+                                  className="peer hidden"
+                                />
+                                <span
+                                  className={`w-5 h-5 flex items-center justify-center rounded border-2 transition-colors ${
+                                    selected.includes(option)
+                                      ? 'bg-white border-transparent'
+                                      : 'bg-transparent border-white'
+                                  }`}
+                                >
+                                  {selected.includes(option) && (
+                                    <svg
+                                      className="w-5 h-5 text-[#2176AE]"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      strokeWidth="3"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M5 13l4 4L19 7"
+                                      />
+                                    </svg>
+                                  )}
+                                </span>
+                              </label>
+                              <span>{option}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex-1 relative">
+                  <Input
+                    value={recurso}
+                    onChange={(e) => setRecurso(e.target.value)}
+                    placeholder="Algum recurso disponível específico?"
+                    className={`py-6 pl-4 pr-10 rounded-lg border-none ${
+                      isDarkMode
+                        ? 'dark:bg-zinc-800 text-white focus:ring-2 focus:ring-gray-500 placeholder:text-white/50'
+                        : 'bg-[#1178B9] text-white focus:ring-2 focus:ring-blue-500 placeholder:text-white/50'
+                    }`}
+                  />
+                  <button
+                    onClick={() => {
+                      if (recurso && !selected.includes(recurso)) {
+                        setSelected((prev) => [...prev, recurso]);
+                        setRecurso('');
+                      }
+                    }}
+                    className="absolute right-4 top-1/2 -translate-y-1/2"
+                  >
+                    <Image
+                      src="/send.svg"
+                      alt="Logo"
+                      width={20}
+                      height={20}
+                      priority
+                    />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Upload Section */}
-          <div className="flex flex-col w-full lg:w-1/3 space-y-4">
-            <button
-              className={`w-full h-96 flex flex-col justify-center items-center rounded-md text-center px-4 py-6 cursor-pointer ${
-                isDarkMode
-                  ? 'dark:bg-zinc-800 text-white'
-                  : 'bg-[#2176AE] text-white'
-              }`}
+          <div
+            id="lado_direito"
+            className="w-full lg:w-1/3 flex flex-col gap-6"
+          >
+            <div
+              id="fotos"
+              className="relative flex flex-col justify-center items-center"
             >
-              <UploadCloud size={32} />
-              <span className="mt-2 font-medium">Adicione Fotos do local</span>
-            </button>
-
-            <div className="flex flex-col gap-4">
-              <Button
-                className={` w-full cursor-pointer ${
+              <input
+                type="file"
+                className={`w-full h-96 flex flex-col justify-center items-center rounded-md text-center px-4 py-6 cursor-pointer ${
                   isDarkMode
-                    ? 'text-white bg-red-900 hover:bg-red-950'
-                    : 'text-white bg-red-500 hover:bg-red-600'
+                    ? 'bg-zinc-800 text-zinc-800'
+                    : 'bg-[#2176AE] text-[#2176AE]'
                 }`}
-              >
-                Remover Fotos
-              </Button>
-              <Button
-                className={` w-full cursor-pointer ${
-                  isDarkMode
-                    ? 'text-white bg-green-900 hover:bg-green-950'
-                    : 'text-white bg-green-500 hover:bg-green-600'
-                }`}
-              >
-                Salvar
-              </Button>
+              />
+              <UploadCloud
+                size={50}
+                className="absolute text-white top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
+              />
+              <span className="text-white mt-10 font-medium absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                Adicione Fotos do local
+              </span>
             </div>
+
+            <div id="botoes_fotos" className="flex justify-between mx-15">
+              <div
+                id="adicionar"
+                className="relative flex flex-col justify-center items-center cursor-pointer"
+              >
+                <input
+                  type="file"
+                  onChange={handleFileChange}
+                  className="bg-yellow-500 text-yellow-500 flex flex-col justify-center items-center rounded-md text-center py-2 cursor-pointer w-30 h-13"
+                />
+                <Camera className="text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+              </div>
+
+              <div
+                id="remover"
+                className="relative flex flex-col justify-center items-center cursor-pointer"
+              >
+                <input className="bg-red-600 text-red-600 flex flex-col justify-center items-center rounded-md text-center py-2 cursor-pointer w-30 h-13" />
+                <Trash2 className="text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+              </div>
+            </div>
+
+            <Button
+              onClick={handleSubmit}
+              disabled={isLoading}
+              className={`w-full h-15 mt-12 text-lg bg-green-800 hover:bg-green-800 text-white cursor-pointer`}
+            >
+              {isLoading ? 'Salvando...' : 'Salvar'}
+            </Button>
           </div>
-        </div>
+        </form>
 
         {/* Botão de avançar */}
-        <div className="flex justify-end mt-4">
+        <div className="flex justify-end mt-auto">
           <Button
             className={`text-lg font-bold px-22 py-6 rounded-md cursor-pointer ${
               isDarkMode
                 ? 'bg-[#ffffff] hover:bg-[#d4d3d3] text-black'
-                : 'bg-[#11395e] hover:bg-[#1a222b] text-white '
+                : 'bg-[#11395e] hover:bg-[#1a222b] text-white'
             }`}
           >
             <Link href="/espaco/cadastro/2">Avançar</Link>
           </Button>
         </div>
-      </div>
 
-      <div className="absolute top-6 right-4 lg:right-8 flex space-x-4 text-lg font-bold underline">
-        <Button
-          size="icon"
-          className={`px-[10px] py-2 ${
-            isDarkMode
-              ? 'bg-[#d3d61f] text-white hover:bg-[#bdc070] hover:text-black cursor-pointer'
-              : 'bg-[#d3d61f] text-white hover:bg-[#bdc070] hover:text-white cursor-pointer'
-          }`}
-        >
-          <Link href="/ajuda" className="flex items-center gap-1">
-            <HelpCircle size={18} />
-          </Link>
-        </Button>
-        <ThemeToggleButton isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+        {/* Botões superiores */}
+        <div className="absolute top-6 right-4 lg:right-8 flex space-x-4 text-lg font-bold underline">
+          <Button
+            size="icon"
+            className={`px-[10px] py-2 ${
+              isDarkMode
+                ? 'bg-white text-black cursor-pointer'
+                : 'bg-black text-white cursor-pointer'
+            }`}
+          >
+            <Link href="/ajuda" className="flex items-center gap-1">
+              <HelpCircle size={18} />
+            </Link>
+          </Button>
+          <ThemeToggleButton
+            isDarkMode={isDarkMode}
+            toggleTheme={toggleTheme}
+          />
+        </div>
       </div>
     </div>
   );
