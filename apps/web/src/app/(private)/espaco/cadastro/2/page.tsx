@@ -42,7 +42,7 @@ export default function InformacoesGerais() {
   return (
     <div
       className={`flex relative overflow-hidden min-h-screen ${
-        isDarkMode ? 'bg-zinc-900 text-white' : 'bg-[#DDF0EF] text-black'
+        isDarkMode ? 'bg-zinc-900 text-white' : 'bg-white text-black'
       }`}
     >
       <div className="flex-1 flex flex-col p-4 lg:p-6 justify-between overflow-y-auto">
@@ -166,8 +166,8 @@ export default function InformacoesGerais() {
           size="icon"
           className={`px-[10px] py-2 ${
             isDarkMode
-              ? 'bg-[#d3d61f] text-white hover:bg-[#bdc070] hover:text-black cursor-pointer'
-              : 'bg-[#d3d61f] text-white hover:bg-[#bdc070] hover:text-white cursor-pointer'
+              ? 'bg-white text-black cursor-pointer'
+              : 'bg-black text-white cursor-pointer'
           }`}
         >
           <Link href="/ajuda" className="flex items-center gap-1">
