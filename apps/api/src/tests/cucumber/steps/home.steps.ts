@@ -6,7 +6,7 @@ let telaAtual = '';
 let mensagens: string[] = [];
 let botoes: string[] = [];
 
-Given('que o usuário não está logado', function () {
+Given('que o usuário não está logado na plataforma', function () {
   usuarioLogado = false;
 });
 

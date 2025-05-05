@@ -19,6 +19,9 @@
     },
     "types": ["jest"]
   },
+  "ts-node": {
+    "esm": true
+  },
   "include": ["src/**/*", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
 }
