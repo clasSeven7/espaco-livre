@@ -1,7 +1,7 @@
 import { Star } from 'lucide-react';
 import Image from 'next/image';
 
-import { CommentProps } from '@/types/index';
+import { CommentProps } from '@/types';
 
 const comments = [
   {
