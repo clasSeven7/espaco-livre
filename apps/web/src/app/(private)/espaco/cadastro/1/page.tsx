@@ -1,12 +1,12 @@
 'use client';
 
 import ThemeToggleButton from '@/components/ThemeToggleButton';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { api } from '@/lib/axios';
-import { FormDataEspaco } from '@/types/index';
-import { AxiosError } from 'axios';
+import {Button} from '@/components/ui/button';
+import {Input} from '@/components/ui/input';
+import {Textarea} from '@/components/ui/textarea';
+import {api} from '@/lib/axios';
+import {FormDataEspaco} from '@/types';
+import {AxiosError} from 'axios';
 import {
   Book,
   Camera,
@@ -15,6 +15,7 @@ import {
   HelpCircle,
   List,
   Megaphone,
+  Save,
   Trash2,
   UploadCloud,
   X,
@@ -22,8 +23,8 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 import router from 'next/router';
-import { useEffect, useState } from 'react';
-import { toast } from 'react-hot-toast';
+import React, {useEffect, useState} from 'react';
+import {toast} from 'react-hot-toast';
 
 const itens = [
   'Ambiente Climatizado',
@@ -37,6 +38,9 @@ const itens = [
 ];
 
 export default function InformacoesIniciais() {
+  const maxMessagemTitulo = 100;
+  const maxMessagemDescricao = 500;
+
   const [messagemTitulo, setMessagemTitulo] = useState('');
   const [messagemDescricao, setMessagemDescricao] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -44,7 +48,8 @@ export default function InformacoesIniciais() {
   const [selected, setSelected] = useState<string[]>([]);
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [file, setFile] = useState<File | null>(null);
+  const [file, setFile] = useState<File[] | null>(null);
+  const [previews, setPreviews] = useState<string[]>([]);
 
   const [formData, setFormData] = useState<FormDataEspaco>({
     fotos_imovel: null,
@@ -65,9 +70,6 @@ export default function InformacoesIniciais() {
     dias_disponiveis: '',
     metodos_pagamento: [],
   });
-
-  const maxMessagemTitulo = 100;
-  const maxMessagemDescricao = 500;
 
   const toggleItem = (item: string) => {
     setSelected((prev) =>
@@ -93,17 +95,6 @@ export default function InformacoesIniciais() {
     }
   };
 
-  useEffect(() => {
-    const storedTheme = localStorage.getItem('theme');
-    if (storedTheme === 'dark') {
-      setIsDarkMode(true);
-      document.documentElement.classList.add('dark');
-    } else {
-      setIsDarkMode(false);
-      document.documentElement.classList.remove('dark');
-    }
-  }, []);
-
   const toggleTheme = () => {
     const newTheme = !isDarkMode;
     setIsDarkMode(newTheme);
@@ -112,9 +103,14 @@ export default function InformacoesIniciais() {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setFile(e.target.files[0]);
-    }
+    if (!e.target.files) return;
+
+    const filesArray = Array.from(e.target.files);
+    setFile(filesArray);
+
+    const previewsArray = filesArray.map((file) => URL.createObjectURL(file));
+    setPreviews(previewsArray);
+
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -157,13 +153,24 @@ export default function InformacoesIniciais() {
       } else {
         toast.error(
           axiosError.response?.data?.error ||
-            'Erro ao realizar cadastro. Tente novamente.'
+          'Erro ao realizar cadastro. Tente novamente.'
         );
       }
     } finally {
       setTimeout(() => setIsLoading(false), 1000);
     }
   };
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem('theme');
+    if (storedTheme === 'dark') {
+      setIsDarkMode(true);
+      document.documentElement.classList.add('dark');
+    } else {
+      setIsDarkMode(false);
+      document.documentElement.classList.remove('dark');
+    }
+  }, []);
 
   return (
     <div
@@ -179,7 +186,7 @@ export default function InformacoesIniciais() {
               isDarkMode ? 'bg-zinc-800' : 'bg-[#6ea7ca]'
             }`}
           >
-            <Book className="mr-2" />
+            <Book className="mr-2"/>
             Informações Iniciais
           </h1>
         </div>
@@ -201,7 +208,8 @@ export default function InformacoesIniciais() {
                 Título do Espaço
               </label>
               <div className="relative">
-                <Megaphone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80" />
+                <Megaphone
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80"/>
                 <Input
                   id="titulo"
                   placeholder="Digite o título do Espaço"
@@ -228,7 +236,7 @@ export default function InformacoesIniciais() {
                 Descrição do Espaço
               </label>
               <div className="relative">
-                <List className="absolute left-3 top-6 text-white/80" />
+                <List className="absolute left-3 top-6 text-white/80"/>
                 <Textarea
                   id="descricao"
                   placeholder="Escreva uma breve descrição do Espaço"
@@ -252,7 +260,8 @@ export default function InformacoesIniciais() {
 
             <div id="equipamentos" className="relative">
               {selected.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-2 bg-[#2176AE] dark:bg-zinc-800 text-white p-4 rounded-sm">
+                <div
+                  className="flex flex-wrap gap-2 mb-2 bg-[#2176AE] dark:bg-zinc-800 text-white p-4 rounded-sm">
                   {selected.map((item) => (
                     <div
                       key={item}
@@ -263,7 +272,7 @@ export default function InformacoesIniciais() {
                         onClick={() => removeItem(item)}
                         className="ml-1 cursor-pointer"
                       >
-                        <X size={14} />
+                        <X size={14}/>
                       </button>
                     </div>
                   ))}
@@ -274,18 +283,20 @@ export default function InformacoesIniciais() {
                 <div className="w-full max-w-md">
                   <div className="relative w-full max-w-md">
                     <button
+                      type="button"
                       onClick={() => setOpen((prev) => !prev)}
                       className="w-full h-full justify-between bg-[#2176AE] dark:bg-zinc-800 text-white text-sm cursor-pointer rounded-lg px-4 py-3 flex items-center"
                     >
                       <div className="flex items-center gap-2">
-                        <Hammer className="ml-2 h-6 w-6" />
+                        <Hammer className="ml-2 h-6 w-6"/>
                         Selecionar Equipamentos
                       </div>
-                      <ChevronsUpDown className="ml-2 h-4 w-4" />
+                      <ChevronsUpDown className="ml-2 h-4 w-4"/>
                     </button>
 
                     {open && (
-                      <div className="absolute left-0 top-full mt-2 z-50 w-full bg-[#2176AE] dark:bg-zinc-800 text-white rounded-md shadow-lg overflow-hidden">
+                      <div
+                        className="absolute left-0 top-full mt-2 z-50 w-full bg-[#2176AE] dark:bg-zinc-800 text-white rounded-md shadow-lg overflow-hidden">
                         <ul className="max-h-auto overflow-y-auto w-full p-2">
                           {itens.map((option) => (
                             <li
@@ -293,7 +304,8 @@ export default function InformacoesIniciais() {
                               className="flex items-center gap-2 px-2 py-2 cursor-pointer rounded-md transition"
                               onClick={() => toggleItem(option)}
                             >
-                              <label className="relative flex items-center cursor-pointer">
+                              <label
+                                className="relative flex items-center cursor-pointer">
                                 <input
                                   type="checkbox"
                                   checked={selected.includes(option)}
@@ -345,13 +357,14 @@ export default function InformacoesIniciais() {
                     }`}
                   />
                   <button
+                    type="button"
                     onClick={() => {
                       if (recurso && !selected.includes(recurso)) {
                         setSelected((prev) => [...prev, recurso]);
                         setRecurso('');
                       }
                     }}
-                    className="absolute right-4 top-1/2 -translate-y-1/2"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 cursou-pointer"
                   >
                     <Image
                       src="/send.svg"
@@ -359,6 +372,7 @@ export default function InformacoesIniciais() {
                       width={20}
                       height={20}
                       priority
+                      className="text-white cursor-pointer"
                     />
                   </button>
                 </div>
@@ -370,54 +384,77 @@ export default function InformacoesIniciais() {
             id="lado_direito"
             className="w-full lg:w-1/3 flex flex-col gap-6"
           >
-            <div
-              id="fotos"
-              className="relative flex flex-col justify-center items-center"
-            >
-              <input
-                type="file"
-                className={`w-full h-96 flex flex-col justify-center items-center rounded-md text-center px-4 py-6 cursor-pointer ${
-                  isDarkMode
-                    ? 'bg-zinc-800 text-zinc-800'
-                    : 'bg-[#2176AE] text-[#2176AE]'
-                }`}
-              />
-              <UploadCloud
-                size={50}
-                className="absolute text-white top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
-              />
-              <span className="text-white mt-10 font-medium absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
-                Adicione Fotos do local
-              </span>
-            </div>
-
-            <div id="botoes_fotos" className="flex justify-between mx-15">
+            <div className="w-full flex flex-col gap-4">
               <div
-                id="adicionar"
-                className="relative flex flex-col justify-center items-center cursor-pointer"
+                id="fotos"
+                className="relative flex flex-col justify-center items-center rounded-md overflow-hidden"
               >
                 <input
                   type="file"
+                  multiple
                   onChange={handleFileChange}
-                  className="bg-yellow-500 text-yellow-500 flex flex-col justify-center items-center rounded-md text-center py-2 cursor-pointer w-30 h-13"
+                  className={`w-full h-96 opacity-0 absolute z-10 cursor-pointer`}
                 />
-                <Camera className="text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+
+                <div
+                  className={`w-full h-96 flex flex-col justify-center items-center rounded-md text-center px-4 py-6 pointer-events-none ${
+                    isDarkMode ? 'bg-zinc-800' : 'bg-[#2176AE]'
+                  }`}
+                >
+                  <UploadCloud size={50} className="text-white mb-2"/>
+                  <span className="text-white font-medium">Adicione Fotos do local</span>
+                </div>
               </div>
 
-              <div
-                id="remover"
-                className="relative flex flex-col justify-center items-center cursor-pointer"
-              >
-                <input className="bg-red-600 text-red-600 flex flex-col justify-center items-center rounded-md text-center py-2 cursor-pointer w-30 h-13" />
-                <Trash2 className="text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
+              {/* Preview das imagens */}
+              {previews.length > 0 && (
+                <div className="grid grid-cols-3 gap-4">
+                  {previews.map((src, idx) => (
+                    <Image
+                      key={idx}
+                      src={src}
+                      width={200}
+                      height={200}
+                      alt={`Preview ${idx + 1}`}
+                      className="w-full h-48 object-cover rounded-md"
+                    />
+                  ))}
+                </div>
+              )}
+              <div id="botoes_fotos" className="flex justify-between mx-6">
+                <div
+                  id="adicionar"
+                  className="relative flex flex-col justify-center items-center cursor-pointer"
+                >
+                  <input
+                    type="file"
+                    onChange={handleFileChange}
+                    className="bg-yellow-500 text-yellow-500 flex flex-col justify-center items-center rounded-md text-center py-2 cursor-pointer w-30 h-13"
+                  />
+                  <Camera
+                    className="text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"/>
+                </div>
+                <div
+                  id="remover"
+                  className="relative flex flex-col justify-center items-center cursor-pointer"
+                >
+                  <input
+                    type="file"
+                    className="bg-red-600 text-red-600 flex flex-col justify-center items-center rounded-md text-center py-2 cursor-pointer w-30 h-13"
+                  />
+                  <Trash2
+                    className="text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"/>
+                </div>
               </div>
             </div>
+
 
             <Button
               onClick={handleSubmit}
               disabled={isLoading}
-              className={`w-full h-15 mt-12 text-lg bg-green-800 hover:bg-green-800 text-white cursor-pointer`}
+              className={`w-full h-12 text-lg bg-green-800 hover:bg-green-800 text-white cursor-pointer`}
             >
+              <Save className="w-6 h-6"/>
               {isLoading ? 'Salvando...' : 'Salvar'}
             </Button>
           </div>
@@ -447,7 +484,7 @@ export default function InformacoesIniciais() {
             }`}
           >
             <Link href="/ajuda" className="flex items-center gap-1">
-              <HelpCircle size={18} />
+              <HelpCircle size={18}/>
             </Link>
           </Button>
           <ThemeToggleButton
