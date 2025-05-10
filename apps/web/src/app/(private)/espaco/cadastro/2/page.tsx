@@ -4,6 +4,7 @@ import ThemeToggleButton from '@/components/ThemeToggleButton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { useEspacoCadastro } from '@/context/EspacoCadastroContext';
 import {
   HelpCircle,
   Info,
@@ -16,10 +17,18 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export default function InformacoesGerais() {
-  const [observacao, setObservacao] = useState('');
+  const { espaco, atualizarCampo } = useEspacoCadastro();
+  // const [observacao, setObservacao] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   const maxMensagemObservacao = 500;
+
+  const toggleTheme = () => {
+    const newTheme = !isDarkMode;
+    setIsDarkMode(newTheme);
+    localStorage.setItem('theme', newTheme ? 'dark' : 'light');
+    document.documentElement.classList.toggle('dark');
+  };
 
   useEffect(() => {
     const storedTheme = localStorage.getItem('theme');
@@ -31,13 +40,6 @@ export default function InformacoesGerais() {
       document.documentElement.classList.remove('dark');
     }
   }, []);
-
-  const toggleTheme = () => {
-    const newTheme = !isDarkMode;
-    setIsDarkMode(newTheme);
-    localStorage.setItem('theme', newTheme ? 'dark' : 'light');
-    document.documentElement.classList.toggle('dark');
-  };
 
   return (
     <div
@@ -69,7 +71,9 @@ export default function InformacoesGerais() {
               <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80" />
               <Input
                 id="cidade"
-                placeholder="Cidade"
+                value={espaco.cidade || ''}
+                onChange={(e) => atualizarCampo({ cidade: e.target.value })}
+                placeholder="Digite sua Cidade"
                 className={`pl-10 py-8 rounded-lg border-none focus-visible:ring-2 transition ${
                   isDarkMode
                     ? 'dark:bg-zinc-800 text-white focus:ring-2 focus:ring-gray-500 placeholder:text-white/50 focus-visible:ring-white/70'
@@ -85,7 +89,9 @@ export default function InformacoesGerais() {
               <Landmark className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80" />
               <Input
                 id="rua"
-                placeholder="Rua"
+                value={espaco.rua || ''}
+                onChange={(e) => atualizarCampo({ rua: e.target.value })}
+                placeholder="Digite sua Rua"
                 className={`pl-10 py-8 rounded-lg border-none focus-visible:ring-2 transition ${
                   isDarkMode
                     ? 'dark:bg-zinc-800 text-white focus:ring-2 focus:ring-gray-500 placeholder:text-white/50 focus-visible:ring-white/70'
@@ -101,7 +107,9 @@ export default function InformacoesGerais() {
               <Navigation className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80" />
               <Input
                 id="bairro"
-                placeholder="Bairro"
+                value={espaco.bairro || ''}
+                onChange={(e) => atualizarCampo({ bairro: e.target.value })}
+                placeholder="Digite seu Bairro"
                 className={`pl-10 py-8 rounded-lg border-none focus-visible:ring-2 transition ${
                   isDarkMode
                     ? 'dark:bg-zinc-800 text-white focus:ring-2 focus:ring-gray-500 placeholder:text-white/50 focus-visible:ring-white/70'
@@ -120,14 +128,18 @@ export default function InformacoesGerais() {
               <Info className="absolute left-3 top-6 text-white" />
               <Textarea
                 id="observacao"
+                value={espaco.observacoes || ''}
+                onChange={(e) =>
+                  atualizarCampo({ observacoes: e.target.value })
+                }
                 placeholder="Descreva alguma observação sobre o espaço"
-                value={observacao}
-                onChange={(e) => {
-                  const texto = e.target.value;
-                  if (texto.length <= maxMensagemObservacao) {
-                    setObservacao(texto);
-                  }
-                }}
+                // value={observacao}
+                // onChange={(e) => {
+                //   const texto = e.target.value;
+                //   if (texto.length <= maxMensagemObservacao) {
+                //     setObservacao(texto);
+                //   }
+                // }}
                 className={`bg-[#127BBF] text-white placeholder:text-white/80 pl-10 pr-4 py-6 h-96 rounded-lg border-none resize-none overflow-y-auto break-words focus-visible:ring-2 focus-visible:ring-white/70 transition ${
                   isDarkMode
                     ? 'dark:bg-zinc-800 text-white focus:ring-2 focus:ring-gray-500 placeholder:text-white/50 focus-visible:ring-white/70'
@@ -140,7 +152,15 @@ export default function InformacoesGerais() {
                   isDarkMode ? 'dark:text-white' : 'text-blue-800'
                 }`}
               >
-                {observacao.length}/{maxMensagemObservacao}
+                <span
+                  className={`${
+                    espaco.observacoes?.length === maxMensagemObservacao
+                      ? 'text-red-500'
+                      : ''
+                  }`}
+                >
+                  {espaco.observacoes?.length || 0} / {maxMensagemObservacao}
+                </span>
               </div>
             </div>
           </div>

@@ -4,9 +4,7 @@ import ThemeToggleButton from '@/components/ThemeToggleButton';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
-import {api} from '@/lib/axios';
-import {FormDataEspaco} from '@/types';
-import {AxiosError} from 'axios';
+import {useEspacoCadastro} from '@/context/EspacoCadastroContext';
 import {
   Book,
   Camera,
@@ -22,9 +20,7 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import router from 'next/router';
 import React, {useEffect, useState} from 'react';
-import {toast} from 'react-hot-toast';
 
 const itens = [
   'Ambiente Climatizado',
@@ -38,48 +34,33 @@ const itens = [
 ];
 
 export default function InformacoesIniciais() {
+  const {espaco, atualizarCampo} = useEspacoCadastro();
   const maxMessagemTitulo = 100;
   const maxMessagemDescricao = 500;
 
   const [messagemTitulo, setMessagemTitulo] = useState('');
   const [messagemDescricao, setMessagemDescricao] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [recurso, setRecurso] = useState('');
-  const [selected, setSelected] = useState<string[]>([]);
-  const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [file, setFile] = useState<File[] | null>(null);
-  const [previews, setPreviews] = useState<string[]>([]);
+  // const [file, setFile] = useState<File[] | null>(null);
+  const [recurso, setRecurso] = useState('');
+  const [open, setOpen] = useState(false);
 
-  const [formData, setFormData] = useState<FormDataEspaco>({
-    fotos_imovel: null,
-    locatario_id: 0,
-    titulo: '',
-    descricao: '',
-    cidade: '',
-    rua: '',
-    bairro: '',
-    observacoes: '',
-    valor_imovel: 0,
-    taxa_limpeza: 0,
-    disponivel_24h: false,
-    hora_inicio: '',
-    hora_fim: '',
-    recursos_imovel: [],
-    todos_dias: false,
-    dias_disponiveis: '',
-    metodos_pagamento: [],
+  const [selected, setSelected] = useState<string[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('equipamentosSelecionados');
+      return saved ? JSON.parse(saved) : [];
+    }
+    return [];
   });
 
-  const toggleItem = (item: string) => {
-    setSelected((prev) =>
-      prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item]
-    );
-  };
-
-  const removeItem = (item: string) => {
-    setSelected((prev) => prev.filter((i) => i !== item));
-  };
+  const [previews, setPreviews] = useState<string[]>(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('fotosEspaco');
+      return stored ? JSON.parse(stored) : [];
+    }
+    return [];
+  });
 
   const handleTituloChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -95,6 +76,16 @@ export default function InformacoesIniciais() {
     }
   };
 
+  const toggleItem = (item: string) => {
+    setSelected((prev) =>
+      prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item]
+    );
+  };
+
+  const removeItem = (item: string) => {
+    setSelected((prev) => prev.filter((i) => i !== item));
+  };
+
   const toggleTheme = () => {
     const newTheme = !isDarkMode;
     setIsDarkMode(newTheme);
@@ -103,62 +94,30 @@ export default function InformacoesIniciais() {
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!e.target.files) return;
+    const files = e.target.files;
+    if (!files) return;
 
-    const filesArray = Array.from(e.target.files);
-    setFile(filesArray);
+    const fileArray = Array.from(files);
 
-    const previewsArray = filesArray.map((file) => URL.createObjectURL(file));
-    setPreviews(previewsArray);
+    const readFiles = fileArray.map((file) => {
+      return new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          if (typeof reader.result === 'string') resolve(reader.result);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    });
 
+    Promise.all(readFiles).then((base64List) => {
+      setPreviews((prev) => [...prev, ...base64List]);
+    });
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    try {
-      const dadosFormatados = {
-        ...formData,
-        metodos_pagamento: formData.metodos_pagamento.map((metodo) => ({
-          metodo_pagamento: metodo,
-        })),
-        recursos_imovel: selected.map((item) => ({
-          recurso: item,
-        })),
-        todos_dias: formData.todos_dias,
-        fotos_imovel: file ? [file] : [],
-      };
-
-      if (file) {
-        dadosFormatados.fotos_imovel = [file];
-      }
-
-      await api.post('/espacos', dadosFormatados, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
-      toast.success('Espaço cadastrado com sucesso!');
-      router.push('/login');
-    } catch (error) {
-      console.error('Erro ao cadastrar:', error);
-      const axiosError = error as AxiosError<{ error: string; field?: string }>;
-
-      if (axiosError.response?.data?.field) {
-        toast.error(
-          `Erro no campo ${axiosError.response.data.field}: ${axiosError.response.data.error}`
-        );
-      } else {
-        toast.error(
-          axiosError.response?.data?.error ||
-          'Erro ao realizar cadastro. Tente novamente.'
-        );
-      }
-    } finally {
-      setTimeout(() => setIsLoading(false), 1000);
-    }
+  const handleRemoveFotos = () => {
+    setPreviews([]);
+    localStorage.removeItem('fotosEspaco');
   };
 
   useEffect(() => {
@@ -171,6 +130,14 @@ export default function InformacoesIniciais() {
       document.documentElement.classList.remove('dark');
     }
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem('equipamentosSelecionados', JSON.stringify(selected));
+  }, [selected]);
+
+  useEffect(() => {
+    localStorage.setItem('fotosEspaco', JSON.stringify(previews));
+  }, [previews]);
 
   return (
     <div
@@ -192,13 +159,7 @@ export default function InformacoesIniciais() {
         </div>
 
         {/* Conteúdo em duas colunas */}
-        <form
-          action="espaco-form"
-          onSubmit={handleSubmit}
-          encType="multipart/form-data"
-          method="post"
-          className="flex flex-col lg:flex-row gap-6"
-        >
+        <form action="espaco-form" className="flex flex-col lg:flex-row gap-6">
           <div
             id="lado_esquerdo"
             className="w-full lg:w-2/3 flex flex-col gap-6"
@@ -208,18 +169,17 @@ export default function InformacoesIniciais() {
                 Título do Espaço
               </label>
               <div className="relative">
-                <Megaphone
-                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80"/>
+                <Megaphone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80"/>
                 <Input
                   id="titulo"
+                  value={espaco.titulo || ''}
+                  onChange={(e) => atualizarCampo({titulo: e.target.value})}
                   placeholder="Digite o título do Espaço"
                   className={`pl-10 py-8 rounded-lg border-0 ${
                     isDarkMode
                       ? 'dark:bg-zinc-800 text-white focus:ring-2 focus:ring-gray-500 placeholder:text-white/50'
                       : 'bg-[#1178B9] text-white focus:ring-2 focus:ring-blue-500 placeholder:text-white/50'
                   }`}
-                  value={messagemTitulo}
-                  onChange={handleTituloChange}
                 />
               </div>
               <div
@@ -239,9 +199,11 @@ export default function InformacoesIniciais() {
                 <List className="absolute left-3 top-6 text-white/80"/>
                 <Textarea
                   id="descricao"
+                  value={espaco.descricao || ''}
+                  onChange={(e) =>
+                    atualizarCampo({descricao: e.target.value})
+                  }
                   placeholder="Escreva uma breve descrição do Espaço"
-                  value={messagemDescricao}
-                  onChange={handleDescricaoChange}
                   className={`pl-10 px-10 py-6 h-96 rounded-lg border-none resize-none overflow-y-auto break-all ${
                     isDarkMode
                       ? 'dark:bg-zinc-800 text-white focus:ring-2 focus:ring-gray-500 placeholder:text-white/50'
@@ -260,8 +222,7 @@ export default function InformacoesIniciais() {
 
             <div id="equipamentos" className="relative">
               {selected.length > 0 && (
-                <div
-                  className="flex flex-wrap gap-2 mb-2 bg-[#2176AE] dark:bg-zinc-800 text-white p-4 rounded-sm">
+                <div className="flex flex-wrap gap-2 mb-2 bg-[#2176AE] dark:bg-zinc-800 text-white p-4 rounded-sm">
                   {selected.map((item) => (
                     <div
                       key={item}
@@ -284,6 +245,7 @@ export default function InformacoesIniciais() {
                   <div className="relative w-full max-w-md">
                     <button
                       type="button"
+                      value={espaco.recursos_imovel || ''}
                       onClick={() => setOpen((prev) => !prev)}
                       className="w-full h-full justify-between bg-[#2176AE] dark:bg-zinc-800 text-white text-sm cursor-pointer rounded-lg px-4 py-3 flex items-center"
                     >
@@ -304,8 +266,7 @@ export default function InformacoesIniciais() {
                               className="flex items-center gap-2 px-2 py-2 cursor-pointer rounded-md transition"
                               onClick={() => toggleItem(option)}
                             >
-                              <label
-                                className="relative flex items-center cursor-pointer">
+                              <label className="relative flex items-center cursor-pointer">
                                 <input
                                   type="checkbox"
                                   checked={selected.includes(option)}
@@ -316,7 +277,7 @@ export default function InformacoesIniciais() {
                                   className={`w-5 h-5 flex items-center justify-center rounded border-2 transition-colors ${
                                     selected.includes(option)
                                       ? 'bg-white border-transparent'
-                                      : 'bg-transparent border-white'
+                                      : 'border-white bg-transparent'
                                   }`}
                                 >
                                   {selected.includes(option) && (
@@ -402,7 +363,9 @@ export default function InformacoesIniciais() {
                   }`}
                 >
                   <UploadCloud size={50} className="text-white mb-2"/>
-                  <span className="text-white font-medium">Adicione Fotos do local</span>
+                  <span className="text-white font-medium">
+                    Adicione Fotos do local
+                  </span>
                 </div>
               </div>
 
@@ -431,26 +394,24 @@ export default function InformacoesIniciais() {
                     onChange={handleFileChange}
                     className="bg-yellow-500 text-yellow-500 flex flex-col justify-center items-center rounded-md text-center py-2 cursor-pointer w-30 h-13"
                   />
-                  <Camera
-                    className="text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"/>
+                  <Camera className="text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"/>
                 </div>
                 <div
                   id="remover"
+                  onClick={handleRemoveFotos}
                   className="relative flex flex-col justify-center items-center cursor-pointer"
                 >
                   <input
                     type="file"
                     className="bg-red-600 text-red-600 flex flex-col justify-center items-center rounded-md text-center py-2 cursor-pointer w-30 h-13"
                   />
-                  <Trash2
-                    className="text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"/>
+                  <Trash2 className="text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"/>
                 </div>
               </div>
             </div>
 
-
             <Button
-              onClick={handleSubmit}
+              // onClick={handleSubmit}
               disabled={isLoading}
               className={`w-full h-12 text-lg bg-green-800 hover:bg-green-800 text-white cursor-pointer`}
             >

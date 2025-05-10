@@ -1,24 +1,27 @@
 'use client';
 
 import ThemeToggleButton from '@/components/ThemeToggleButton';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Switch } from '@/components/ui/switch';
-import { cn } from '@/lib/utils';
-import { CalendarClock, Clock, HelpCircle } from 'lucide-react';
+import {Button} from '@/components/ui/button';
+import {Input} from '@/components/ui/input';
+import {Switch} from '@/components/ui/switch';
+import {useEspacoCadastro} from '@/context/EspacoCadastroContext';
+import {cn} from '@/lib/utils';
+import {CalendarClock, Clock, HelpCircle} from 'lucide-react';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 
 export default function HorarioFuncionamento() {
+  const {espaco, atualizarCampo} = useEspacoCadastro();
+
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const [disponivel24h, setDisponivel24h] = useState(false);
   const [horarioFixo, setHorarioFixo] = useState(true);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  // const [disponibilidade, setDisponibilidade] = useState('especifico');
+  const [usarDiasEspecificos, setUsarDiasEspecificos] = useState(true);
   const [diasSelecionados, setDiasSelecionados] = useState<string[]>([
     'Segunda-Feira',
     'Sexta-Feira',
   ]);
-  const [usarDiasEspecificos, setUsarDiasEspecificos] = useState(true);
-
   const diasDaSemana = [
     'Segunda-Feira',
     'Terça-Feira',
@@ -29,12 +32,46 @@ export default function HorarioFuncionamento() {
     'Domingo',
   ];
 
+  // const handleChangeDisponibilidade = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const value = e.target.value;
+  //   setDisponibilidade(value);
+  //
+  //   if (value === 'todos') {
+  //     atualizarCampo({todos_dias: true});
+  //   } else if (value === 'especifico') {
+  //     atualizarCampo({dias_disponiveis: diasSelecionados});
+  //   }
+  // };
+
+  // const toggleDia = (dia: string) => {
+  //   let novosDias;
+  //   if (diasSelecionados.includes(dia)) {
+  //     novosDias = diasSelecionados.filter(d => d !== dia);
+  //   } else {
+  //     novosDias = [...diasSelecionados, dia];
+  //   }
+  //
+  //   setDiasSelecionados(novosDias);
+  //
+  //   // Atualiza só se estiver no modo específico
+  //   if (disponibilidade === 'especifico') {
+  //     atualizarCampo({dias_disponiveis: novosDias});
+  //   }
+  // };
+
   const alternarDia = (dia: string) => {
     setDiasSelecionados((anterior) =>
       anterior.includes(dia)
         ? anterior.filter((d) => d !== dia)
         : [...anterior, dia]
     );
+  };
+
+  const toggleTheme = () => {
+    const newTheme = !isDarkMode;
+    setIsDarkMode(newTheme);
+    localStorage.setItem('theme', newTheme ? 'dark' : 'light');
+    document.documentElement.classList.toggle('dark');
   };
 
   useEffect(() => {
@@ -48,12 +85,16 @@ export default function HorarioFuncionamento() {
     }
   }, []);
 
-  const toggleTheme = () => {
-    const newTheme = !isDarkMode;
-    setIsDarkMode(newTheme);
-    localStorage.setItem('theme', newTheme ? 'dark' : 'light');
-    document.documentElement.classList.toggle('dark');
-  };
+  useEffect(() => {
+    if (espaco.disponivel_24h !== undefined) {
+      setDisponivel24h(espaco.disponivel_24h);
+      setHorarioFixo(!espaco.disponivel_24h);
+    }
+    if (espaco.dias_disponiveis?.length) {
+      setDiasSelecionados(espaco.dias_disponiveis);
+      setUsarDiasEspecificos(true);
+    }
+  }, [espaco]);
 
   return (
     <div
@@ -69,7 +110,7 @@ export default function HorarioFuncionamento() {
               isDarkMode ? 'bg-zinc-800' : 'bg-[#6ea7ca]'
             }`}
           >
-            <CalendarClock className="mr-2" />
+            <CalendarClock className="mr-2"/>
             Horário de Funcionamento
           </h1>
         </div>
@@ -87,6 +128,8 @@ export default function HorarioFuncionamento() {
               <div className="flex items-center">
                 <Switch
                   checked={disponivel24h}
+                  value={espaco.disponivel_24h ? 'true' : 'false'}
+                  // onChange={}
                   onCheckedChange={() => {
                     setDisponivel24h(true);
                     setHorarioFixo(false);
@@ -147,6 +190,10 @@ export default function HorarioFuncionamento() {
                     />
                     <Input
                       type="time"
+                      value={espaco.hora_inicio || ''}
+                      onChange={(e) =>
+                        atualizarCampo({hora_inicio: e.target.value})
+                      }
                       className={`pl-10 border ${
                         isDarkMode
                           ? 'dark:bg-zinc-800 text-white focus:ring-2 placeholder:text-white/50 focus-visible:ring-white/70 border-white'
@@ -172,6 +219,10 @@ export default function HorarioFuncionamento() {
                     />
                     <Input
                       type="time"
+                      value={espaco.hora_fim || ''}
+                      onChange={(e) =>
+                        atualizarCampo({hora_fim: e.target.value})
+                      }
                       className={`pl-10 bg-white text-black border border-[#1681B0] focus-visible:ring-[#1681B0] ${
                         isDarkMode
                           ? 'dark:bg-zinc-800 text-white focus:ring-2 placeholder:text-white/50 focus-visible:ring-white/70 border-white'
@@ -237,12 +288,16 @@ export default function HorarioFuncionamento() {
                   >
                     <input
                       type="checkbox"
+                      onChange={() => {
+                        alternarDia(day);
+                        const novosDias = diasSelecionados.includes(day)
+                          ? diasSelecionados.filter((d) => d !== day)
+                          : [...diasSelecionados, day];
+                        atualizarCampo({dias_disponiveis: novosDias});
+                      }}
                       checked={diasSelecionados.includes(day)}
-                      onChange={() => alternarDia(day)}
                       className={`mr-2 ${
-                        isDarkMode
-                          ? 'bg-black accent-black'
-                          : 'bg-white accent-white'
+                        isDarkMode ? 'bg-black accent-black' : 'bg-white accent-white'
                       }`}
                     />
                     {day}
@@ -276,11 +331,11 @@ export default function HorarioFuncionamento() {
               : 'bg-black text-white cursor-pointer'
           }`}
         >
-          <Link href="/ajuda" className="flex items-center gap-1">
-            <HelpCircle size={18} />
+          <Link href="../../../ajuda" className="flex items-center gap-1">
+            <HelpCircle size={18}/>
           </Link>
         </Button>
-        <ThemeToggleButton isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+        <ThemeToggleButton isDarkMode={isDarkMode} toggleTheme={toggleTheme}/>
       </div>
     </div>
   );

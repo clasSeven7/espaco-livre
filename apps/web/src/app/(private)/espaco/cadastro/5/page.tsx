@@ -2,20 +2,68 @@
 
 import ThemeToggleButton from '@/components/ThemeToggleButton';
 import { Button } from '@/components/ui/button';
+import { useEspacoCadastro } from '@/context/EspacoCadastroContext';
+import api from '@/lib/axios';
+import Cookies from 'js-cookie';
 import {
   CalendarClock,
+  Camera,
   ClipboardList,
   DollarSign,
-  HelpCircle,
   Home,
+  Images,
   Link,
   MapPin,
+  Trash2,
   Wallet,
 } from 'lucide-react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 
 export default function UltimosDetalhes() {
+  const { espaco, limparCampos } = useEspacoCadastro();
+  const router = useRouter();
+
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [fotos, setFotos] = useState<string[]>([]);
+
+  const toggleTheme = () => {
+    const newTheme = !isDarkMode;
+    setIsDarkMode(newTheme);
+    localStorage.setItem('theme', newTheme ? 'dark' : 'light');
+    document.documentElement.classList.toggle('dark');
+  };
+
+  const removerFoto = (index: number) => {
+    const novasFotos = fotos.filter((_, i) => i !== index);
+    setFotos(novasFotos);
+    localStorage.setItem('fotos_imovel', JSON.stringify(novasFotos));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const dadosDoEspaco = Cookies.get('espaco-cadastro');
+
+      if (!dadosDoEspaco) {
+        toast.error('Erro: nenhum dado encontrado para cadastro.');
+        return;
+      }
+
+      const espaco = JSON.parse(dadosDoEspaco);
+
+      const response = await api.post('/espacos', espaco);
+
+      toast.success('Espaço cadastrado com sucesso!');
+      console.log('✅ Espaço cadastrado:', response.data);
+      limparCampos();
+      router.push('/');
+    } catch (error) {
+      console.error('Erro ao salvar espaço:', error);
+      toast.error('Erro ao salvar espaço. Tente novamente.');
+    }
+  };
 
   useEffect(() => {
     const storedTheme = localStorage.getItem('theme');
@@ -28,12 +76,12 @@ export default function UltimosDetalhes() {
     }
   }, []);
 
-  const toggleTheme = () => {
-    const newTheme = !isDarkMode;
-    setIsDarkMode(newTheme);
-    localStorage.setItem('theme', newTheme ? 'dark' : 'light');
-    document.documentElement.classList.toggle('dark');
-  };
+  useEffect(() => {
+    const storedFotos = localStorage.getItem('fotos_imovel');
+    if (storedFotos) {
+      setFotos(JSON.parse(storedFotos));
+    }
+  }, []);
 
   return (
     <div
@@ -70,9 +118,9 @@ export default function UltimosDetalhes() {
                   isDarkMode ? 'text-zinc-500' : 'text-zinc-800'
                 }`}
               >
-                <li>João Pessoa - PB</li>
-                <li>Rua Maria Caetana de Oliveira, 215</li>
-                <li>Bairro Tambauzinho</li>
+                <li>{espaco.cidade}</li>
+                <li>{espaco.rua}</li>
+                <li>{espaco.bairro}</li>
               </ul>
             </div>
 
@@ -90,7 +138,8 @@ export default function UltimosDetalhes() {
                   isDarkMode ? 'text-zinc-500' : 'text-black'
                 }`}
               >
-                Segunda & Sexta
+                {espaco.dias_disponiveis}
+                Segunda a Domingo
               </p>
 
               <div className="relative mt-4">
@@ -100,8 +149,8 @@ export default function UltimosDetalhes() {
                     isDarkMode ? 'dark:text-white' : 'text-blue-700'
                   }`}
                 >
-                  <span>07:00</span>
-                  <span>19:00</span>
+                  <span>{espaco.hora_inicio}</span>
+                  <span>{espaco.hora_fim}</span>
                 </div>
 
                 {/* Linha principal com marcadores */}
@@ -160,7 +209,7 @@ export default function UltimosDetalhes() {
                     isDarkMode ? 'text-white' : 'text-black '
                   }`}
                 >
-                  1000 R$
+                  {espaco.valor_imovel} R$
                 </span>
               </p>
               <h3
@@ -170,22 +219,24 @@ export default function UltimosDetalhes() {
               >
                 Métodos de Pagamento
               </h3>
-              <Button
-                variant="secondary"
-                className={`mt-2 py-4 px-4 cursor-pointer ${
-                  isDarkMode
-                    ? 'dark:bg-zinc-800 dark:hover:bg-zinc-700'
-                    : 'bg-blue-500 text-white hover:bg-blue-600'
+              <ul
+                className={`pl-6 list-disc text-base font-medium mt-2 ${
+                  isDarkMode ? 'text-zinc-500' : 'text-black'
                 }`}
               >
-                Selecionar métodos
-              </Button>
+                <li>Ambiente climatizado</li>
+                <li>Wi-Fi de alta velocidade</li>
+                <li>Estacionamento gratuito</li>
+                <li>Mobília completa</li>
+              </ul>
             </div>
           </div>
 
-          {/* Coluna da direita */}
-          <div className="flex flex-col w-full lg:w-1/3 space-y-6">
-            <div>
+          <div
+            id="lado_direito"
+            className="flex flex-col w-full lg:w-1/3 space-y-6"
+          >
+            <div id="titulo_anuncio">
               <h2
                 className={`text-xl font-bold flex items-center gap-2 ${
                   isDarkMode ? 'text-white' : 'text-blue-800'
@@ -198,11 +249,11 @@ export default function UltimosDetalhes() {
                   isDarkMode ? 'text-zinc-500' : 'text-black'
                 }`}
               >
-                Espaço Versátil para Eventos e Reuniões
+                {espaco.titulo}
               </p>
             </div>
 
-            <div>
+            <div id="recursos_disponiveis">
               <h2
                 className={`text-xl font-bold flex items-center gap-2 ${
                   isDarkMode ? 'text-white' : 'text-blue-800'
@@ -221,12 +272,47 @@ export default function UltimosDetalhes() {
                 <li>Mobília completa</li>
               </ul>
             </div>
+
+            <div id="preview_fotos">
+              <h2 className="text-xl font-bold flex items-center gap-2 text-blue-800 dark:text-white">
+                <Images className="w-5 h-5" /> Galeria de Fotos
+              </h2>
+
+              <div className="mt-4 flex overflow-x-auto gap-4">
+                {fotos.map((foto, index) => (
+                  <div
+                    key={index}
+                    className="relative min-w-[300px] max-w-[400px] rounded-md overflow-hidden shadow-lg"
+                  >
+                    <Image
+                      src={foto}
+                      alt={`Foto ${index + 1}`}
+                      className="w-full h-auto object-cover"
+                      width={400}
+                      height={300}
+                    />
+                    <div className="absolute bottom-2 right-2 flex gap-2">
+                      <button
+                        onClick={() => removerFoto(index)}
+                        className="bg-red-500 p-2 rounded text-white hover:bg-red-600"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                      <button className="bg-green-500 p-2 rounded text-white hover:bg-green-600">
+                        <Camera className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Botão de Publicar */}
         <div className="flex justify-end">
           <Button
+            onClick={handleSubmit}
             className={`font-semibold px-22 py-6 text-lg cursor-pointer ${
               isDarkMode
                 ? 'bg-green-800 hover:bg-green-900 text-white'
@@ -248,7 +334,7 @@ export default function UltimosDetalhes() {
           }`}
         >
           <Link href="/ajuda" className="flex items-center gap-1">
-            <HelpCircle size={18} />
+            {/* <HelpCircle size={18} /> */}
           </Link>
         </Button>
         <ThemeToggleButton isDarkMode={isDarkMode} toggleTheme={toggleTheme} />

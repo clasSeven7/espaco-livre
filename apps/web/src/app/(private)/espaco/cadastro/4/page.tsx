@@ -4,6 +4,7 @@ import ThemeToggleButton from '@/components/ThemeToggleButton';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { useEspacoCadastro } from '@/context/EspacoCadastroContext';
 import {
   CircleDollarSign,
   CreditCard,
@@ -43,8 +44,17 @@ const metodos = [
 ];
 
 export default function PrecoCondicoesPage() {
+  const { espaco, atualizarCampo } = useEspacoCadastro();
+
   const [metodoSelecionado, setMetodoSelecionado] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const toggleTheme = () => {
+    const newTheme = !isDarkMode;
+    setIsDarkMode(newTheme);
+    localStorage.setItem('theme', newTheme ? 'dark' : 'light');
+    document.documentElement.classList.toggle('dark');
+  };
 
   useEffect(() => {
     const storedTheme = localStorage.getItem('theme');
@@ -56,13 +66,6 @@ export default function PrecoCondicoesPage() {
       document.documentElement.classList.remove('dark');
     }
   }, []);
-
-  const toggleTheme = () => {
-    const newTheme = !isDarkMode;
-    setIsDarkMode(newTheme);
-    localStorage.setItem('theme', newTheme ? 'dark' : 'light');
-    document.documentElement.classList.toggle('dark');
-  };
 
   return (
     <div
@@ -94,6 +97,13 @@ export default function PrecoCondicoesPage() {
                 <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80" />
                 <Input
                   id="valor_desejado"
+                  type="number"
+                  value={espaco.valor_imovel || ''}
+                  onChange={(e) =>
+                    atualizarCampo({
+                      valor_imovel: parseFloat(e.target.value) || 0,
+                    })
+                  }
                   placeholder="Digite o valor desejado"
                   className={`pl-10 py-8 rounded-lg border-0 focus:ring-2 ${
                     isDarkMode
@@ -111,6 +121,13 @@ export default function PrecoCondicoesPage() {
                 <ShowerHead className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80" />
                 <Input
                   id="taxa_limpeza"
+                  type="number"
+                  value={espaco.taxa_limpeza || ''}
+                  onChange={(e) =>
+                    atualizarCampo({
+                      taxa_limpeza: parseFloat(e.target.value) || 0,
+                    })
+                  }
                   placeholder="Digite a taxa de limpeza"
                   className={`pl-10 py-8 rounded-lg border-0 focus:ring-2 ${
                     isDarkMode
@@ -162,8 +179,14 @@ export default function PrecoCondicoesPage() {
                       {metodo.label}
                     </span>
                     <input
-                      type="radio"
                       name="metodo_pagamento"
+                      type="radio"
+                      value={espaco.metodos_pagamento || ''}
+                      onChange={(e) =>
+                        atualizarCampo({
+                          metodos_pagamento: [e.target.value],
+                        })
+                      }
                       className="mt-2"
                       checked={metodoSelecionado === metodo.id}
                       readOnly
