@@ -18,8 +18,9 @@ const metodos = [
   {id: 'outro', label: 'Outro', icon: <Plus className="w-6 h-6"/>},
 ];
 
-export default function PrecoCondicoesPage() {
+export default function PrecoCondicoes() {
   const {espaco, atualizarCampo} = useEspacoCadastro();
+
   const [metodoSelecionado, setMetodoSelecionado] = useState<string[]>([]);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -28,6 +29,22 @@ export default function PrecoCondicoesPage() {
     setIsDarkMode(newTheme);
     localStorage.setItem('theme', newTheme ? 'dark' : 'light');
     document.documentElement.classList.toggle('dark');
+  };
+
+  const handleMetodoSelection = (metodoId: string) => {
+    setMetodoSelecionado((prev) => {
+      let updated;
+      if (prev.includes(metodoId)) {
+        updated = prev.filter((id) => id !== metodoId);
+      } else {
+        updated = [...prev, metodoId];
+      }
+
+      localStorage.setItem('metodos_pagamento', JSON.stringify(updated));
+      atualizarCampo({metodos_pagamento: updated});
+
+      return updated;
+    });
   };
 
   useEffect(() => {
@@ -40,27 +57,12 @@ export default function PrecoCondicoesPage() {
       document.documentElement.classList.remove('dark');
     }
   }, []);
-  
+
   useEffect(() => {
     const savedMethods = JSON.parse(localStorage.getItem('metodos_pagamento') || '[]');
     setMetodoSelecionado(savedMethods);
+    atualizarCampo({metodos_pagamento: savedMethods});
   }, []);
-
-  useEffect(() => {
-    if (metodoSelecionado.length > 0) {
-      localStorage.setItem('metodos_pagamento', JSON.stringify(metodoSelecionado));
-    }
-  }, [metodoSelecionado]);
-
-  const handleMetodoSelection = (metodoId: string) => {
-    setMetodoSelecionado((prev) => {
-      if (prev.includes(metodoId)) {
-        return prev.filter((id) => id !== metodoId);
-      } else {
-        return [...prev, metodoId];
-      }
-    });
-  };
 
   return (
     <div
