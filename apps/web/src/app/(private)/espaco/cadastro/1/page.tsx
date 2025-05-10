@@ -5,19 +5,7 @@ import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
 import {useEspacoCadastro} from '@/context/EspacoCadastroContext';
-import {
-  Book,
-  Camera,
-  ChevronsUpDown,
-  Hammer,
-  HelpCircle,
-  List,
-  Megaphone,
-  Save,
-  Trash2,
-  UploadCloud,
-  X,
-} from 'lucide-react';
+import {Book, Camera, ChevronsUpDown, Hammer, HelpCircle, List, Megaphone, Trash2, UploadCloud, X,} from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, {useEffect, useState} from 'react';
@@ -38,8 +26,8 @@ export default function InformacoesIniciais() {
   const maxMessagemTitulo = 100;
   const maxMessagemDescricao = 500;
 
-  const [messagemTitulo, setMessagemTitulo] = useState('');
-  const [messagemDescricao, setMessagemDescricao] = useState('');
+  // const [messagemTitulo, setMessagemTitulo] = useState('');
+  // const [messagemDescricao, setMessagemDescricao] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   // const [file, setFile] = useState<File[] | null>(null);
@@ -62,19 +50,19 @@ export default function InformacoesIniciais() {
     return [];
   });
 
-  const handleTituloChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    if (value.length <= maxMessagemTitulo) {
-      setMessagemTitulo(value);
-    }
-  };
-
-  const handleDescricaoChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const value = e.target.value;
-    if (value.length <= maxMessagemDescricao) {
-      setMessagemDescricao(value);
-    }
-  };
+  // const handleTituloChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const value = e.target.value;
+  //   if (value.length <= maxMessagemTitulo) {
+  //     setMessagemTitulo(value);
+  //   }
+  // };
+  //
+  // const handleDescricaoChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+  //   const value = e.target.value;
+  //   if (value.length <= maxMessagemDescricao) {
+  //     setMessagemDescricao(value);
+  //   }
+  // };
 
   const toggleItem = (item: string) => {
     setSelected((prev) =>
@@ -187,7 +175,7 @@ export default function InformacoesIniciais() {
                   isDarkMode ? 'dark:text-white' : ''
                 }`}
               >
-                {messagemTitulo.length}/{maxMessagemTitulo}
+                {/*{messagemTitulo.length}/{maxMessagemTitulo}*/}
               </div>
             </div>
 
@@ -216,7 +204,7 @@ export default function InformacoesIniciais() {
                   isDarkMode ? 'dark:text-white' : ''
                 }`}
               >
-                {messagemDescricao.length}/{maxMessagemDescricao}
+                {/*{messagemDescricao.length}/{maxMessagemDescricao}*/}
               </div>
             </div>
 
@@ -410,14 +398,13 @@ export default function InformacoesIniciais() {
               </div>
             </div>
 
-            <Button
-              // onClick={handleSubmit}
-              disabled={isLoading}
-              className={`w-full h-12 text-lg bg-green-800 hover:bg-green-800 text-white cursor-pointer`}
-            >
-              <Save className="w-6 h-6"/>
-              {isLoading ? 'Salvando...' : 'Salvar'}
-            </Button>
+            {/*<Button*/}
+            {/*  disabled={isLoading}*/}
+            {/*  className={`w-full h-12 text-lg bg-green-800 hover:bg-green-800 text-white cursor-pointer`}*/}
+            {/*>*/}
+            {/*  <Save className="w-6 h-6"/>*/}
+            {/*  {isLoading ? 'Salvando...' : 'Salvar'}*/}
+            {/*</Button>*/}
           </div>
         </form>
 
