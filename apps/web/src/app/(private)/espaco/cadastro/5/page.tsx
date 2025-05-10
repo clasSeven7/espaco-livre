@@ -1,8 +1,8 @@
 'use client';
 
 import ThemeToggleButton from '@/components/ThemeToggleButton';
-import { Button } from '@/components/ui/button';
-import { useEspacoCadastro } from '@/context/EspacoCadastroContext';
+import {Button} from '@/components/ui/button';
+import {useEspacoCadastro} from '@/context/EspacoCadastroContext';
 import api from '@/lib/axios';
 import Cookies from 'js-cookie';
 import {
@@ -18,12 +18,12 @@ import {
   Wallet,
 } from 'lucide-react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import {useRouter} from 'next/navigation';
+import {useEffect, useState} from 'react';
 import toast from 'react-hot-toast';
 
 export default function UltimosDetalhes() {
-  const { espaco, limparCampos } = useEspacoCadastro();
+  const {espaco, limparCampos} = useEspacoCadastro();
   const router = useRouter();
 
   const [isDarkMode, setIsDarkMode] = useState(false);
@@ -97,7 +97,7 @@ export default function UltimosDetalhes() {
               isDarkMode ? 'bg-zinc-800' : 'bg-[#6ea7ca]'
             }`}
           >
-            <ClipboardList className="mr-2" /> Últimos Detalhes
+            <ClipboardList className="mr-2"/> Últimos Detalhes
           </h1>
         </div>
 
@@ -111,16 +111,16 @@ export default function UltimosDetalhes() {
                   isDarkMode ? 'text-white' : 'text-blue-800 '
                 }`}
               >
-                <MapPin className="w-5 h-5" /> Localização:
+                <MapPin className="w-5 h-5"/> Localização:
               </h2>
               <ul
                 className={`pl-6 list-disc text-base font-medium mt-2 ${
                   isDarkMode ? 'text-zinc-500' : 'text-zinc-800'
                 }`}
               >
-                <li>{espaco.cidade}</li>
-                <li>{espaco.rua}</li>
-                <li>{espaco.bairro}</li>
+                <li><strong>Cidade:</strong> {espaco.cidade}</li>
+                <li>Rua: {espaco.rua}</li>
+                <li>Bairro: {espaco.bairro}</li>
               </ul>
             </div>
 
@@ -131,15 +131,18 @@ export default function UltimosDetalhes() {
                   isDarkMode ? 'text-white' : 'text-blue-800'
                 }`}
               >
-                <CalendarClock className="w-5 h-5" /> Horário de Funcionamento:
+                <CalendarClock className="w-5 h-5"/> Horário de Funcionamento:
               </h2>
               <p
                 className={`text-base font-semibold mt-2 ${
                   isDarkMode ? 'text-zinc-500' : 'text-black'
                 }`}
               >
-                {espaco.dias_disponiveis}
-                Segunda a Domingo
+                <div>
+                  {espaco.todos_dias
+                    ? 'Segunda à Domingo'
+                    : espaco.dias_disponiveis}
+                </div>
               </p>
 
               <div className="relative mt-4">
@@ -199,10 +202,10 @@ export default function UltimosDetalhes() {
                   isDarkMode ? 'text-white' : 'text-blue-800'
                 }`}
               >
-                <Wallet className="w-5 h-5" /> Valor e Preferência de Pagamento
+                <Wallet className="w-5 h-5"/> Valor e Preferência de Pagamento
               </h2>
               <p className="text-base font-medium flex items-center gap-2 mt-2">
-                <DollarSign className="w-4 h-4 text-green-600" />
+                <DollarSign className="w-4 h-4 text-green-600"/>
                 Valor desejado:{' '}
                 <span
                   className={`font-bold ${
@@ -242,7 +245,7 @@ export default function UltimosDetalhes() {
                   isDarkMode ? 'text-white' : 'text-blue-800'
                 }`}
               >
-                <Home className="w-5 h-5" /> Título do Anúncio
+                <Home className="w-5 h-5"/> Título do Anúncio
               </h2>
               <p
                 className={`text-lg font-light mt-2 ${
@@ -259,7 +262,7 @@ export default function UltimosDetalhes() {
                   isDarkMode ? 'text-white' : 'text-blue-800'
                 }`}
               >
-                <ClipboardList className="w-5 h-5" /> Recursos Disponíveis:
+                <ClipboardList className="w-5 h-5"/> Recursos Disponíveis:
               </h2>
               <ul
                 className={`pl-6 list-disc text-base font-medium mt-2 ${
@@ -275,7 +278,7 @@ export default function UltimosDetalhes() {
 
             <div id="preview_fotos">
               <h2 className="text-xl font-bold flex items-center gap-2 text-blue-800 dark:text-white">
-                <Images className="w-5 h-5" /> Galeria de Fotos
+                <Images className="w-5 h-5"/> Galeria de Fotos
               </h2>
 
               <div className="mt-4 flex overflow-x-auto gap-4">
@@ -296,10 +299,10 @@ export default function UltimosDetalhes() {
                         onClick={() => removerFoto(index)}
                         className="bg-red-500 p-2 rounded text-white hover:bg-red-600"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash2 className="w-4 h-4"/>
                       </button>
                       <button className="bg-green-500 p-2 rounded text-white hover:bg-green-600">
-                        <Camera className="w-4 h-4" />
+                        <Camera className="w-4 h-4"/>
                       </button>
                     </div>
                   </div>
@@ -337,7 +340,7 @@ export default function UltimosDetalhes() {
             {/* <HelpCircle size={18} /> */}
           </Link>
         </Button>
-        <ThemeToggleButton isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+        <ThemeToggleButton isDarkMode={isDarkMode} toggleTheme={toggleTheme}/>
       </div>
     </div>
   );

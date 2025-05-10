@@ -16,8 +16,9 @@ export default function HorarioFuncionamento() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [disponivel24h, setDisponivel24h] = useState(false);
   const [horarioFixo, setHorarioFixo] = useState(true);
-  // const [disponibilidade, setDisponibilidade] = useState('especifico');
-  const [usarDiasEspecificos, setUsarDiasEspecificos] = useState(true);
+  const [todosDias, setTodosDias] = useState(false);
+  const [diasEspecificos, setDiasEspecificos] = useState(true);
+
   const [diasSelecionados, setDiasSelecionados] = useState<string[]>([
     'Segunda-Feira',
     'Sexta-Feira',
@@ -31,33 +32,6 @@ export default function HorarioFuncionamento() {
     'Sábado',
     'Domingo',
   ];
-
-  // const handleChangeDisponibilidade = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const value = e.target.value;
-  //   setDisponibilidade(value);
-  //
-  //   if (value === 'todos') {
-  //     atualizarCampo({todos_dias: true});
-  //   } else if (value === 'especifico') {
-  //     atualizarCampo({dias_disponiveis: diasSelecionados});
-  //   }
-  // };
-
-  // const toggleDia = (dia: string) => {
-  //   let novosDias;
-  //   if (diasSelecionados.includes(dia)) {
-  //     novosDias = diasSelecionados.filter(d => d !== dia);
-  //   } else {
-  //     novosDias = [...diasSelecionados, dia];
-  //   }
-  //
-  //   setDiasSelecionados(novosDias);
-  //
-  //   // Atualiza só se estiver no modo específico
-  //   if (disponibilidade === 'especifico') {
-  //     atualizarCampo({dias_disponiveis: novosDias});
-  //   }
-  // };
 
   const alternarDia = (dia: string) => {
     setDiasSelecionados((anterior) =>
@@ -92,7 +66,11 @@ export default function HorarioFuncionamento() {
     }
     if (espaco.dias_disponiveis?.length) {
       setDiasSelecionados(espaco.dias_disponiveis);
-      setUsarDiasEspecificos(true);
+      setDiasEspecificos(true);
+    }
+    if (espaco.todos_dias !== undefined) {
+      setTodosDias(espaco.todos_dias);
+      setDiasEspecificos(!espaco.todos_dias);
     }
   }, [espaco]);
 
@@ -129,10 +107,9 @@ export default function HorarioFuncionamento() {
                 <Switch
                   checked={disponivel24h}
                   value={espaco.disponivel_24h ? 'true' : 'false'}
-                  // onChange={}
                   onCheckedChange={() => {
                     setDisponivel24h(true);
-                    setHorarioFixo(false);
+                    atualizarCampo({disponivel_24h: true});
                   }}
                   className={`mr-2 cursor-pointer ${
                     isDarkMode
@@ -155,6 +132,7 @@ export default function HorarioFuncionamento() {
                   onCheckedChange={() => {
                     setDisponivel24h(false);
                     setHorarioFixo(true);
+                    atualizarCampo({disponivel_24h: false});
                   }}
                   className={`mr-2 cursor-pointer ${
                     isDarkMode
@@ -245,35 +223,54 @@ export default function HorarioFuncionamento() {
               Dias Disponíveis
             </h2>
             <div className="mb-4 space-y-2">
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={!usarDiasEspecificos}
-                  onChange={() => setUsarDiasEspecificos(false)}
-                  className={`mr-2 ${
+              <div className="flex items-center">
+                <Switch
+                  checked={!diasEspecificos}
+                  onCheckedChange={() => {
+                    setDiasEspecificos(false)
+                    setTodosDias(true);
+                    atualizarCampo({todos_dias: true});
+                  }}
+                  className={`mr-2 cursor-pointer ${
                     isDarkMode
-                      ? 'bg-black accent-black'
-                      : 'bg-[#0061A3] accent-[#0061A3]'
+                      ? 'bg-[#0061A3] data-[state=checked]:bg-white'
+                      : 'bg-[#1681B0] data-[state=checked]:bg-[#0061A3]'
                   }`}
                 />
-                Todos os Dias
-              </label>
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  checked={usarDiasEspecificos}
-                  onChange={() => setUsarDiasEspecificos(true)}
-                  className={`mr-2 ${
+                <span
+                  className={cn('font-medium', {
+                    'font-bold text-[#0061A3] dark:text-white': todosDias,
+                  })}
+                >
+                  Todos os Dias
+                </span>
+              </div>
+              <div className="flex items-center">
+                <Switch
+                  checked={diasEspecificos}
+                  onCheckedChange={() => {
+                    setDiasEspecificos(true)
+                    setTodosDias(false);
+                    atualizarCampo({todos_dias: false});
+                  }}
+                  className={`mr-2 cursor-pointer ${
                     isDarkMode
-                      ? 'bg-black accent-black'
-                      : 'bg-[#0061A3] accent-[#0061A3]'
+                      ? 'bg-[#0061A3] data-[state=checked]:bg-white'
+                      : 'bg-[#1681B0] data-[state=checked]:bg-[#0061A3]'
                   }`}
                 />
-                Específico
-              </label>
+                <span
+                  className={cn('font-medium', {
+                    'font-bold text-[#0061A3] dark:text-white': diasEspecificos,
+                  })}
+                >
+                  Específico
+                </span>
+
+              </div>
             </div>
 
-            {usarDiasEspecificos && (
+            {diasEspecificos && (
               <div
                 className={`grid grid-cols-2 gap-2 p-4 rounded-md ${
                   isDarkMode ? 'bg-white' : 'bg-[#1178B9]'

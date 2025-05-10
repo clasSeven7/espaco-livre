@@ -1,23 +1,16 @@
 'use client';
 
 import ThemeToggleButton from '@/components/ThemeToggleButton';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { useEspacoCadastro } from '@/context/EspacoCadastroContext';
-import {
-  HelpCircle,
-  Info,
-  Landmark,
-  Map,
-  MapPin,
-  Navigation,
-} from 'lucide-react';
+import {Button} from '@/components/ui/button';
+import {Input} from '@/components/ui/input';
+import {Textarea} from '@/components/ui/textarea';
+import {useEspacoCadastro} from '@/context/EspacoCadastroContext';
+import {HelpCircle, Info, Landmark, Map, MapPin, Navigation,} from 'lucide-react';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 
 export default function InformacoesGerais() {
-  const { espaco, atualizarCampo } = useEspacoCadastro();
+  const {espaco, atualizarCampo} = useEspacoCadastro();
   // const [observacao, setObservacao] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -55,7 +48,7 @@ export default function InformacoesGerais() {
               isDarkMode ? 'bg-zinc-800' : 'bg-[#6ea7ca]'
             }`}
           >
-            <Map className="mr-2" />
+            <Map className="mr-2"/>
             Informações Gerais
           </h1>
         </div>
@@ -68,11 +61,11 @@ export default function InformacoesGerais() {
               <label htmlFor="cidade" className="sr-only">
                 Cidade
               </label>
-              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80" />
+              <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80"/>
               <Input
                 id="cidade"
                 value={espaco.cidade || ''}
-                onChange={(e) => atualizarCampo({ cidade: e.target.value })}
+                onChange={(e) => atualizarCampo({cidade: e.target.value})}
                 placeholder="Digite sua Cidade"
                 className={`pl-10 py-8 rounded-lg border-none focus-visible:ring-2 transition ${
                   isDarkMode
@@ -86,11 +79,11 @@ export default function InformacoesGerais() {
               <label htmlFor="rua" className="sr-only">
                 Rua
               </label>
-              <Landmark className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80" />
+              <Landmark className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80"/>
               <Input
                 id="rua"
                 value={espaco.rua || ''}
-                onChange={(e) => atualizarCampo({ rua: e.target.value })}
+                onChange={(e) => atualizarCampo({rua: e.target.value})}
                 placeholder="Digite sua Rua"
                 className={`pl-10 py-8 rounded-lg border-none focus-visible:ring-2 transition ${
                   isDarkMode
@@ -104,11 +97,11 @@ export default function InformacoesGerais() {
               <label htmlFor="bairro" className="sr-only">
                 Bairro
               </label>
-              <Navigation className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80" />
+              <Navigation className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80"/>
               <Input
                 id="bairro"
                 value={espaco.bairro || ''}
-                onChange={(e) => atualizarCampo({ bairro: e.target.value })}
+                onChange={(e) => atualizarCampo({bairro: e.target.value})}
                 placeholder="Digite seu Bairro"
                 className={`pl-10 py-8 rounded-lg border-none focus-visible:ring-2 transition ${
                   isDarkMode
@@ -120,17 +113,17 @@ export default function InformacoesGerais() {
           </div>
 
           {/* Coluna Direita - Observação */}
-          <div className="w-full lg:w-1/2 flex flex-col justify-between">
+          <div className="w-full lg:w-1/2 flex flex-col justify-between break-all whitespace-pre-wrap">
             <div className="relative h-full">
               <label htmlFor="observacao" className="sr-only">
                 Observação
               </label>
-              <Info className="absolute left-3 top-6 text-white" />
+              <Info className="absolute left-3 top-6 text-white"/>
               <Textarea
                 id="observacao"
                 value={espaco.observacoes || ''}
                 onChange={(e) =>
-                  atualizarCampo({ observacoes: e.target.value })
+                  atualizarCampo({observacoes: e.target.value})
                 }
                 placeholder="Descreva alguma observação sobre o espaço"
                 // value={observacao}
@@ -140,7 +133,7 @@ export default function InformacoesGerais() {
                 //     setObservacao(texto);
                 //   }
                 // }}
-                className={`bg-[#127BBF] text-white placeholder:text-white/80 pl-10 pr-4 py-6 h-96 rounded-lg border-none resize-none overflow-y-auto break-words focus-visible:ring-2 focus-visible:ring-white/70 transition ${
+                className={`bg-[#127BBF] text-white placeholder:text-white/80 pl-10 pr-4 py-6 h-96 rounded-lg  border-none resize-none overflow-y-auto break-words focus-visible:ring-2 focus-visible:ring-white/70 transition ${
                   isDarkMode
                     ? 'dark:bg-zinc-800 text-white focus:ring-2 focus:ring-gray-500 placeholder:text-white/50 focus-visible:ring-white/70'
                     : 'bg-[#1178B9] text-white focus:ring-2 focus:ring-blue-500 placeholder:text-white/50 focus-visible:ring-[#6ea7ca]70'
@@ -159,7 +152,7 @@ export default function InformacoesGerais() {
                       : ''
                   }`}
                 >
-                  {espaco.observacoes?.length || 0} / {maxMensagemObservacao}
+                  {/*{espaco.observacoes?.length || 0} / {maxMensagemObservacao}*/}
                 </span>
               </div>
             </div>
@@ -191,10 +184,10 @@ export default function InformacoesGerais() {
           }`}
         >
           <Link href="/ajuda" className="flex items-center gap-1">
-            <HelpCircle size={18} />
+            <HelpCircle size={18}/>
           </Link>
         </Button>
-        <ThemeToggleButton isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+        <ThemeToggleButton isDarkMode={isDarkMode} toggleTheme={toggleTheme}/>
       </div>
     </div>
   );
