@@ -1,52 +1,26 @@
 'use client';
 
 import ThemeToggleButton from '@/components/ThemeToggleButton';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { useEspacoCadastro } from '@/context/EspacoCadastroContext';
-import {
-  CircleDollarSign,
-  CreditCard,
-  DollarSign,
-  HelpCircle,
-  Percent,
-  Plus,
-  ShowerHead,
-  Wallet,
-} from 'lucide-react';
+import {Button} from '@/components/ui/button';
+import {Card, CardContent} from '@/components/ui/card';
+import {Input} from '@/components/ui/input';
+import {useEspacoCadastro} from '@/context/EspacoCadastroContext';
+import {CircleDollarSign, CreditCard, DollarSign, HelpCircle, Percent, Plus, ShowerHead, Wallet} from 'lucide-react';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 
 const metodos = [
-  {
-    id: 'dinheiro',
-    label: 'Dinheiro',
-    icon: <DollarSign className="w-6 h-6" />,
-  },
-  {
-    id: 'credito',
-    label: 'Cartão de Crédito',
-    icon: <CreditCard className="w-6 h-6" />,
-  },
-  {
-    id: 'debito',
-    label: 'Cartão de Débito',
-    icon: <Wallet className="w-6 h-6" />,
-  },
-  {
-    id: 'pix',
-    label: 'Pix',
-    icon: <CircleDollarSign className="w-6 h-6" />,
-  },
-  { id: 'vale', label: 'Vale Crédito', icon: <Percent className="w-6 h-6" /> },
-  { id: 'outro', label: 'Outro', icon: <Plus className="w-6 h-6" /> },
+  {id: 'dinheiro', label: 'Dinheiro', icon: <DollarSign className="w-6 h-6"/>},
+  {id: 'credito', label: 'Cartão de Crédito', icon: <CreditCard className="w-6 h-6"/>},
+  {id: 'debito', label: 'Cartão de Débito', icon: <Wallet className="w-6 h-6"/>},
+  {id: 'pix', label: 'Pix', icon: <CircleDollarSign className="w-6 h-6"/>},
+  {id: 'vale', label: 'Vale Crédito', icon: <Percent className="w-6 h-6"/>},
+  {id: 'outro', label: 'Outro', icon: <Plus className="w-6 h-6"/>},
 ];
 
 export default function PrecoCondicoesPage() {
-  const { espaco, atualizarCampo } = useEspacoCadastro();
-
-  const [metodoSelecionado, setMetodoSelecionado] = useState('');
+  const {espaco, atualizarCampo} = useEspacoCadastro();
+  const [metodoSelecionado, setMetodoSelecionado] = useState<string[]>([]);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   const toggleTheme = () => {
@@ -66,6 +40,27 @@ export default function PrecoCondicoesPage() {
       document.documentElement.classList.remove('dark');
     }
   }, []);
+  
+  useEffect(() => {
+    const savedMethods = JSON.parse(localStorage.getItem('metodos_pagamento') || '[]');
+    setMetodoSelecionado(savedMethods);
+  }, []);
+
+  useEffect(() => {
+    if (metodoSelecionado.length > 0) {
+      localStorage.setItem('metodos_pagamento', JSON.stringify(metodoSelecionado));
+    }
+  }, [metodoSelecionado]);
+
+  const handleMetodoSelection = (metodoId: string) => {
+    setMetodoSelecionado((prev) => {
+      if (prev.includes(metodoId)) {
+        return prev.filter((id) => id !== metodoId);
+      } else {
+        return [...prev, metodoId];
+      }
+    });
+  };
 
   return (
     <div
@@ -81,7 +76,7 @@ export default function PrecoCondicoesPage() {
               isDarkMode ? 'bg-zinc-800' : 'bg-[#6ea7ca]'
             }`}
           >
-            <DollarSign className="mr-2" />
+            <DollarSign className="mr-2"/>
             Preço e Condições
           </h1>
         </div>
@@ -90,11 +85,9 @@ export default function PrecoCondicoesPage() {
         <div className="flex flex-col lg:flex-row flex-1 gap-6 mt-4">
           <div className="flex flex-col flex-1 space-y-4">
             <div className="relative">
-              <label htmlFor="valor_desejado" className="sr-only">
-                Valor Desejado:
-              </label>
+              <label htmlFor="valor_desejado" className="sr-only">Valor Desejado:</label>
               <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80" />
+                <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80"/>
                 <Input
                   id="valor_desejado"
                   type="number"
@@ -113,12 +106,11 @@ export default function PrecoCondicoesPage() {
                 />
               </div>
             </div>
+
             <div className="relative">
-              <label htmlFor="valor_desejado" className="sr-only">
-                Taxa de Limpeza:
-              </label>
+              <label htmlFor="taxa_limpeza" className="sr-only">Taxa de Limpeza:</label>
               <div className="relative">
-                <ShowerHead className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80" />
+                <ShowerHead className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80"/>
                 <Input
                   id="taxa_limpeza"
                   type="number"
@@ -146,22 +138,18 @@ export default function PrecoCondicoesPage() {
                 isDarkMode ? 'dark:text-white' : 'text-[#0061A3]'
               }`}
             >
-              <Wallet size={20} /> Métodos de Pagamento
+              <Wallet size={20}/> Métodos de Pagamento
             </h3>
             <div className="grid grid-cols-3 gap-4">
               {metodos.map((metodo) => (
                 <Card
                   key={metodo.id}
-                  onClick={() => setMetodoSelecionado(metodo.id)}
+                  onClick={() => handleMetodoSelection(metodo.id)}
                   className={`cursor-pointer text-center border-2 transition-colors duration-200 ${
-                    metodoSelecionado === metodo.id
+                    metodoSelecionado.includes(metodo.id)
                       ? 'border-[#0061A3]'
                       : 'border-transparent'
-                  } ${
-                    isDarkMode
-                      ? 'bg-zinc-800 text-white'
-                      : 'bg-white text-black'
-                  }`}
+                  } ${isDarkMode ? 'bg-zinc-800 text-white' : 'bg-white text-black'}`}
                 >
                   <CardContent className="p-4 flex flex-col items-center gap-2">
                     <div
@@ -180,15 +168,12 @@ export default function PrecoCondicoesPage() {
                     </span>
                     <input
                       name="metodo_pagamento"
-                      type="radio"
-                      value={espaco.metodos_pagamento || ''}
-                      onChange={(e) =>
-                        atualizarCampo({
-                          metodos_pagamento: [e.target.value],
-                        })
-                      }
+                      type="checkbox"
+                      value={metodo.id}
+                      onChange={() => {
+                      }}
                       className="mt-2"
-                      checked={metodoSelecionado === metodo.id}
+                      checked={metodoSelecionado.includes(metodo.id)}
                       readOnly
                     />
                   </CardContent>
@@ -215,16 +200,14 @@ export default function PrecoCondicoesPage() {
         <Button
           size="icon"
           className={`px-[10px] py-2 ${
-            isDarkMode
-              ? 'bg-white text-black cursor-pointer'
-              : 'bg-black text-white cursor-pointer'
+            isDarkMode ? 'bg-white text-black cursor-pointer' : 'bg-black text-white cursor-pointer'
           }`}
         >
-          <Link href="/ajuda" className="flex items-center gap-1">
-            <HelpCircle size={18} />
+          <Link href="../../../ajuda" className="flex items-center gap-1">
+            <HelpCircle size={18}/>
           </Link>
         </Button>
-        <ThemeToggleButton isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+        <ThemeToggleButton isDarkMode={isDarkMode} toggleTheme={toggleTheme}/>
       </div>
     </div>
   );
