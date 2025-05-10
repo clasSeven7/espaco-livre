@@ -1,5 +1,5 @@
-import { espacoRepository } from '@/repositories/espacoRepository';
-import { EspacoData, EspacoResponse } from '@/types/index';
+import {espacoRepository} from '@/repositories/espacoRepository';
+import {EspacoData, EspacoResponse} from '@/types';
 
 type EspacoSemValorImovel = Omit<EspacoResponse, 'valor_imovel'>;
 
@@ -18,7 +18,7 @@ export const espacoService = {
       }
 
       const espaco = await espacoRepository.criar(data);
-      const { locatario_id, valor_imovel, ...espacoLimpo } = espaco;
+      const {locatario_id, valor_imovel, ...espacoLimpo} = espaco;
 
       return {
         message: '✅ Espaço cadastrado com sucesso!',
@@ -28,7 +28,7 @@ export const espacoService = {
       console.error('❌ Erro ao criar espaço:', error);
       throw error?.status
         ? error
-        : { status: 500, message: '❌ Erro interno ao criar espaço.' };
+        : {status: 500, message: '❌ Erro interno ao criar espaço.'};
     }
   },
 
@@ -36,16 +36,16 @@ export const espacoService = {
     try {
       const espaco = await espacoRepository.buscarPorId(id);
       if (!espaco) {
-        throw { status: 404, message: '🔍 Espaço não encontrado.' };
+        throw {status: 404, message: '🔍 Espaço não encontrado.'};
       }
 
-      const { valor_imovel, ...espacoLimpo } = espaco;
+      const {valor_imovel, ...espacoLimpo} = espaco;
       return espacoLimpo;
     } catch (error: any) {
       console.error('❌ Erro ao buscar espaço por ID:', error);
       throw error?.status
         ? error
-        : { status: 500, message: '❌ Erro interno ao buscar espaço por ID.' };
+        : {status: 500, message: '❌ Erro interno ao buscar espaço por ID.'};
     }
   },
 
@@ -54,34 +54,34 @@ export const espacoService = {
   ): Promise<EspacoSemValorImovel[]> {
     try {
       const espacos = await espacoRepository.buscarPorLocatario(locatario_id);
-      return espacos.map(({ valor_imovel, ...resto }) => resto);
+      return espacos.map(({valor_imovel, ...resto}) => resto);
     } catch (error: any) {
       console.error('❌ Erro ao buscar espaços do locatário:', error);
       throw error?.status
         ? error
         : {
-            status: 500,
-            message: '❌ Erro interno ao buscar espaços do locatário.',
-          };
+          status: 500,
+          message: '❌ Erro interno ao buscar espaços do locatário.',
+        };
     }
   },
 
   async listarEspacos(): Promise<EspacoSemValorImovel[]> {
     try {
       const espacos = await espacoRepository.listarTodos();
-      return espacos.map(({ valor_imovel, ...resto }) => resto);
+      return espacos.map(({valor_imovel, ...resto}) => resto);
     } catch (error: any) {
       console.error('❌ Erro ao listar espaços:', error);
       throw error?.status
         ? error
-        : { status: 500, message: '❌ Erro interno ao listar espaços.' };
+        : {status: 500, message: '❌ Erro interno ao listar espaços.'};
     }
   },
 
   async atualizarEspaco(id: number, data: Partial<EspacoData>) {
     try {
       const espaco = await espacoRepository.atualizar(id, data);
-      const { valor_imovel, ...espacoLimpo } = espaco;
+      const {valor_imovel, ...espacoLimpo} = espaco;
 
       return {
         message: '✅ Espaço atualizado com sucesso!',
@@ -91,7 +91,7 @@ export const espacoService = {
       console.error('❌ Erro ao atualizar espaço:', error);
       throw error?.status
         ? error
-        : { status: 500, message: '❌ Erro interno ao atualizar espaço.' };
+        : {status: 500, message: '❌ Erro interno ao atualizar espaço.'};
     }
   },
 
@@ -105,7 +105,7 @@ export const espacoService = {
       console.error('❌ Erro ao deletar espaço:', error);
       throw error?.status
         ? error
-        : { status: 500, message: '❌ Erro interno ao deletar espaço.' };
+        : {status: 500, message: '❌ Erro interno ao deletar espaço.'};
     }
   },
 };

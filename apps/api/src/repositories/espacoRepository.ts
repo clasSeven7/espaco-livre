@@ -1,5 +1,5 @@
 import DB from '@/database/index';
-import { Espaco, EspacoResponse } from '@/types/index';
+import {Espaco, EspacoResponse} from '@/types';
 
 function truncarCampos(espaco: Espaco): Espaco {
   return {
@@ -33,18 +33,16 @@ export const espacoRepository = {
         !espaco.rua ||
         !espaco.valor_imovel
       ) {
-        throw { status: 400, message: '❌ Dados obrigatórios não fornecidos.' };
+        throw {status: 400, message: '❌ Dados obrigatórios não fornecidos.'};
       }
 
       const dados = truncarCampos(espaco);
 
       const query = `
-        INSERT INTO espacos (
-          locatario_id, titulo, descricao, cidade, rua, bairro, observacoes,
-          valor_imovel, taxa_limpeza, disponivel_24h, hora_inicio, hora_fim, 
-          todos_dias, dias_disponiveis, recursos_imovel, fotos_imovel, metodos_pagamento
-        ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16)
-        RETURNING *;
+          INSERT INTO espacos (locatario_id, titulo, descricao, cidade, rua, bairro, observacoes,
+                               valor_imovel, taxa_limpeza, disponivel_24h, hora_inicio, hora_fim,
+                               todos_dias, dias_disponiveis, recursos_imovel, fotos_imovel, metodos_pagamento)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING *;
       `;
 
       const values = [
@@ -60,8 +58,8 @@ export const espacoRepository = {
         dados.disponivel_24h ?? false,
         dados.hora_inicio || null,
         dados.hora_fim || null,
-        dados.todos_dias ?? false, // Novo campo
-        dados.dias_disponiveis || '', // Novo campo
+        dados.todos_dias ?? false,
+        dados.dias_disponiveis || '',
         dados.recursos_imovel,
         dados.fotos_imovel,
         dados.metodos_pagamento,
@@ -158,12 +156,11 @@ export const espacoRepository = {
       }
 
       const query = `
-        UPDATE espacos 
-        SET ${camposParaAtualizar
+          UPDATE espacos
+          SET ${camposParaAtualizar
           .map((campo, idx) => `${campo} = $${idx + 2}`)
           .join(', ')}
-        WHERE id = $1
-        RETURNING *
+          WHERE id = $1 RETURNING *
       `;
 
       const values = [
@@ -174,7 +171,7 @@ export const espacoRepository = {
       const result = await DB.query(query, values);
 
       if (!result.rows.length) {
-        throw { status: 404, message: '⚠️ Espaço não encontrado.' };
+        throw {status: 404, message: '⚠️ Espaço não encontrado.'};
       }
 
       return result.rows[0];
@@ -237,7 +234,7 @@ export const espacoRepository = {
       const query = 'DELETE FROM espacos WHERE id = $1';
       const result = await DB.query(query, [id]);
       if (result.rowCount === 0) {
-        throw { status: 404, message: '⚠️ Espaço não encontrado.' };
+        throw {status: 404, message: '⚠️ Espaço não encontrado.'};
       }
       console.log(`✅ Espaço com ID ${id} deletado com sucesso.`);
     } catch (error) {

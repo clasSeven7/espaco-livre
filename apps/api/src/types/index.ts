@@ -106,18 +106,18 @@ export interface EspacoData {
   locatario_id: number;
   titulo: string;
   descricao?: string;
-  fotos_imovel?: string[];
+  fotos_imovel: string[];
   cidade: string;
   rua: string;
   bairro?: string;
   observacoes?: string;
   valor_imovel: number;
-  taxa_limpeza?: number;
-  disponivel_24h?: boolean;
+  taxa_limpeza: number;
+  disponivel_24h: boolean;
   hora_inicio?: string;
   hora_fim?: string;
   todos_dias?: boolean;
-  dias_disponiveis?:
+  dias_disponiveis:
     | 'segunda'
     | 'terca'
     | 'quarta'
@@ -125,8 +125,8 @@ export interface EspacoData {
     | 'sexta'
     | 'sabado'
     | 'domingo';
-  recursos_imovel?: string[];
-  metodos_pagamento?: string[];
+  recursos_imovel: string[];
+  metodos_pagamento: string[];
 }
 
 export interface EspacoResponse extends EspacoData {
@@ -134,9 +134,13 @@ export interface EspacoResponse extends EspacoData {
   criado_em: Date;
   atualizado_em: Date;
 }
+
 export interface EspacoCreate extends Partial<EspacoData> {
   locatario_id: number;
   titulo: string;
   descricao: string;
+  cidade: string;
+  rua: string;
+  valor_imovel: number;
   fotos_imovel: string[];
 }

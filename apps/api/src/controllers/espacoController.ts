@@ -1,7 +1,7 @@
-import { espacoService } from '@/services/espacoService';
+import {espacoService} from '@/services/espacoService';
 import upload from '@/services/uploadService';
-import { EspacoData } from '@/types/index';
-import { Request, Response } from 'express';
+import {EspacoData} from '@/types';
+import {Request, Response} from 'express';
 
 export const espacoController = {
   // Upload da foto do espaço
@@ -51,10 +51,10 @@ export const espacoController = {
   // Buscar espaço por ID
   async buscarPorId(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      const {id} = req.params;
       const espaco = await espacoService.buscarPorId(Number(id));
       if (!espaco) {
-        return res.status(404).json({ error: 'Espaço não encontrado.' });
+        return res.status(404).json({error: 'Espaço não encontrado.'});
       }
       return res.status(200).json(espaco);
     } catch (error: any) {
@@ -68,12 +68,12 @@ export const espacoController = {
   // Buscar espaços por locatário
   async buscarPorLocatario(req: Request, res: Response) {
     try {
-      const { locatario_id } = req.params;
+      const {locatario_id} = req.params;
       const espacos = await espacoService.buscarPorLocatario(
         Number(locatario_id)
       );
       if (!espacos.length) {
-        return res.status(404).json({ error: 'Nenhum espaço encontrado.' });
+        return res.status(404).json({error: 'Nenhum espaço encontrado.'});
       }
       return res.status(200).json(espacos);
     } catch (error: any) {
@@ -99,7 +99,7 @@ export const espacoController = {
   // Atualizar espaço
   async atualizar(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      const {id} = req.params;
       const espacoData = req.body as Partial<EspacoData>;
 
       if (req.file) {
@@ -123,14 +123,14 @@ export const espacoController = {
   // Deletar espaço
   async deletar(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      const {id} = req.params;
       const resultado = await espacoService.deletarEspaco(Number(id));
 
       if (!resultado) {
-        return res.status(404).json({ error: 'Espaço não encontrado.' });
+        return res.status(404).json({error: 'Espaço não encontrado.'});
       }
 
-      return res.status(200).json({ message: 'Espaço deletado com sucesso!' });
+      return res.status(200).json({message: 'Espaço deletado com sucesso!'});
     } catch (error: any) {
       console.error('❌ Erro ao deletar espaço:', error);
       return res.status(error.status || 500).json({
