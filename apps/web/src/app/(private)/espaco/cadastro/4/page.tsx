@@ -61,8 +61,13 @@ export default function PrecoCondicoes() {
   useEffect(() => {
     const savedMethods = JSON.parse(localStorage.getItem('metodos_pagamento') || '[]');
     setMetodoSelecionado(savedMethods);
-    atualizarCampo({metodos_pagamento: savedMethods});
   }, []);
+
+  useEffect(() => {
+    if (metodoSelecionado.length > 0) {
+      atualizarCampo({metodos_pagamento: metodoSelecionado});
+    }
+  }, [metodoSelecionado]);
 
   return (
     <div
