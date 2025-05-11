@@ -5,7 +5,7 @@ import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Textarea} from '@/components/ui/textarea';
 import {useEspacoCadastro} from '@/context/EspacoCadastroContext';
-import {Book, Camera, ChevronsUpDown, Hammer, HelpCircle, List, Megaphone, Trash2, UploadCloud, X,} from 'lucide-react';
+import {Book, Camera, ChevronsUpDown, Hammer, HelpCircle, List, Megaphone, Trash2, UploadCloud, X} from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, {useEffect, useState} from 'react';
@@ -23,14 +23,13 @@ const itens = [
 
 export default function InformacoesIniciais() {
   const {espaco, atualizarCampo} = useEspacoCadastro();
-  const maxMessagemTitulo = 100;
-  const maxMessagemDescricao = 500;
+  // const maxMessagemTitulo = 100;
+  // const maxMessagemDescricao = 500;
 
   // const [messagemTitulo, setMessagemTitulo] = useState('');
   // const [messagemDescricao, setMessagemDescricao] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  // const [file, setFile] = useState<File[] | null>(null);
+  // const [isLoading, setIsLoading] = useState(false);
   const [recurso, setRecurso] = useState('');
   const [open, setOpen] = useState(false);
 
@@ -120,10 +119,12 @@ export default function InformacoesIniciais() {
   }, []);
 
   useEffect(() => {
+    atualizarCampo({recursos_imovel: selected});
     localStorage.setItem('equipamentosSelecionados', JSON.stringify(selected));
   }, [selected]);
 
   useEffect(() => {
+    atualizarCampo({fotos_imovel: previews});
     localStorage.setItem('fotosEspaco', JSON.stringify(previews));
   }, [previews]);
 
@@ -147,7 +148,7 @@ export default function InformacoesIniciais() {
         </div>
 
         {/* Conteúdo em duas colunas */}
-        <form action="espaco-form" className="flex flex-col lg:flex-row gap-6">
+        <form action="espaco-cadastro" className="flex flex-col lg:flex-row gap-6">
           <div
             id="lado_esquerdo"
             className="w-full lg:w-2/3 flex flex-col gap-6"
@@ -307,13 +308,16 @@ export default function InformacoesIniciais() {
                   />
                   <button
                     type="button"
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.preventDefault();
                       if (recurso && !selected.includes(recurso)) {
-                        setSelected((prev) => [...prev, recurso]);
+                        const novos = [...selected, recurso];
+                        setSelected(novos);
+                        atualizarCampo({recursos_imovel: novos});
                         setRecurso('');
                       }
                     }}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 cursou-pointer"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer"
                   >
                     <Image
                       src="/send.svg"
@@ -431,7 +435,7 @@ export default function InformacoesIniciais() {
                 : 'bg-black text-white cursor-pointer'
             }`}
           >
-            <Link href="/ajuda" className="flex items-center gap-1">
+            <Link href="../../../ajuda" className="flex items-center gap-1">
               <HelpCircle size={18}/>
             </Link>
           </Button>
