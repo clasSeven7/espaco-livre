@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import {useRouter} from 'next/navigation';
-import {useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import toast from 'react-hot-toast';
 
 export default function UltimosDetalhes() {
@@ -119,8 +119,8 @@ export default function UltimosDetalhes() {
                 }`}
               >
                 <li><strong>Cidade:</strong> {espaco.cidade}</li>
-                <li>Rua: {espaco.rua}</li>
-                <li>Bairro: {espaco.bairro}</li>
+                <li><strong>Rua:</strong> {espaco.rua}</li>
+                <li><strong>Bairro:</strong> {espaco.bairro}</li>
               </ul>
             </div>
 
@@ -133,17 +133,17 @@ export default function UltimosDetalhes() {
               >
                 <CalendarClock className="w-5 h-5"/> Horário de Funcionamento:
               </h2>
-              <p
+              <div
                 className={`text-base font-semibold mt-2 ${
                   isDarkMode ? 'text-zinc-500' : 'text-black'
                 }`}
               >
-                <div>
+                <p>
                   {espaco.todos_dias
                     ? 'Segunda à Domingo'
-                    : espaco.dias_disponiveis}
-                </div>
-              </p>
+                    : espaco.dias_disponiveis?.join(', ') || 'Nenhum dia disponível'}
+                </p>
+              </div>
 
               <div className="relative mt-4">
                 {/* Horários principais */}
@@ -152,8 +152,19 @@ export default function UltimosDetalhes() {
                     isDarkMode ? 'dark:text-white' : 'text-blue-700'
                   }`}
                 >
-                  <span>{espaco.hora_inicio}</span>
-                  <span>{espaco.hora_fim}</span>
+                  <div className="w-full flex items-center justify-between gap-10">
+                    {espaco.disponivel_24h ? (
+                      <>
+                        <span className="font-bold">Início: 00:00</span>
+                        <span className="font-bold">Fim: 24:00</span>
+                      </>
+                    ) : (
+                      <>
+                        <span className="font-bold">Início: {espaco.hora_inicio || '--:--'}</span>
+                        <span className="font-bold">Fim: {espaco.hora_fim || '--:--'}</span>
+                      </>
+                    )}
+                  </div>
                 </div>
 
                 {/* Linha principal com marcadores */}
@@ -227,10 +238,13 @@ export default function UltimosDetalhes() {
                   isDarkMode ? 'text-zinc-500' : 'text-black'
                 }`}
               >
-                <li>Ambiente climatizado</li>
-                <li>Wi-Fi de alta velocidade</li>
-                <li>Estacionamento gratuito</li>
-                <li>Mobília completa</li>
+                {espaco.metodos_pagamento && espaco.metodos_pagamento.length > 0 ? (
+                  espaco.metodos_pagamento.map((metodo, index) => (
+                    <li className='uppercase' key={index}>{metodo}</li>
+                  ))
+                ) : (
+                  <li>Não foi selecionado nenhum método de pagamento.</li>
+                )}
               </ul>
             </div>
           </div>
@@ -269,10 +283,13 @@ export default function UltimosDetalhes() {
                   isDarkMode ? 'text-zinc-500' : 'text-black'
                 }`}
               >
-                <li>Ambiente climatizado</li>
-                <li>Wi-Fi de alta velocidade</li>
-                <li>Estacionamento gratuito</li>
-                <li>Mobília completa</li>
+                {espaco.recursos_imovel && espaco.recursos_imovel.length > 0 ? (
+                  espaco.recursos_imovel.map((metodo, index) => (
+                    <li className='capitalize' key={index}>{metodo}</li>
+                  ))
+                ) : (
+                  <li>Não foi selecionado nenhum equipamentos para o imovel.</li>
+                )}
               </ul>
             </div>
 
@@ -336,11 +353,14 @@ export default function UltimosDetalhes() {
               : 'bg-black text-white cursor-pointer'
           }`}
         >
-          <Link href="/ajuda" className="flex items-center gap-1">
-            {/* <HelpCircle size={18} /> */}
+          <Link href="../../../ajuda" className="flex items-center gap-1">
+            {/*<HelpCircle size={18}/>*/}
           </Link>
         </Button>
-        <ThemeToggleButton isDarkMode={isDarkMode} toggleTheme={toggleTheme}/>
+        <ThemeToggleButton
+          isDarkMode={isDarkMode}
+          toggleTheme={toggleTheme}
+        />
       </div>
     </div>
   );
