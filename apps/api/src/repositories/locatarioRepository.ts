@@ -1,5 +1,5 @@
 import DB from '@/database/index';
-import { Locatario, LocatarioResponse } from '@/types/index';
+import {Locatario, LocatarioResponse} from '@/types';
 
 function truncarCampos(locatario: Locatario): Locatario {
   return {
@@ -17,17 +17,16 @@ export const locatarioRepository = {
   async criar(locatario: Locatario): Promise<LocatarioResponse> {
     try {
       if (!locatario.nome_usuario || !locatario.senha || !locatario.email) {
-        throw { status: 400, message: '❌ Dados obrigatórios não fornecidos.' };
+        throw {status: 400, message: '❌ Dados obrigatórios não fornecidos.'};
       }
 
       const dados = truncarCampos(locatario);
 
       const query = `
-        INSERT INTO locatarios (
-          foto_de_perfil, nome_usuario, senha, email, telefone, data_de_nascimento, 
-          endereco_residencial, cidade, cpf, cep
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-        RETURNING *
+          INSERT INTO locatarios (foto_de_perfil, nome_usuario, senha, email, telefone, data_de_nascimento,
+                                  endereco_residencial, cidade, cpf, cep)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+          RETURNING *
       `;
 
       const values = [
@@ -155,12 +154,12 @@ export const locatarioRepository = {
       }
 
       const query = `
-        UPDATE locatarios 
-        SET ${camposParaAtualizar
+          UPDATE locatarios
+          SET ${camposParaAtualizar
           .map((campo, index) => `${campo} = $${index + 2}`)
           .join(', ')}
-        WHERE id = $1
-        RETURNING *
+          WHERE id = $1
+          RETURNING *
       `;
 
       const values = [
@@ -171,7 +170,7 @@ export const locatarioRepository = {
       const result = await DB.query(query, values);
 
       if (!result.rows.length) {
-        throw { status: 404, message: '❌ Locatário não encontrado.' };
+        throw {status: 404, message: '❌ Locatário não encontrado.'};
       }
 
       return result.rows[0];

@@ -1,5 +1,5 @@
-import { locatarioRepository } from '@/repositories/locatarioRepository';
-import { LocatarioData, LocatarioResponse } from '@/types/index';
+import {locatarioRepository} from '@/repositories/locatarioRepository';
+import {LocatarioData, LocatarioResponse} from '@/types';
 
 export const locatarioService = {
   async criarLocatario(data: LocatarioData) {
@@ -25,7 +25,7 @@ export const locatarioService = {
       }
 
       const locatario = await locatarioRepository.criar(data);
-      const { senha, ...locatarioSemSenha } = locatario as LocatarioResponse;
+      const {senha, ...locatarioSemSenha} = locatario as LocatarioResponse;
 
       return {
         message: '✅ Locatario cadastrado com sucesso',
@@ -36,9 +36,9 @@ export const locatarioService = {
       throw error.status
         ? error
         : {
-            status: 500,
-            message: '❌ Erro interno ao criar locatario.',
-          };
+          status: 500,
+          message: '❌ Erro interno ao criar locatario.',
+        };
     }
   },
 
@@ -52,23 +52,23 @@ export const locatarioService = {
         };
       }
 
-      const { senha, ...locatarioSemSenha } = locatario;
+      const {senha, ...locatarioSemSenha} = locatario;
       return locatarioSemSenha;
     } catch (error: any) {
       console.error('❌ Erro ao buscar locatario por ID:', error);
       throw error.status
         ? error
         : {
-            status: 500,
-            message: '❌ Erro interno ao buscar locatario por ID.',
-          };
+          status: 500,
+          message: '❌ Erro interno ao buscar locatario por ID.',
+        };
     }
   },
 
   async listarLocatarios() {
     try {
       const locatarios = await locatarioRepository.listarTodos();
-      return locatarios.map(({ senha, ...locatario }) => locatario);
+      return locatarios.map(({senha, ...locatario}) => locatario);
     } catch (error: any) {
       console.error('❌ Erro ao listar locatario:', error);
       throw {
@@ -92,16 +92,16 @@ export const locatarioService = {
       }
 
       const locatarioAtualizado = await locatarioRepository.atualizar(id, data);
-      const { senha, ...locatarioSemSenha } = locatarioAtualizado;
+      const {senha, ...locatarioSemSenha} = locatarioAtualizado;
       return locatarioSemSenha;
     } catch (error: any) {
       console.error('❌ Erro ao atualizar locatário:', error);
       throw error.status
         ? error
         : {
-            status: 500,
-            message: '❌ Erro interno ao atualizar locatário.',
-          };
+          status: 500,
+          message: '❌ Erro interno ao atualizar locatário.',
+        };
     }
   },
 
@@ -121,9 +121,9 @@ export const locatarioService = {
       throw error.status
         ? error
         : {
-            status: 500,
-            message: '❌ Erro interno ao deletar locatário.',
-          };
+          status: 500,
+          message: '❌ Erro interno ao deletar locatário.',
+        };
     }
   },
 };

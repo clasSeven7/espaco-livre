@@ -1,5 +1,5 @@
 import DB from '@/database/index';
-import { Cliente, ClienteResponse } from '@/types/index';
+import {Cliente, ClienteResponse} from '@/types';
 
 function truncarCampos(cliente: Cliente): Cliente {
   return {
@@ -18,18 +18,17 @@ export const clienteRepository = {
   async criar(cliente: Cliente): Promise<ClienteResponse> {
     try {
       if (!cliente.nome_usuario || !cliente.senha || !cliente.email) {
-        throw { status: 400, message: '❌ Dados obrigatórios não fornecidos.' };
+        throw {status: 400, message: '❌ Dados obrigatórios não fornecidos.'};
       }
 
       const dados = truncarCampos(cliente);
 
       const query = `
-        INSERT INTO clientes (
-          foto_de_perfil, nome_usuario, senha, email, telefone, 
-          data_de_nascimento, endereco_residencial, cidade, cep, 
-          tipo_ocupacao, frequencia_uso
-        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-        RETURNING *
+          INSERT INTO clientes (foto_de_perfil, nome_usuario, senha, email, telefone,
+                                data_de_nascimento, endereco_residencial, cidade, cep,
+                                tipo_ocupacao, frequencia_uso)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+          RETURNING *
       `;
 
       const values = [
@@ -68,7 +67,9 @@ export const clienteRepository = {
       const result = await DB.query(query, [email]);
       return result.rows[0] || null;
     } catch (error) {
-      console.error('🔴 Erro ao buscar cliente por email:', error);
+      console.error('🚨 Erro ao buscar cliente por email:',
+        error
+      );
       throw error;
     }
   },
@@ -92,7 +93,9 @@ export const clienteRepository = {
       const result = await DB.query(query, [id]);
       return result.rows[0] || null;
     } catch (error) {
-      console.error('🔴 Erro ao buscar cliente por ID:', error);
+      console.error('🔴 Erro ao buscar cliente por ID:',
+        error
+      );
       throw error;
     }
   },
@@ -134,16 +137,16 @@ export const clienteRepository = {
       );
 
       if (!camposParaAtualizar.length) {
-        throw { status: 400, message: '⚠️ Nenhum campo para atualizar.' };
+        throw {status: 400, message: '⚠️ Nenhum campo para atualizar.'};
       }
 
       const query = `
-        UPDATE clientes 
-        SET ${camposParaAtualizar
+          UPDATE clientes
+          SET ${camposParaAtualizar
           .map((campo, idx) => `${campo} = $${idx + 2}`)
           .join(', ')}
-        WHERE id = $1
-        RETURNING *
+          WHERE id = $1
+          RETURNING *
       `;
 
       const values = [
@@ -154,7 +157,7 @@ export const clienteRepository = {
       const result = await DB.query(query, values);
 
       if (!result.rows.length) {
-        throw { status: 404, message: '❌ Cliente não encontrado.' };
+        throw {status: 404, message: '❌ Cliente não encontrado.'};
       }
 
       return result.rows[0];
