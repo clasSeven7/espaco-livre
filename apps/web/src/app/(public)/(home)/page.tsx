@@ -1,14 +1,14 @@
 'use client';
 
-import { Comment } from '@/components/sections/Comment';
-import { Feature } from '@/components/sections/Feature';
-import { Footer } from '@/components/sections/Footer';
-import { Header } from '@/components/sections/Header';
-import { Hero } from '@/components/sections/Hero';
-import { Space } from '@/components/sections/Space';
+import {Comment} from '@/components/sections/Comment';
+import {Feature} from '@/components/sections/Feature';
+import {Footer} from '@/components/sections/Footer';
+import {Header} from '@/components/sections/Header';
+import {Hero} from '@/components/sections/Hero';
+import {Space} from '@/components/sections/Space';
 import Cookies from 'js-cookie';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import {useRouter} from 'next/navigation';
+import {useEffect, useState} from 'react';
 
 export default function Home() {
   const router = useRouter();
@@ -53,11 +53,11 @@ export default function Home() {
         token={token}
       />
 
-      <Hero isDarkMode={isDarkMode} />
-      <Space isDarkMode={isDarkMode} />
-      <Comment isDarkMode={isDarkMode} />
-      <Feature isDarkMode={isDarkMode} />
-      <Footer isDarkMode={isDarkMode} />
+      <Hero isDarkMode={isDarkMode}/>
+      <Space isDarkMode={isDarkMode}/>
+      <Comment isDarkMode={isDarkMode}/>
+      <Feature isDarkMode={isDarkMode}/>
+      <Footer isDarkMode={isDarkMode}/>
     </main>
   );
 }
