@@ -42,7 +42,9 @@ export const espacoRepository = {
           INSERT INTO espacos (locatario_id, titulo, descricao, cidade, rua, bairro, observacoes,
                                valor_imovel, taxa_limpeza, disponivel_24h, hora_inicio, hora_fim,
                                todos_dias, dias_disponiveis, recursos_imovel, fotos_imovel, metodos_pagamento)
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16) RETURNING *;
+          VALUES ($1, $2, $3, $4, $5, $6, $7,
+                  $8, $9, $10, $11, $12,
+                  $13, $14, $15, $16, $17) RETURNING *;
       `;
 
       const values = [
@@ -60,9 +62,9 @@ export const espacoRepository = {
         dados.hora_fim || null,
         dados.todos_dias ?? false,
         dados.dias_disponiveis || '',
-        dados.recursos_imovel,
-        dados.fotos_imovel,
-        dados.metodos_pagamento,
+        JSON.stringify(dados.recursos_imovel),
+        JSON.stringify(dados.fotos_imovel),
+        JSON.stringify(dados.metodos_pagamento),
       ];
 
       const result = await DB.query(query, values);
