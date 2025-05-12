@@ -5,23 +5,11 @@ import {Button} from '@/components/ui/button';
 import {useEspacoCadastro} from '@/context/EspacoCadastroContext';
 import api from '@/lib/axios';
 import Cookies from 'js-cookie';
-import {
-  ArrowLeft,
-  ArrowRight,
-  CalendarClock,
-  ClipboardList,
-  DollarSign,
-  Home,
-  Images,
-  Link,
-  MapPin,
-  Trash2,
-  Wallet
-} from 'lucide-react';
-import Image from 'next/image';
+import {CalendarClock, ClipboardList, DollarSign, Home, Images, Link, MapPin, Wallet} from 'lucide-react';
 import {useRouter} from 'next/navigation';
 import React, {useEffect, useState} from 'react';
 import toast from 'react-hot-toast';
+import Image from 'next/image';
 
 export default function UltimosDetalhes() {
   const {espaco, limparCampos} = useEspacoCadastro();
@@ -32,6 +20,7 @@ export default function UltimosDetalhes() {
   const [indiceAtual, setIndiceAtual] = useState(0);
   const [userId, setUserId] = useState<string | null>(null);
   const [userType, setUserType] = useState<string | null>(null);
+  const [userFoto, setUserFoto] = useState<string | null>(null);
 
   const toggleTheme = () => {
     const newTheme = !isDarkMode;
@@ -67,14 +56,18 @@ export default function UltimosDetalhes() {
 
       const payload = {
         ...espaco,
+        fotos_imovel: userFoto,
         locatario_id: userId,
       };
+
+      console.log(payload);
 
       const response = await api.post('/espacos', payload);
 
       toast.success('Espaço cadastrado com sucesso!');
       console.log('✅ Espaço cadastrado:', response.data);
       limparCampos();
+      // localStorage.clear()
       router.push('/');
     } catch (error) {
       console.error('Erro ao salvar espaço:', error);
@@ -94,7 +87,7 @@ export default function UltimosDetalhes() {
   }, []);
 
   useEffect(() => {
-    const storedFotos = localStorage.getItem('fotos_imovel');
+    const storedFotos = localStorage.getItem('fotosEspaco');
     if (storedFotos) {
       const fotosArray = JSON.parse(storedFotos);
       setFotos(fotosArray);
@@ -103,7 +96,13 @@ export default function UltimosDetalhes() {
 
   useEffect(() => {
     const locatarioId = localStorage.getItem('locatario_id');
-    const tipoUsuario = localStorage.getItem('tipo_usuario'); // certifique-se de que esse valor está sendo salvo no login
+    const tipoUsuario = localStorage.getItem('tipo_usuario');
+    const fotosImovel = localStorage.getItem('fotosEspaco');
+
+    if (fotosImovel) {
+      setUserFoto(fotosImovel);
+      console.log('Foto:', JSON.parse(fotosImovel));
+    }
 
     if (locatarioId) {
       setUserId(locatarioId);
@@ -335,57 +334,25 @@ export default function UltimosDetalhes() {
             </div>
 
             <div id="preview_fotos" className="w-full">
-              <div className="flex flex-col w-full lg:w-1/3 space-y-6">
-                <h2 className="text-xl font-bold flex items-center gap-2 text-blue-800 dark:text-white">
-                  <Images className="w-5 h-5"/> Galeria de Fotos
-                </h2>
-                {/* Galeria de Imagens */}
-                <div
-                  className="relative w-full aspect-video border rounded-lg overflow-hidden flex items-center justify-center"
-                >
-                  {fotos.length > 0 && (
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
-                      <div className="relative w-full aspect-square border rounded-lg overflow-hidden">
-                        <Image
-                          src={fotos[indiceAtual]}
-                          alt={`Preview ${indiceAtual}`}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                    </div>
-                  )}
+              <h2 className="text-xl font-bold flex items-center gap-2 text-blue-800">
+                <Images className="w-4 h-4"/>
+                Imagens do Espaço:
+              </h2>
+              {fotos.length > 0 && (
+                <div className="flex justify-center mt-4">
+                  <div className="relative w-[200px] h-[200px] border rounded-lg overflow-hidden">
+                    <Image
+                      src={fotos[indiceAtual]}
+                      width={200}
+                      height={200}
+                      alt={`Preview ${indiceAtual}`}
+                      className="object-cover"
+                    />
+                  </div>
                 </div>
+              )}
 
-                {/* Botões para navegação */}
-                <div className="flex justify-center items-center gap-4">
-                  <Button
-                    variant="outline"
-                    onClick={voltarFoto}
-                    disabled={fotos.length <= 1}
-                  >
-                    <ArrowLeft className="w-4 h-4"/>
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={avancarFoto}
-                    disabled={fotos.length <= 1}
-                  >
-                    <ArrowRight className="w-4 h-4"/>
-                  </Button>
-                </div>
 
-                {/* Remover foto */}
-                <div className="flex justify-center items-center gap-4">
-                  <Button
-                    variant="destructive"
-                    onClick={() => removerFoto(indiceAtual)}
-                    disabled={fotos.length === 0}
-                  >
-                    <Trash2 className="w-4 h-4"/>
-                  </Button>
-                </div>
-              </div>
             </div>
           </div>
         </div>
