@@ -64,8 +64,7 @@ export default function Login() {
 
       console.log(usuario)
       console.log(token)
-
-
+      
       if (!usuario || !token) {
         throw new Error('Dados de login incompletos.');
       }
