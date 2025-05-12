@@ -16,10 +16,10 @@ function truncarCampos(espaco: Espaco): Espaco {
     hora_inicio: espaco.hora_inicio || undefined,
     hora_fim: espaco.hora_fim || undefined,
     recursos_imovel: espaco.recursos_imovel,
+    todos_dias: espaco.todos_dias ?? false,
     fotos_imovel: espaco.fotos_imovel,
     metodos_pagamento: espaco.metodos_pagamento,
-    todos_dias: espaco.todos_dias ?? false,
-    dias_disponiveis: espaco.dias_disponiveis?.substring(0, 50),
+    dias_disponiveis: espaco.dias_disponiveis,
   };
 }
 
@@ -62,9 +62,9 @@ export const espacoRepository = {
         dados.hora_fim || null,
         dados.todos_dias ?? false,
         dados.dias_disponiveis || '',
-        JSON.stringify(dados.recursos_imovel),
-        JSON.stringify(dados.fotos_imovel),
-        JSON.stringify(dados.metodos_pagamento),
+        dados.recursos_imovel,
+        dados.fotos_imovel,
+        dados.metodos_pagamento,
       ];
 
       const result = await DB.query(query, values);
