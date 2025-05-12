@@ -31,6 +31,7 @@ export interface LocatarioResponse extends LocatarioData {
 }
 
 export interface LocatarioCreate extends Partial<LocatarioData> {
+  id: number;
   email: string;
   senha: string;
   nome_usuario: string;
@@ -77,6 +78,7 @@ export interface ClienteResponse extends ClienteData {
 }
 
 export interface ClienteCreate extends Partial<ClienteData> {
+  id: number;
   email: string;
   senha: string;
   nome_usuario: string;
