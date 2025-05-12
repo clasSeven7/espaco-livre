@@ -62,9 +62,9 @@ export const espacoRepository = {
         dados.hora_fim || null,
         dados.todos_dias ?? false,
         dados.dias_disponiveis || '',
-        JSON.stringify(Array.isArray(dados.recursos_imovel) ? dados.recursos_imovel : []),
-        JSON.stringify(Array.isArray(dados.fotos_imovel) ? dados.fotos_imovel : []),
-        JSON.stringify(Array.isArray(dados.metodos_pagamento) ? dados.metodos_pagamento : []),
+        JSON.stringify(dados.recursos_imovel),
+        JSON.stringify(dados.fotos_imovel),
+        JSON.stringify(dados.metodos_pagamento),
       ];
 
       const result = await DB.query(query, values);
