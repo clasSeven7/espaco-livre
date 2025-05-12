@@ -1,11 +1,11 @@
 'use client';
 
-import { HeaderSimple } from '@/components/HeaderSimple';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { api } from '@/lib/axios';
-import { FormDataCLiente } from '@/types/index';
-import { AxiosError } from 'axios';
+import {HeaderSimple} from '@/components/HeaderSimple';
+import {Button} from '@/components/ui/button';
+import {Checkbox} from '@/components/ui/checkbox';
+import {api} from '@/lib/axios';
+import {FormDataCLiente} from '@/types';
+import {AxiosError} from 'axios';
 import {
   ArrowRight,
   Calendar,
@@ -21,10 +21,10 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { toast } from 'react-hot-toast';
-import { IMaskInput } from 'react-imask';
+import {useRouter} from 'next/navigation';
+import React, {useEffect, useState} from 'react';
+import {toast} from 'react-hot-toast';
+import {IMaskInput} from 'react-imask';
 
 export default function Cliente() {
   const router = useRouter();
@@ -63,7 +63,7 @@ export default function Cliente() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target as unknown as { name: string; value: string };
-    const { name, value } = target;
+    const {name, value} = target;
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -135,7 +135,7 @@ export default function Cliente() {
       } else {
         toast.error(
           axiosError.response?.data?.error ||
-            'Erro ao realizar cadastro. Tente novamente.'
+          'Erro ao realizar cadastro. Tente novamente.'
         );
       }
     } finally {
@@ -145,7 +145,7 @@ export default function Cliente() {
 
   return (
     <>
-      <HeaderSimple isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
+      <HeaderSimple isDarkMode={isDarkMode} toggleTheme={toggleTheme}/>
       <div
         className={`items-center justify-center h-full w-full relative ${
           isDarkMode
@@ -249,7 +249,7 @@ export default function Cliente() {
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white cursor-pointer"
                   >
-                    {showPassword ? <EyeOff size={24} /> : <Eye size={24} />}
+                    {showPassword ? <EyeOff size={24}/> : <Eye size={24}/>}
                   </button>
                 </div>
               </div>
@@ -266,10 +266,11 @@ export default function Cliente() {
                       onChange={handleFileChange}
                       className="w-full h-full opacity-0 cursor-pointer"
                     />
-                    <Upload className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[#1178B9] font-bold w-10 h-10" />
+                    <Upload
+                      className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[#1178B9] font-bold w-10 h-10"/>
                   </div>
 
-                  {imagePreview && <ArrowRight className="text-white" />}
+                  {imagePreview && <ArrowRight className="text-white"/>}
                   {imagePreview && (
                     <Image
                       src={imagePreview}
@@ -277,7 +278,7 @@ export default function Cliente() {
                       width={112}
                       height={112}
                       className="rounded-full object-cover w-28 h-28 border-2 border-white"
-                      style={{ borderRadius: '50%' }}
+                      style={{borderRadius: '50%'}}
                     />
                   )}
                 </div>
