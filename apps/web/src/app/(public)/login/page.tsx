@@ -12,17 +12,17 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { api } from '@/lib/axios';
-import { AxiosError } from 'axios';
+import {Button} from '@/components/ui/button';
+import {Input} from '@/components/ui/input';
+import {api} from '@/lib/axios';
+import {AxiosError} from 'axios';
 import Cookies from 'js-cookie';
-import { Eye, EyeOff, Lock, User } from 'lucide-react';
+import {Eye, EyeOff, Lock, User} from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { toast } from 'react-hot-toast';
+import {useRouter} from 'next/navigation';
+import {useEffect, useState} from 'react';
+import {toast} from 'react-hot-toast';
 
 interface FormData {
   nome_usuario: string;
@@ -51,8 +51,8 @@ export default function Login() {
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const {name, value} = e.target;
+    setFormData((prev) => ({...prev, [name]: value}));
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -60,10 +60,28 @@ export default function Login() {
     setIsLoading(true);
     try {
       const response = await api.post('/auth/login', formData);
-      Cookies.set('token', response.data.token);
-      Cookies.set('user', JSON.stringify(response.data.usuario));
+      const {usuario, token} = response.data.data;
+
+      console.log(usuario)
+      console.log(token)
+
+
+      if (!usuario || !token) {
+        throw new Error('Dados de login incompletos.');
+      }
+
+      // Salva nos cookies
+      Cookies.set('token', token);
+      Cookies.set('user', JSON.stringify(usuario));
+
+      // Salva no localStorage (somente se estiver no browser)
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('locatario_id', String(usuario.id));
+        localStorage.setItem('tipo_usuario', usuario.tipo);
+      }
+
       toast.success('Login realizado com sucesso!');
-      router.push('/');
+      router.replace('/');
     } catch (error: unknown) {
       if (error instanceof AxiosError) {
         toast.error(error.response?.data?.error || 'Erro ao fazer login');
@@ -74,6 +92,7 @@ export default function Login() {
       setTimeout(() => setIsLoading(false), 1000);
     }
   };
+
 
   return (
     <div className="flex h-screen">
@@ -127,7 +146,7 @@ export default function Login() {
         {/* Formulário */}
         <form onSubmit={handleLogin} className="w-full max-w-[700px] space-y-6">
           <div className="relative w-full">
-            <User className="absolute w-7 h-7 left-3 top-1/2 transform -translate-y-1/2 text-white" />
+            <User className="absolute w-7 h-7 left-3 top-1/2 transform -translate-y-1/2 text-white"/>
             <Input
               name="nome_usuario"
               value={formData.nome_usuario}
@@ -139,7 +158,7 @@ export default function Login() {
           </div>
 
           <div className="relative w-full">
-            <Lock className="absolute w-7 h-7 left-3 top-1/2 transform -translate-y-1/2 text-white" />
+            <Lock className="absolute w-7 h-7 left-3 top-1/2 transform -translate-y-1/2 text-white"/>
             <Input
               name="senha"
               type={showPassword ? 'text' : 'password'}
@@ -154,7 +173,7 @@ export default function Login() {
               onClick={() => setShowPassword(!showPassword)}
               className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white cursor-pointer"
             >
-              {showPassword ? <EyeOff size={24} /> : <Eye size={24} />}
+              {showPassword ? <EyeOff size={24}/> : <Eye size={24}/>}
             </button>
           </div>
 
