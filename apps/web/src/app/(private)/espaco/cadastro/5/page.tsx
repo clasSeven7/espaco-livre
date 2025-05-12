@@ -6,8 +6,9 @@ import {useEspacoCadastro} from '@/context/EspacoCadastroContext';
 import api from '@/lib/axios';
 import Cookies from 'js-cookie';
 import {
+  ArrowLeft,
+  ArrowRight,
   CalendarClock,
-  Camera,
   ClipboardList,
   DollarSign,
   Home,
@@ -15,7 +16,7 @@ import {
   Link,
   MapPin,
   Trash2,
-  Wallet,
+  Wallet
 } from 'lucide-react';
 import Image from 'next/image';
 import {useRouter} from 'next/navigation';
@@ -28,6 +29,9 @@ export default function UltimosDetalhes() {
 
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [fotos, setFotos] = useState<string[]>([]);
+  const [indiceAtual, setIndiceAtual] = useState(0);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [userType, setUserType] = useState<string | null>(null);
 
   const toggleTheme = () => {
     const newTheme = !isDarkMode;
@@ -42,18 +46,31 @@ export default function UltimosDetalhes() {
     localStorage.setItem('fotos_imovel', JSON.stringify(novasFotos));
   };
 
+  const avancarFoto = () => {
+    setIndiceAtual((prev) => (prev + 1) % fotos.length);
+  };
+
+  const voltarFoto = () => {
+    setIndiceAtual((prev) => (prev - 1 + fotos.length) % fotos.length);
+  };
+
   const handleSubmit = async () => {
     try {
       const dadosDoEspaco = Cookies.get('espaco-cadastro');
 
-      if (!dadosDoEspaco) {
-        toast.error('Erro: nenhum dado encontrado para cadastro.');
+      if (!dadosDoEspaco || !userId) {
+        toast.error('Erro: dados incompletos para cadastro.');
         return;
       }
 
       const espaco = JSON.parse(dadosDoEspaco);
 
-      const response = await api.post('/espacos', espaco);
+      const payload = {
+        ...espaco,
+        locatario_id: userId,
+      };
+
+      const response = await api.post('/espacos', payload);
 
       toast.success('Espaço cadastrado com sucesso!');
       console.log('✅ Espaço cadastrado:', response.data);
@@ -79,7 +96,23 @@ export default function UltimosDetalhes() {
   useEffect(() => {
     const storedFotos = localStorage.getItem('fotos_imovel');
     if (storedFotos) {
-      setFotos(JSON.parse(storedFotos));
+      const fotosArray = JSON.parse(storedFotos);
+      setFotos(fotosArray);
+    }
+  }, []);
+
+  useEffect(() => {
+    const locatarioId = localStorage.getItem('locatario_id');
+    const tipoUsuario = localStorage.getItem('tipo_usuario'); // certifique-se de que esse valor está sendo salvo no login
+
+    if (locatarioId) {
+      setUserId(locatarioId);
+      console.log('🆔 ID do usuário encontrado:', locatarioId);
+    }
+
+    if (tipoUsuario) {
+      setUserType(tipoUsuario);
+      console.log('👤 Tipo do usuário encontrado:', tipoUsuario);
     }
   }, []);
 
@@ -101,10 +134,18 @@ export default function UltimosDetalhes() {
           </h1>
         </div>
 
+        <div className="flex flex-col space-x-4 mb-6">
+          <span className="text-sm mt-4 font-medium text-green-600">
+            ID do usuário logado: {userId}
+          </span>
+          <span className="text-sm mt-4 font-medium text-orange-600">
+            Tipo do usuário logado: {userType}
+          </span>
+        </div>
+
         {/* Campos principais */}
         <div className="flex flex-col lg:flex-row flex-1 gap-6 mt-4">
           <div className="flex flex-col flex-1 space-y-6">
-            {/* Localização */}
             <div>
               <h2
                 className={`text-xl font-bold flex items-center gap-2 ${
@@ -293,37 +334,57 @@ export default function UltimosDetalhes() {
               </ul>
             </div>
 
-            <div id="preview_fotos">
-              <h2 className="text-xl font-bold flex items-center gap-2 text-blue-800 dark:text-white">
-                <Images className="w-5 h-5"/> Galeria de Fotos
-              </h2>
-
-              <div className="mt-4 flex overflow-x-auto gap-4">
-                {fotos.map((foto, index) => (
-                  <div
-                    key={index}
-                    className="relative min-w-[300px] max-w-[400px] rounded-md overflow-hidden shadow-lg"
-                  >
-                    <Image
-                      src={foto}
-                      alt={`Foto ${index + 1}`}
-                      className="w-full h-auto object-cover"
-                      width={400}
-                      height={300}
-                    />
-                    <div className="absolute bottom-2 right-2 flex gap-2">
-                      <button
-                        onClick={() => removerFoto(index)}
-                        className="bg-red-500 p-2 rounded text-white hover:bg-red-600"
-                      >
-                        <Trash2 className="w-4 h-4"/>
-                      </button>
-                      <button className="bg-green-500 p-2 rounded text-white hover:bg-green-600">
-                        <Camera className="w-4 h-4"/>
-                      </button>
+            <div id="preview_fotos" className="w-full">
+              <div className="flex flex-col w-full lg:w-1/3 space-y-6">
+                <h2 className="text-xl font-bold flex items-center gap-2 text-blue-800 dark:text-white">
+                  <Images className="w-5 h-5"/> Galeria de Fotos
+                </h2>
+                {/* Galeria de Imagens */}
+                <div
+                  className="relative w-full aspect-video border rounded-lg overflow-hidden flex items-center justify-center"
+                >
+                  {fotos.length > 0 && (
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+                      <div className="relative w-full aspect-square border rounded-lg overflow-hidden">
+                        <Image
+                          src={fotos[indiceAtual]}
+                          alt={`Preview ${indiceAtual}`}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  )}
+                </div>
+
+                {/* Botões para navegação */}
+                <div className="flex justify-center items-center gap-4">
+                  <Button
+                    variant="outline"
+                    onClick={voltarFoto}
+                    disabled={fotos.length <= 1}
+                  >
+                    <ArrowLeft className="w-4 h-4"/>
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={avancarFoto}
+                    disabled={fotos.length <= 1}
+                  >
+                    <ArrowRight className="w-4 h-4"/>
+                  </Button>
+                </div>
+
+                {/* Remover foto */}
+                <div className="flex justify-center items-center gap-4">
+                  <Button
+                    variant="destructive"
+                    onClick={() => removerFoto(indiceAtual)}
+                    disabled={fotos.length === 0}
+                  >
+                    <Trash2 className="w-4 h-4"/>
+                  </Button>
+                </div>
               </div>
             </div>
           </div>
