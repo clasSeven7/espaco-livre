@@ -9,10 +9,10 @@ export const espacoService = {
       const espacosExistentes = await espacoRepository.buscarPorLocatario(
         data.locatario_id
       );
-      if (espacosExistentes.length > 0) {
+      if (espacosExistentes.length >= 10) {
         throw {
           status: 409,
-          message: 'Espaço já cadastrado para o locatário.',
+          message: 'Limite de 10 espaços por locatário atingido.',
           field: 'locatario_id',
         };
       }
