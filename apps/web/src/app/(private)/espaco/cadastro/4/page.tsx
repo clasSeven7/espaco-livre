@@ -24,6 +24,22 @@ export default function PrecoCondicoes() {
   const [metodoSelecionado, setMetodoSelecionado] = useState<string[]>([]);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
+  const [valorImovel, setValorImovel] = useState<number>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('valor_imovel');
+      return saved ? parseInt(saved, 10) : 0;
+    }
+    return 0;
+  });
+
+  const [taxaLimpeza, setTaxaLimpeza] = useState<number>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('taxa_limpeza');
+      return saved ? parseInt(saved, 10) : 0;
+    }
+    return 0;
+  });
+
   const toggleTheme = () => {
     const newTheme = !isDarkMode;
     setIsDarkMode(newTheme);
@@ -64,6 +80,16 @@ export default function PrecoCondicoes() {
   }, []);
 
   useEffect(() => {
+    atualizarCampo({valor_imovel: valorImovel})
+    localStorage.setItem('valor_imovel', valorImovel.toString())
+  }, [valorImovel]);
+
+  useEffect(() => {
+    atualizarCampo({taxa_limpeza: taxaLimpeza})
+    localStorage.setItem('taxa_limpeza', taxaLimpeza.toString())
+  }, [taxaLimpeza]);
+
+  useEffect(() => {
     if (metodoSelecionado.length > 0) {
       atualizarCampo({metodos_pagamento: metodoSelecionado});
     }
@@ -99,11 +125,7 @@ export default function PrecoCondicoes() {
                   id="valor_desejado"
                   type="number"
                   value={espaco.valor_imovel || ''}
-                  onChange={(e) =>
-                    atualizarCampo({
-                      valor_imovel: parseFloat(e.target.value) || 0,
-                    })
-                  }
+                  onChange={(e) => setValorImovel(Number(e.target.value))}
                   placeholder="Digite o valor desejado"
                   className={`pl-10 py-8 rounded-lg border-0 focus:ring-2 ${
                     isDarkMode
@@ -122,11 +144,7 @@ export default function PrecoCondicoes() {
                   id="taxa_limpeza"
                   type="number"
                   value={espaco.taxa_limpeza || ''}
-                  onChange={(e) =>
-                    atualizarCampo({
-                      taxa_limpeza: parseFloat(e.target.value) || 0,
-                    })
-                  }
+                  onChange={(e) => setTaxaLimpeza(Number(e.target.value))}
                   placeholder="Digite a taxa de limpeza"
                   className={`pl-10 py-8 rounded-lg border-0 focus:ring-2 ${
                     isDarkMode

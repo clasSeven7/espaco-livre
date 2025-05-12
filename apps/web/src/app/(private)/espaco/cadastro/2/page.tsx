@@ -11,11 +11,42 @@ import {useEffect, useState} from 'react';
 
 export default function InformacoesGerais() {
   const {espaco, atualizarCampo} = useEspacoCadastro();
-  // const [observacao, setObservacao] = useState('');
+
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   const maxMensagemObservacao = 500;
 
+  const [cidade, setCidade] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('cidade');
+      return saved ?? '';
+    }
+    return '';
+  });
+
+  const [rua, setRua] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('rua');
+      return saved ?? '';
+    }
+    return '';
+  });
+
+  const [bairro, setBairro] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('bairro');
+      return saved ?? '';
+    }
+    return '';
+  });
+
+  const [observacoes, setObservacoes] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('observacoes');
+      return saved ?? '';
+    }
+    return '';
+  });
   const toggleTheme = () => {
     const newTheme = !isDarkMode;
     setIsDarkMode(newTheme);
@@ -33,6 +64,26 @@ export default function InformacoesGerais() {
       document.documentElement.classList.remove('dark');
     }
   }, []);
+
+  useEffect(() => {
+    atualizarCampo({cidade: cidade})
+    localStorage.setItem('cidade', cidade)
+  }, [cidade]);
+
+  useEffect(() => {
+    atualizarCampo({rua: rua})
+    localStorage.setItem('rua', rua)
+  }, [rua]);
+
+  useEffect(() => {
+    atualizarCampo({bairro: bairro})
+    localStorage.setItem('bairro', bairro)
+  }, [bairro]);
+
+  useEffect(() => {
+    atualizarCampo({observacoes: observacoes})
+    localStorage.setItem('observacoes', observacoes)
+  }, [observacoes]);
 
   return (
     <div
@@ -65,7 +116,7 @@ export default function InformacoesGerais() {
               <Input
                 id="cidade"
                 value={espaco.cidade || ''}
-                onChange={(e) => atualizarCampo({cidade: e.target.value})}
+                onChange={(e) => setCidade(e.target.value)}
                 placeholder="Digite sua Cidade"
                 className={`pl-10 py-8 rounded-lg border-none focus-visible:ring-2 transition ${
                   isDarkMode
@@ -83,7 +134,7 @@ export default function InformacoesGerais() {
               <Input
                 id="rua"
                 value={espaco.rua || ''}
-                onChange={(e) => atualizarCampo({rua: e.target.value})}
+                onChange={(e) => setRua(e.target.value)}
                 placeholder="Digite sua Rua"
                 className={`pl-10 py-8 rounded-lg border-none focus-visible:ring-2 transition ${
                   isDarkMode
@@ -101,7 +152,7 @@ export default function InformacoesGerais() {
               <Input
                 id="bairro"
                 value={espaco.bairro || ''}
-                onChange={(e) => atualizarCampo({bairro: e.target.value})}
+                onChange={(e) => setBairro(e.target.value)}
                 placeholder="Digite seu Bairro"
                 className={`pl-10 py-8 rounded-lg border-none focus-visible:ring-2 transition ${
                   isDarkMode
@@ -122,9 +173,7 @@ export default function InformacoesGerais() {
               <Textarea
                 id="observacao"
                 value={espaco.observacoes || ''}
-                onChange={(e) =>
-                  atualizarCampo({observacoes: e.target.value})
-                }
+                onChange={(e) => setObservacoes(e.target.value)}
                 placeholder="Descreva alguma observação sobre o espaço"
                 // value={observacao}
                 // onChange={(e) => {

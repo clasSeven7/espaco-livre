@@ -23,54 +23,51 @@ const itens = [
 
 export default function InformacoesIniciais() {
   const {espaco, atualizarCampo} = useEspacoCadastro();
-  // const maxMessagemTitulo = 100;
-  // const maxMessagemDescricao = 500;
 
-  // const [messagemTitulo, setMessagemTitulo] = useState('');
-  // const [messagemDescricao, setMessagemDescricao] = useState('');
   const [isDarkMode, setIsDarkMode] = useState(false);
-  // const [isLoading, setIsLoading] = useState(false);
   const [recurso, setRecurso] = useState('');
   const [open, setOpen] = useState(false);
 
-  const [selected, setSelected] = useState<string[]>(() => {
+  const [titulo, setTitulo] = useState<string>(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('equipamentosSelecionados');
+      const saved = localStorage.getItem('titulo');
+      return saved ?? '';
+    }
+    return '';
+  });
+
+  const [descricao, setDescricao] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('descricao')
+      return saved ?? '';
+    }
+    return ''
+  });
+
+  const [recursosImovel, setRecursosImovel] = useState<string[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('recursos_imovel');
       return saved ? JSON.parse(saved) : [];
     }
     return [];
   });
 
-  const [previews, setPreviews] = useState<string[]>(() => {
+  const [fotosImovel, setFotosImovel] = useState<string[]>(() => {
     if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('fotosEspaco');
+      const stored = localStorage.getItem('fotos_imovel');
       return stored ? JSON.parse(stored) : [];
     }
     return [];
   });
 
-  // const handleTituloChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const value = e.target.value;
-  //   if (value.length <= maxMessagemTitulo) {
-  //     setMessagemTitulo(value);
-  //   }
-  // };
-  //
-  // const handleDescricaoChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-  //   const value = e.target.value;
-  //   if (value.length <= maxMessagemDescricao) {
-  //     setMessagemDescricao(value);
-  //   }
-  // };
-
   const toggleItem = (item: string) => {
-    setSelected((prev) =>
+    setRecursosImovel((prev) =>
       prev.includes(item) ? prev.filter((i) => i !== item) : [...prev, item]
     );
   };
 
   const removeItem = (item: string) => {
-    setSelected((prev) => prev.filter((i) => i !== item));
+    setRecursosImovel((prev) => prev.filter((i) => i !== item));
   };
 
   const toggleTheme = () => {
@@ -98,13 +95,13 @@ export default function InformacoesIniciais() {
     });
 
     Promise.all(readFiles).then((base64List) => {
-      setPreviews((prev) => [...prev, ...base64List]);
+      setFotosImovel((prev) => [...prev, ...base64List]);
     });
   };
 
   const handleRemoveFotos = () => {
-    setPreviews([]);
-    localStorage.removeItem('fotosEspaco');
+    setFotosImovel([]);
+    localStorage.removeItem('fotos_imovel');
   };
 
   useEffect(() => {
@@ -119,14 +116,24 @@ export default function InformacoesIniciais() {
   }, []);
 
   useEffect(() => {
-    atualizarCampo({recursos_imovel: selected});
-    localStorage.setItem('equipamentosSelecionados', JSON.stringify(selected));
-  }, [selected]);
+    atualizarCampo({titulo: titulo})
+    localStorage.setItem('titulo', titulo)
+  }, [titulo]);
 
   useEffect(() => {
-    atualizarCampo({fotos_imovel: previews});
-    localStorage.setItem('fotosEspaco', JSON.stringify(previews));
-  }, [previews]);
+    atualizarCampo({descricao: descricao})
+    localStorage.setItem('descricao', descricao)
+  }, [descricao]);
+
+  useEffect(() => {
+    atualizarCampo({recursos_imovel: recursosImovel});
+    localStorage.setItem('recursos_imovel', JSON.stringify(recursosImovel));
+  }, [recursosImovel]);
+
+  useEffect(() => {
+    atualizarCampo({fotos_imovel: fotosImovel});
+    localStorage.setItem('fotos_imovel', JSON.stringify(fotosImovel));
+  }, [fotosImovel]);
 
   return (
     <div
@@ -148,7 +155,7 @@ export default function InformacoesIniciais() {
         </div>
 
         {/* Conteúdo em duas colunas */}
-        <form action="espaco-cadastro" className="flex flex-col lg:flex-row gap-6">
+        <form className="flex flex-col lg:flex-row gap-6">
           <div
             id="lado_esquerdo"
             className="w-full lg:w-2/3 flex flex-col gap-6"
@@ -162,7 +169,7 @@ export default function InformacoesIniciais() {
                 <Input
                   id="titulo"
                   value={espaco.titulo || ''}
-                  onChange={(e) => atualizarCampo({titulo: e.target.value})}
+                  onChange={(e) => setTitulo(e.target.value)}
                   placeholder="Digite o título do Espaço"
                   className={`pl-10 py-8 rounded-lg border-0 ${
                     isDarkMode
@@ -176,7 +183,6 @@ export default function InformacoesIniciais() {
                   isDarkMode ? 'dark:text-white' : ''
                 }`}
               >
-                {/*{messagemTitulo.length}/{maxMessagemTitulo}*/}
               </div>
             </div>
 
@@ -189,9 +195,7 @@ export default function InformacoesIniciais() {
                 <Textarea
                   id="descricao"
                   value={espaco.descricao || ''}
-                  onChange={(e) =>
-                    atualizarCampo({descricao: e.target.value})
-                  }
+                  onChange={(e) => setDescricao(e.target.value)}
                   placeholder="Escreva uma breve descrição do Espaço"
                   className={`pl-10 px-10 py-6 h-96 rounded-lg border-none resize-none overflow-y-auto break-all ${
                     isDarkMode
@@ -205,14 +209,13 @@ export default function InformacoesIniciais() {
                   isDarkMode ? 'dark:text-white' : ''
                 }`}
               >
-                {/*{messagemDescricao.length}/{maxMessagemDescricao}*/}
               </div>
             </div>
 
             <div id="equipamentos" className="relative">
-              {selected.length > 0 && (
+              {recursosImovel.length > 0 && (
                 <div className="flex flex-wrap gap-2 mb-2 bg-[#2176AE] dark:bg-zinc-800 text-white p-4 rounded-sm">
-                  {selected.map((item) => (
+                  {recursosImovel.map((item) => (
                     <div
                       key={item}
                       className="flex items-center bg-yellow-400 text-black px-3 py-1 rounded-full text-sm"
@@ -258,18 +261,18 @@ export default function InformacoesIniciais() {
                               <label className="relative flex items-center cursor-pointer">
                                 <input
                                   type="checkbox"
-                                  checked={selected.includes(option)}
+                                  checked={recursosImovel.includes(option)}
                                   onChange={() => toggleItem(option)}
                                   className="peer hidden"
                                 />
                                 <span
                                   className={`w-5 h-5 flex items-center justify-center rounded border-2 transition-colors ${
-                                    selected.includes(option)
+                                    recursosImovel.includes(option)
                                       ? 'bg-white border-transparent'
                                       : 'border-white bg-transparent'
                                   }`}
                                 >
-                                  {selected.includes(option) && (
+                                  {recursosImovel.includes(option) && (
                                     <svg
                                       className="w-5 h-5 text-[#2176AE]"
                                       fill="none"
@@ -310,9 +313,9 @@ export default function InformacoesIniciais() {
                     type="button"
                     onClick={(e) => {
                       e.preventDefault();
-                      if (recurso && !selected.includes(recurso)) {
-                        const novos = [...selected, recurso];
-                        setSelected(novos);
+                      if (recurso && !recursosImovel.includes(recurso)) {
+                        const novos = [...recursosImovel, recurso];
+                        setRecursosImovel(novos);
                         atualizarCampo({recursos_imovel: novos});
                         setRecurso('');
                       }
@@ -362,9 +365,9 @@ export default function InformacoesIniciais() {
               </div>
 
               {/* Preview das imagens */}
-              {previews.length > 0 && (
+              {fotosImovel.length > 0 && (
                 <div className="grid grid-cols-3 gap-4">
-                  {previews.map((src, idx) => (
+                  {fotosImovel.map((src, idx) => (
                     <Image
                       key={idx}
                       src={src}

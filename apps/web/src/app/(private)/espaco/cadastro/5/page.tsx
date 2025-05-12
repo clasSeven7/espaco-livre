@@ -18,29 +18,23 @@ export default function UltimosDetalhes() {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [fotos, setFotos] = useState<string[]>([]);
   const [indiceAtual, setIndiceAtual] = useState(0);
+  const [userTitulo, setUserTitulo] = useState<string | null>(null);
+  const [userDescricao, setUserDescricao] = useState<string | null>(null);
+  const [userRecursosImovel, setUserRecursosImovel] = useState<string | null>(null);
+  const [userFoto, setUserFoto] = useState<string | null>(null);
+  const [userCidade, setUserCidade] = useState<string | null>(null);
+  const [userRua, setUserRua] = useState<string | null>(null);
+  const [userBairro, setUserBairro] = useState<string | null>(null);
+  const [userValorImovel, setUserValorImovel] = useState<number | null>(null);
+  const [userTaxaLimpeza, setUserTaxaLimpeza] = useState<number | null>(null);
   const [userId, setUserId] = useState<string | null>(null);
   const [userType, setUserType] = useState<string | null>(null);
-  const [userFoto, setUserFoto] = useState<string | null>(null);
 
   const toggleTheme = () => {
     const newTheme = !isDarkMode;
     setIsDarkMode(newTheme);
     localStorage.setItem('theme', newTheme ? 'dark' : 'light');
     document.documentElement.classList.toggle('dark');
-  };
-
-  const removerFoto = (index: number) => {
-    const novasFotos = fotos.filter((_, i) => i !== index);
-    setFotos(novasFotos);
-    localStorage.setItem('fotos_imovel', JSON.stringify(novasFotos));
-  };
-
-  const avancarFoto = () => {
-    setIndiceAtual((prev) => (prev + 1) % fotos.length);
-  };
-
-  const voltarFoto = () => {
-    setIndiceAtual((prev) => (prev - 1 + fotos.length) % fotos.length);
   };
 
   const handleSubmit = async () => {
@@ -54,13 +48,23 @@ export default function UltimosDetalhes() {
 
       const espaco = JSON.parse(dadosDoEspaco);
 
+      console.log("velho", espaco);
+
       const payload = {
         ...espaco,
+        titulo: userTitulo,
+        descricao: userDescricao,
+        recursos_imovel: userRecursosImovel,
         fotos_imovel: userFoto,
+        cidade: userCidade,
+        rua: userRua,
+        bairro: userBairro,
+        valor_imovel: userValorImovel,
+        taxa_limpeza: userTaxaLimpeza,
         locatario_id: userId,
       };
 
-      console.log(payload);
+      console.log("novo", payload);
 
       const response = await api.post('/espacos', payload);
 
@@ -87,7 +91,7 @@ export default function UltimosDetalhes() {
   }, []);
 
   useEffect(() => {
-    const storedFotos = localStorage.getItem('fotosEspaco');
+    const storedFotos = localStorage.getItem('fotos_imovel');
     if (storedFotos) {
       const fotosArray = JSON.parse(storedFotos);
       setFotos(fotosArray);
@@ -97,11 +101,51 @@ export default function UltimosDetalhes() {
   useEffect(() => {
     const locatarioId = localStorage.getItem('locatario_id');
     const tipoUsuario = localStorage.getItem('tipo_usuario');
-    const fotosImovel = localStorage.getItem('fotosEspaco');
+    const titulo = localStorage.getItem('titulo');
+    const descricao = localStorage.getItem('descricao');
+    const recursosImovel = localStorage.getItem('recursos_imovel');
+    const fotosImovel = localStorage.getItem('fotos_imovel');
+    const cidade = localStorage.getItem('cidade');
+    const rua = localStorage.getItem('rua');
+    const bairro = localStorage.getItem('bairro');
+    const valorImovel = localStorage.getItem('valor_imovel');
+    const taxaLimpeza = localStorage.getItem('taxa_limpeza')
+
+    if (titulo) {
+      setUserTitulo(titulo);
+    }
+
+    if (descricao) {
+      setUserDescricao(descricao);
+    }
+
+    if (recursosImovel) {
+      setUserRecursosImovel(recursosImovel)
+    }
 
     if (fotosImovel) {
       setUserFoto(fotosImovel);
       console.log('Foto:', JSON.parse(fotosImovel));
+    }
+
+    if (cidade) {
+      setUserCidade(cidade);
+    }
+
+    if (rua) {
+      setUserRua(rua)
+    }
+
+    if (bairro) {
+      setUserBairro(bairro);
+    }
+
+    if (valorImovel) {
+      setUserValorImovel(Number(valorImovel))
+    }
+
+    if (taxaLimpeza) {
+      setUserTaxaLimpeza(Number(taxaLimpeza))
     }
 
     if (locatarioId) {
