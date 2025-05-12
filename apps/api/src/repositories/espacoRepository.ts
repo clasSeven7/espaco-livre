@@ -62,9 +62,9 @@ export const espacoRepository = {
         dados.hora_fim || null,
         dados.todos_dias ?? false,
         dados.dias_disponiveis || '',
-        dados.recursos_imovel,
-        dados.fotos_imovel,
-        dados.metodos_pagamento,
+        JSON.stringify(Array.isArray(dados.recursos_imovel) ? dados.recursos_imovel : []),
+        JSON.stringify(Array.isArray(dados.fotos_imovel) ? dados.fotos_imovel : []),
+        JSON.stringify(Array.isArray(dados.metodos_pagamento) ? dados.metodos_pagamento : []),
       ];
 
       const result = await DB.query(query, values);
@@ -90,11 +90,22 @@ export const espacoRepository = {
       ]);
       if (!espacoRes.rows.length) return null;
 
+      const espaco = espacoRes.rows[0];
+
+      const parseSafe = (value: any, field: string) => {
+        try {
+          return typeof value === 'string' ? JSON.parse(value) : value;
+        } catch (err) {
+          console.error(`⚠️ Erro ao fazer JSON.parse no campo ${field}:`, err);
+          return [];
+        }
+      };
+
       return {
-        ...espacoRes.rows[0],
-        recursos_imovel: JSON.parse(espacoRes.rows[0].recursos_imovel),
-        fotos_imovel: JSON.parse(espacoRes.rows[0].fotos_imovel),
-        metodos_pagamento: JSON.parse(espacoRes.rows[0].metodos_pagamento),
+        ...espaco,
+        recursos_imovel: parseSafe(espaco.recursos_imovel, 'recursos_imovel'),
+        fotos_imovel: parseSafe(espaco.fotos_imovel, 'fotos_imovel'),
+        metodos_pagamento: parseSafe(espaco.metodos_pagamento, 'metodos_pagamento'),
       };
     } catch (error) {
       console.error('🔴 Erro ao buscar espaço por ID:', error);
