@@ -115,10 +115,11 @@ export const Space: React.FC<SpaceProps> = ({ isDarkMode }) => {
                 prev === cat.nome ? null : cat.nome
               )
             }
-            className={`flex flex-col items-center gap-2 text-sm font-medium px-3 py-2 border-b-2 transition ${
+            className={`flex flex-col items-center gap-2 text-sm font-medium px-5 py-3 border-b-2 rounded-lg transition
+            cursor-pointer ${
               categoriaSelecionada === cat.nome
-                ? 'border-black text-black dark:border-white dark:text-white'
-                : 'border-transparent text-gray-500 hover:text-black dark:hover:text-white'
+                ? 'border-[#1178B9] text-black dark:border-white dark:text-white bg-gray-200 dark:bg-gray-700 shadow-lg'
+                : 'border-gray-800 text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 shadow-md'
             }`}
           >
             <Image
@@ -126,7 +127,7 @@ export const Space: React.FC<SpaceProps> = ({ isDarkMode }) => {
               alt={cat.nome}
               width={100}
               height={100}
-              className={`mb-1 cursor-pointer ${isDarkMode ? 'invert' : ''}`}
+              className={`mb-1 ${isDarkMode ? 'invert' : ''}`}
             />
             <div className={`${isDarkMode ? 'text-white' : ''}`}>
               {cat.nome}
