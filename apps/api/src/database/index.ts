@@ -1,5 +1,6 @@
 import DATABASE from '@/config/database';
 import pkg from 'pg';
+
 const { Pool } = pkg;
 
 const DB = new Pool({
@@ -10,7 +11,6 @@ const DB = new Pool({
   port: DATABASE.port,
 });
 
-// Adiciona um listener para conexões com o banco de dados
 DB.on('connect', () => {
   console.log('📦 Conexão estabelecida com o banco de dados');
 });
