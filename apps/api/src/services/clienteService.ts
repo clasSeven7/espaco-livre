@@ -1,5 +1,5 @@
-import {clienteRepository} from '@/repositories/clienteRepository';
-import {ClienteData, ClienteResponse} from '@/types';
+import { clienteRepository } from '@/repositories/clienteRepository';
+import { ClienteData, ClienteResponse } from '@/types';
 
 export const clienteService = {
   async criarCliente(data: ClienteData) {
@@ -16,7 +16,7 @@ export const clienteService = {
       }
 
       const cliente = await clienteRepository.criar(data);
-      const {senha, ...clienteSemSenha} = cliente as ClienteResponse;
+      const { senha, ...clienteSemSenha } = cliente as ClienteResponse;
 
       return {
         message: '✅ Cliente cadastrado com sucesso!',
@@ -27,9 +27,9 @@ export const clienteService = {
       throw error.status
         ? error
         : {
-          status: 500,
-          message: '❌ Erro interno ao criar cliente.',
-        };
+            status: 500,
+            message: '❌ Erro interno ao criar cliente.',
+          };
     }
   },
 
@@ -55,23 +55,23 @@ export const clienteService = {
         };
       }
 
-      const {senha, ...clienteSemSenha} = cliente;
+      const { senha, ...clienteSemSenha } = cliente;
       return clienteSemSenha;
     } catch (error: any) {
       console.error('❌ Erro ao buscar cliente por ID:', error);
       throw error.status
         ? error
         : {
-          status: 500,
-          message: '❌ Erro interno ao buscar cliente por ID.',
-        };
+            status: 500,
+            message: '❌ Erro interno ao buscar cliente por ID.',
+          };
     }
   },
 
   async listarClientes(): Promise<Omit<ClienteResponse, 'senha'>[]> {
     try {
       const clientes = await clienteRepository.listarTodos();
-      return clientes.map(({senha, ...cliente}) => cliente);
+      return clientes.map(({ senha, ...cliente }) => cliente);
     } catch (error: any) {
       console.error('❌ Erro ao listar clientes:', error);
       throw {
@@ -95,20 +95,20 @@ export const clienteService = {
       }
 
       const clienteAtualizado = await clienteRepository.atualizar(id, data);
-      const {senha, ...clienteSemSenha} = clienteAtualizado;
+      const { senha, ...clienteSemSenha } = clienteAtualizado;
       return clienteSemSenha;
     } catch (error: any) {
       console.error('❌ Erro ao atualizar cliente:', error);
       throw error.status
         ? error
         : {
-          status: 500,
-          message: '❌ Erro interno ao atualizar cliente.',
-        };
+            status: 500,
+            message: '❌ Erro interno ao atualizar cliente.',
+          };
     }
   },
 
-  async deletarCliente(id: number): Promise<void> {
+  async deletarCliente(id: number) {
     try {
       const cliente = await clienteRepository.buscarPorId(id);
       if (!cliente) {
@@ -124,9 +124,9 @@ export const clienteService = {
       throw error.status
         ? error
         : {
-          status: 500,
-          message: '❌ Erro interno ao deletar cliente.',
-        };
+            status: 500,
+            message: '❌ Erro interno ao deletar cliente.',
+          };
     }
   },
 };
