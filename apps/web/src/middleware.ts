@@ -7,6 +7,8 @@ const publicRoutes = [
   { path: '/cadastro/locatario', whenAuthenticated: 'redirect' },
   { path: '/recuperar_senha/cliente', whenAuthenticated: 'next' },
   { path: '/recuperar_senha/locatario', whenAuthenticated: 'next' },
+  { path: '/faq', whenAuthenticated: 'next' },
+  { path: '/buscar', whenAuthenticated: 'next' },
 ] as const;
 
 const REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE = '/login';
