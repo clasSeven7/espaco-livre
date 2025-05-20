@@ -23,13 +23,13 @@ export const Hero: React.FC<HeroProps> = ({ isDarkMode }) => {
         isDarkMode ? 'text-white bg-zinc-900' : 'text-black bg-gray-100 '
       }`}
     >
-      <div>
+      <div className="">
         <Image
           src="/background_home.png"
           alt="Background"
-          width={1920}
-          height={1080}
-          className="absolute opacity-10 w-full h-full"
+          fill
+          sizes="100vw"
+          className="absolute opacity-10 object-cover"
           priority
         />
       </div>
@@ -93,6 +93,7 @@ export const Hero: React.FC<HeroProps> = ({ isDarkMode }) => {
                             src={image.src}
                             alt={image.alt}
                             fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 50vw"
                             className="rounded-md object-cover"
                           />
                         </CardContent>
@@ -101,8 +102,8 @@ export const Hero: React.FC<HeroProps> = ({ isDarkMode }) => {
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="cursor-pointer" />
-              <CarouselNext className="cursor-pointer" />
+              <CarouselPrevious className="z-10 cursor-pointer ml-20" />
+              <CarouselNext className="z-10 cursor-pointer mr-20" />
             </Carousel>
           </div>
         </div>
