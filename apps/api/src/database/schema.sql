@@ -131,3 +131,20 @@ CREATE TRIGGER trg_perfil_locatario_update
 BEFORE UPDATE ON perfil_locatario
 FOR EACH ROW
 EXECUTE FUNCTION atualiza_timestamp();
+
+-- =======================
+-- COMENTÁRIOS
+-- =======================
+DROP TABLE IF EXISTS comentarios CASCADE;
+CREATE TABLE comentarios (
+  id SERIAL PRIMARY KEY,
+  nome_usuario VARCHAR(100) NOT NULL,
+  cargo VARCHAR(50) NOT NULL,
+  nota INT CHECK (nota >= 1 AND nota <= 5),
+  comentario TEXT NOT NULL,
+  criado_em TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+CREATE TRIGGER trg_comentarios_update
+BEFORE UPDATE ON comentarios
+FOR EACH ROW
+EXECUTE FUNCTION atualiza_timestamp();
