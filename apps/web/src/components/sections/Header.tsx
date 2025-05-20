@@ -1,4 +1,4 @@
-import { HeaderProps } from '@/types/index';
+import { HeaderProps } from '@/types';
 import { KeyRound, LogOut, Moon, UserCircle } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -52,7 +52,7 @@ export const Header: FC<HeaderProps> = ({
                 </li>
                 <li>
                   <Link
-                    href="/sobre"
+                    href="#"
                     className={`text-base font-medium flex justify-center items-center gap-1 duration-300 hover:border-b-2 hover:py-1.5 hover:font-normal ${
                       isDarkMode
                         ? 'text-white hover:border-white'
@@ -72,7 +72,7 @@ export const Header: FC<HeaderProps> = ({
                 </Link>
                 <li>
                   <Link
-                    href="/blog"
+                    href="#"
                     className={`text-base font-medium flex justify-center items-center gap-1 duration-300 hover:border-b-2 hover:py-1.5 hover:font-normal ${
                       isDarkMode
                         ? 'text-white hover:border-white'
@@ -84,25 +84,25 @@ export const Header: FC<HeaderProps> = ({
                 </li>
                 <li>
                   <Link
-                    href="/ranking"
+                    href="/faq"
                     className={`text-base font-medium flex justify-center items-center gap-1 duration-300 hover:border-b-2 hover:py-1.5 hover:font-normal ${
                       isDarkMode
                         ? 'text-white hover:border-white'
                         : 'text-white hover:border-white'
                     }`}
                   >
-                    Ranking
+                    FAQ
                   </Link>
                 </li>
               </ul>
             </nav>
 
             <div className="relative flex items-center gap-4">
-              <button>
+              <button className="cursor-pointer">
                 <Image
-                  src="/notification.svg"
-                  width={25}
-                  height={25}
+                  src="/svg/notification.svg"
+                  width={20}
+                  height={20}
                   alt="Notification"
                   className="rounded-full cursor-pointer"
                 />
@@ -111,19 +111,24 @@ export const Header: FC<HeaderProps> = ({
               {!token && (
                 <>
                   <button
-                    onClick={() => {
-                      setIsUserMenuOpenLogout(!isUserMenuOpenLogout);
-                      setIsUserMenuOpenEnter(false);
-                    }}
+                    onClick={toggleTheme}
+                    className="cursor-pointer hover:scale-120 duration-900 hover:rotate-360 hover:shadow-2xl"
                   >
                     <Image
-                      src="/user.svg"
-                      width={35}
-                      height={35}
-                      alt="User"
-                      className="rounded-full border-1 border-red-400 p-[2px] cursor-pointer"
+                      src="/svg/moon_white.svg"
+                      width={20}
+                      height={20}
+                      alt="Icone de uma lua branca"
                     />
                   </button>
+
+                  <Link
+                    href="/login"
+                    className="bg-[#0f4c72] px-9 py-1.5 text-white shadow-sm flex items-center text-sm font-bold
+                    rounded-md hover:bg-[#082a3f] duration-300 hover:shadow-lg"
+                  >
+                    Login
+                  </Link>
 
                   {isUserMenuOpenLogout && (
                     <div
@@ -160,7 +165,7 @@ export const Header: FC<HeaderProps> = ({
                     }}
                   >
                     <Image
-                      src="/user.svg"
+                      src="/svg/user.svg"
                       width={35}
                       height={35}
                       alt="User"
