@@ -1,5 +1,5 @@
 import DB from '@/database/index';
-import {Espaco, EspacoResponse} from '@/types';
+import { Espaco, EspacoResponse } from '@/types';
 
 function truncarCampos(espaco: Espaco): Espaco {
   return {
@@ -33,7 +33,7 @@ export const espacoRepository = {
         !espaco.rua ||
         !espaco.valor_imovel
       ) {
-        throw {status: 400, message: '❌ Dados obrigatórios não fornecidos.'};
+        throw { status: 400, message: '❌ Dados obrigatórios não fornecidos.' };
       }
 
       const dados = truncarCampos(espaco);
@@ -105,7 +105,10 @@ export const espacoRepository = {
         ...espaco,
         recursos_imovel: parseSafe(espaco.recursos_imovel, 'recursos_imovel'),
         fotos_imovel: parseSafe(espaco.fotos_imovel, 'fotos_imovel'),
-        metodos_pagamento: parseSafe(espaco.metodos_pagamento, 'metodos_pagamento'),
+        metodos_pagamento: parseSafe(
+          espaco.metodos_pagamento,
+          'metodos_pagamento'
+        ),
       };
     } catch (error) {
       console.error('🔴 Erro ao buscar espaço por ID:', error);
@@ -171,8 +174,8 @@ export const espacoRepository = {
       const query = `
           UPDATE espacos
           SET ${camposParaAtualizar
-          .map((campo, idx) => `${campo} = $${idx + 2}`)
-          .join(', ')}
+            .map((campo, idx) => `${campo} = $${idx + 2}`)
+            .join(', ')}
           WHERE id = $1 RETURNING *
       `;
 
@@ -184,7 +187,7 @@ export const espacoRepository = {
       const result = await DB.query(query, values);
 
       if (!result.rows.length) {
-        throw {status: 404, message: '⚠️ Espaço não encontrado.'};
+        throw { status: 404, message: '⚠️ Espaço não encontrado.' };
       }
 
       return result.rows[0];
@@ -227,14 +230,38 @@ export const espacoRepository = {
   },
 
   async listarTodos(): Promise<EspacoResponse[]> {
+    function corrigirJsonMalformado(value: string): string {
+      // Detecta formato: {"a","b","c"} e converte para ["a","b","c"]
+      if (/^\{.+\}$/.test(value)) {
+        return JSON.stringify(
+          value
+            .slice(1, -1) // remove as chaves {}
+            .split(',') // divide por vírgula
+            .map((v) => v.trim().replace(/^"|"$/g, '')) // remove aspas externas se houver
+        );
+      }
+      return value;
+    }
+
+    function safeParse(value: string): any {
+      try {
+        const corrigido = corrigirJsonMalformado(value);
+        return JSON.parse(corrigido);
+      } catch (e) {
+        console.warn('⚠️ JSON inválido (mesmo após correção):', value);
+        return [];
+      }
+    }
+
     try {
       const query = 'SELECT * FROM espacos ORDER BY criado_em DESC';
       const result = await DB.query(query);
+
       return result.rows.map((row) => ({
         ...row,
-        recursos_imovel: JSON.parse(row.recursos_imovel),
-        fotos_imovel: JSON.parse(row.fotos_imovel),
-        metodos_pagamento: JSON.parse(row.metodos_pagamento),
+        recursos_imovel: safeParse(row.recursos_imovel),
+        fotos_imovel: safeParse(row.fotos_imovel),
+        metodos_pagamento: safeParse(row.metodos_pagamento),
       }));
     } catch (error) {
       console.error('🔴 Erro ao listar espaços:', error);
@@ -247,7 +274,7 @@ export const espacoRepository = {
       const query = 'DELETE FROM espacos WHERE id = $1';
       const result = await DB.query(query, [id]);
       if (result.rowCount === 0) {
-        throw {status: 404, message: '⚠️ Espaço não encontrado.'};
+        throw { status: 404, message: '⚠️ Espaço não encontrado.' };
       }
       console.log(`✅ Espaço com ID ${id} deletado com sucesso.`);
     } catch (error) {
