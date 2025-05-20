@@ -1,17 +1,7 @@
 'use client';
 
 import ThemeToggleButton from '@/components/ThemeToggleButton';
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog';
+import {AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,} from '@/components/ui/alert-dialog';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {api} from '@/lib/axios';
@@ -64,7 +54,7 @@ export default function Login() {
 
       console.log(usuario)
       console.log(token)
-      
+
       if (!usuario || !token) {
         throw new Error('Dados de login incompletos.');
       }
@@ -99,8 +89,10 @@ export default function Login() {
         <Image
           src="/bg_login.png"
           alt="Imagem da sala"
-          layout="fill"
-          objectFit="cover"
+          style={{objectFit: "cover"}}
+          sizes="(min-width: 1024px) 50vw, 100vw"
+          priority
+          fill
         />
       </div>
 
