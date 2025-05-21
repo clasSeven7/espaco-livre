@@ -7,7 +7,6 @@ export const api = axios.create({
     'Content-Type': 'application/json',
   },
   withCredentials: true,
-  timeout: 15000,
 });
 
 // Interceptor para adicionar o token em todas as requisições
