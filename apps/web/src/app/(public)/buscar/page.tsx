@@ -23,7 +23,6 @@ type Espaco = {
 };
 
 export default function BuscaEspacos() {
-  const [cidade, setCidade] = useState('');
   const [espacosOriginais, setEspacosOriginais] = useState<Espaco[]>([]);
   const [espacosFiltrados, setEspacosFiltrados] = useState<Espaco[]>([]);
   const [carregando, setCarregando] = useState(true);
@@ -32,13 +31,22 @@ export default function BuscaEspacos() {
     avaliacao: 0,
     capacidade: 0,
     cidade: '',
+    disponibilidade: '',
+    tipo: '',
+    recurso: '',
   });
 
   useEffect(() => {
     const carregarEspacos = async () => {
       try {
         const response = await api.get('/espacos');
-        setEspacosOriginais(response.data);
+        const espacosComValores = response.data.map((espaco: Espaco) => ({
+          ...espaco,
+          valor_imovel: Math.floor(Math.random() * 10000) + 100,
+          capacidade: Math.floor(Math.random() * 491) + 10,
+          avaliacao: Math.floor(Math.random() * 5) + 1,
+        }));
+        setEspacosOriginais(espacosComValores);
       } catch (erro) {
         console.error('Erro ao buscar espaços:', erro);
       } finally {
@@ -55,27 +63,36 @@ export default function BuscaEspacos() {
         ? espaco.cidade.toLowerCase().includes(filtros.cidade.toLowerCase())
         : true;
 
-      const tituloOk = filtros.titulo
-        ? espaco.titulo.toLowerCase().includes(filtros.titulo.toLowerCase())
-        : true;
+      // const tituloOk = filtros.titulo
+      //   ? espaco.titulo.toLowerCase().includes(filtros.titulo.toLowerCase())
+      //   : true;
 
-      const avaliacaoOk = filtros.avaliacao
-        ? espaco.avaliacao === filtros.avaliacao
-        : true;
+      // const avaliacaoOk = filtros.avaliacao
+      //   ? espaco.avaliacao === filtros.avaliacao
+      //   : true;
 
-      const capacidadeOk = filtros.capacidade
-        ? espaco.capacidade === filtros.capacidade
-        : true;
+      // const capacidadeOk = filtros.capacidade
+      //   ? espaco.capacidade === filtros.capacidade
+      //   : true;
 
-      return cidadeOk && avaliacaoOk && capacidadeOk && tituloOk;
+      // return cidadeOk && avaliacaoOk && capacidadeOk && tituloOk;
+      return cidadeOk;
     });
 
     setEspacosFiltrados(resultado);
-  }, [cidade, filtros, espacosOriginais]);
+  }, [filtros, espacosOriginais]);
 
-  const handleFiltro = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleFiltro = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
-    setFiltros((prev) => ({ ...prev, [name]: value }));
+
+    setFiltros((prev) => ({
+      ...prev,
+      [name]: ['avaliacao', 'capacidade'].includes(name)
+        ? Number(value)
+        : value,
+    }));
   };
 
   return (
@@ -84,13 +101,15 @@ export default function BuscaEspacos() {
         <div className="relative w-full sm:max-w-xs">
           <Input
             type="text"
+            name="cidade"
             placeholder="Buscar por cidade..."
-            value={cidade}
-            onChange={(e) => setCidade(e.target.value)}
+            value={filtros.cidade}
+            onChange={handleFiltro}
             className="pr-10"
           />
           <Search className="absolute right-2 top-2.5 text-gray-500 w-5 h-5" />
         </div>
+
         <select
           name="disponibilidade"
           onChange={handleFiltro}
@@ -100,6 +119,7 @@ export default function BuscaEspacos() {
           <option value="disponivel">Disponível</option>
           <option value="indisponivel">Indisponível</option>
         </select>
+
         <select
           name="tipo"
           onChange={handleFiltro}
@@ -109,6 +129,7 @@ export default function BuscaEspacos() {
           <option value="sala">Sala</option>
           <option value="coworking">Coworking</option>
         </select>
+
         <select
           name="recurso"
           onChange={handleFiltro}
@@ -130,48 +151,58 @@ export default function BuscaEspacos() {
         </p>
       ) : (
         <div className="relative">
-          <Swiper
-            modules={[Navigation]}
-            navigation={{
-              nextEl: '.swiper-next',
-              prevEl: '.swiper-prev',
-            }}
-            spaceBetween={20}
-            slidesPerView={1}
-            breakpoints={{
-              640: { slidesPerView: 1 },
-              768: { slidesPerView: 2 },
-              1024: { slidesPerView: 3 },
-            }}
-          >
-            {espacosFiltrados.map((espaco) => (
-              <SwiperSlide key={espaco.id}>
-                <Card className="overflow-hidden shadow-lg">
-                  <Image
-                    src={espaco.fotos_imovel || '/bg.png'}
-                    alt={espaco.titulo}
-                    width={400}
-                    height={200}
-                    className="w-full h-40 object-cover"
-                    unoptimized
-                  />
-                  <CardContent className="space-y-2 p-4">
-                    <h3 className="font-bold text-lg">{espaco.titulo}</h3>
-                    <p className="text-sm text-gray-700">
-                      <span className="font-medium text-blue-600">
-                        R$ {espaco.valor_imovel}
-                      </span>{' '}
-                      • {espaco.capacidade} pessoas
-                    </p>
-                    <p className="text-yellow-500">
-                      {'⭐'.repeat(espaco.avaliacao)}
-                    </p>
-                    <Button className="w-full mt-2">Saiba mais</Button>
-                  </CardContent>
-                </Card>
-              </SwiperSlide>
-            ))}
-          </Swiper>
+          {typeof window !== 'undefined' && (
+            <Swiper
+              modules={[Navigation]}
+              navigation={{
+                nextEl: '.swiper-next',
+                prevEl: '.swiper-prev',
+              }}
+              spaceBetween={20}
+              slidesPerView={1}
+              breakpoints={{
+                640: { slidesPerView: 1 },
+                768: { slidesPerView: 2 },
+                1024: { slidesPerView: 3 },
+              }}
+            >
+              {espacosFiltrados.map((espaco) => (
+                <SwiperSlide key={espaco.id}>
+                  <Card className="overflow-hidden shadow-lg">
+                    <Image
+                      src={
+                        espaco.fotos_imovel
+                          ? String(espaco.fotos_imovel)
+                          : '/bg.png'
+                      }
+                      alt="Imagem do espaço"
+                      width={400}
+                      height={200}
+                      className="w-full h-40 object-cover"
+                      unoptimized
+                    />
+                    <CardContent className="space-y-2 p-4">
+                      <h3 className="flex items-center gap-2 text-gray-900">
+                        <span className="font-bold text-lg">Titulo:</span>
+                        {espaco.titulo}
+                      </h3>
+                      <div className="text-sm text-gray-700">
+                        <span className="font-medium text-blue-600">
+                          R$ {espaco.valor_imovel}
+                        </span>{' '}
+                        • {espaco.capacidade} pessoas
+                      </div>
+                      <p className="text-yellow-500">
+                        {'⭐'.repeat(Number(espaco.avaliacao || 0))}
+                      </p>
+                      <p>{espaco.cidade}</p>
+                      <Button className="w-full mt-2">Saiba mais</Button>
+                    </CardContent>
+                  </Card>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          )}
 
           {/* Navegação personalizada */}
           <button className="swiper-prev absolute top-1/2 left-0 -translate-y-1/2 p-2 bg-white shadow rounded-full z-10">
@@ -187,7 +218,7 @@ export default function BuscaEspacos() {
       <div className="w-full h-96 mt-10">
         <iframe
           src={`https://www.google.com/maps?q=${
-            cidade || 'Brasil'
+            filtros.cidade || 'Brasil'
           }&output=embed`}
           width="100%"
           height="100%"
