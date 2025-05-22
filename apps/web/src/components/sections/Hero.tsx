@@ -62,7 +62,7 @@ export const Hero: React.FC<HeroProps> = ({ isDarkMode }) => {
                 variant="default"
                 className="bg-black text-white hover:bg-gray-800 px-11 py-6 text-lg rounded-sm cursor-pointer"
               >
-                <Link href="/espaco/buscar">Buscar Espaços</Link>
+                <Link href="/buscar">Buscar Espaços</Link>
               </Button>
               <Button
                 variant="default"
