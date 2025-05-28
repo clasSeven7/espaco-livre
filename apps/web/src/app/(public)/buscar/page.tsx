@@ -7,12 +7,13 @@ import api from '@/lib/axios';
 import {
   ChevronLeft,
   ChevronRight,
-  Home,
+  Home as HomeIcon,
   MapPin,
   Search,
   Star,
 } from 'lucide-react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import 'swiper/css';
 import 'swiper/css/navigation';
@@ -96,17 +97,32 @@ export default function BuscaEspacos() {
 
   return (
     <div className="p-6 space-y-10 max-w-[1600px] mx-auto min-h-screen">
-      {/* Barra de busca */}
-      <div className="relative">
-        <Input
-          type="text"
-          name="buscaGeral"
-          placeholder="Buscar por cidade, rua ou nome do espaço..."
-          value={filtros.buscaGeral}
-          onChange={handleFiltro}
-          className="w-full pl-12 h-14 text-lg shadow-lg rounded-xl"
-        />
-        <Search className="absolute left-4 top-4 text-gray-500 w-6 h-6" />
+      <div className="flex items-center gap-3 mb-8">
+        {/* Corrected Link and Button usage */}
+        <Button
+          asChild // Use asChild on Button
+          variant="outline"
+          className="h-14 px-4 py-2 flex items-center text-gray-700 hover:text-gray-900 border-gray-300 hover:border-gray-400 shadow-sm"
+        >
+          <Link href="/">
+            {' '}
+            {/* Link is now the direct child of Button */}
+            <HomeIcon className="mr-2 h-5 w-5" />
+            <span className="hidden sm:inline">Início</span>
+          </Link>
+        </Button>
+
+        <div className="relative flex-grow">
+          <Input
+            type="text"
+            name="buscaGeral"
+            placeholder="Buscar por cidade, rua ou nome do espaço..."
+            value={filtros.buscaGeral}
+            onChange={handleFiltro}
+            className="w-full pl-12 pr-4 h-14 text-lg shadow-lg rounded-xl border-gray-300 focus:border-blue-500 focus:ring-blue-500"
+          />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-6 h-6" />
+        </div>
       </div>
 
       {/* Lista de espaços */}
@@ -153,7 +169,7 @@ export default function BuscaEspacos() {
                     />
                     <CardContent className="space-y-2 p-4 text-gray-800">
                       <h3 className="text-xl font-semibold flex items-center gap-2">
-                        <Home className="w-5 h-5 text-blue-600" />{' '}
+                        <HomeIcon className="w-5 h-5 text-blue-600" />{' '}
                         {espaco.titulo}
                       </h3>
                       <p className="flex items-center gap-2">
