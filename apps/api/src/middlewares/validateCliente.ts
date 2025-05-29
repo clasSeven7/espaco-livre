@@ -43,7 +43,8 @@ export async function validateCliente(
     });
   }
 
-  const nascimento = new Date(clienteData.data_de_nascimento);
+  const [day, month, year] = clienteData.data_de_nascimento.split('/').map(Number);
+  const nascimento = new Date(`${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`);
   const idade = new Date().getFullYear() - nascimento.getFullYear();
   const mes = new Date().getMonth() - nascimento.getMonth();
 
