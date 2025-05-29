@@ -56,7 +56,7 @@ export const espacoRepository = {
         dados.bairro || null,
         dados.observacoes || null,
         dados.valor_imovel,
-        dados.taxa_limpeza ?? 0,
+        dados.taxa_limpeza || null,
         dados.disponivel_24h ?? false,
         dados.hora_inicio || null,
         dados.hora_fim || null,

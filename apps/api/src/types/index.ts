@@ -112,7 +112,7 @@ export interface EspacoData {
   bairro?: string;
   observacoes?: string;
   valor_imovel: number;
-  taxa_limpeza?: number;
+  taxa_limpeza: number;
   disponivel_24h?: boolean;
   hora_inicio?: string;
   hora_fim?: string;
