@@ -87,9 +87,14 @@ CREATE TABLE espacos (
   valor_imovel DECIMAL(10,2) NOT NULL,
   taxa_limpeza DECIMAL(10,2) DEFAULT 0.00,
   metodos_pagamento TEXT DEFAULT '',
-  criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TRIGGER trg_espacos_update
+BEFORE UPDATE ON espacos
+FOR EACH ROW
+EXECUTE FUNCTION atualiza_timestamp();
 -- =======================
 -- PERFIL DO CLIENTE
 -- =======================
