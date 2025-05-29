@@ -7,7 +7,6 @@ export async function validateCliente(
 ) {
   const clienteData = request.body as any;
 
-  // Validações básicas
   if (!clienteData.email || !clienteData.senha || !clienteData.nome_usuario) {
     return response.status(400).json({
       error: '❌ Campos obrigatórios não preenchidos',
@@ -36,11 +35,24 @@ export async function validateCliente(
     });
   }
 
-  // Validação de idade
-  if (!clienteData.idade || clienteData.idade < 18) {
+  // Validação de idade baseada na data de nascimento
+  if (!clienteData.data_de_nascimento) {
+    return response.status(400).json({
+      error: '⚠️ Data de nascimento é obrigatória',
+      field: 'data_de_nascimento',
+    });
+  }
+
+  const [day, month, year] = clienteData.data_de_nascimento.split('/').map(Number);
+  const nascimento = new Date(`${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`);
+  const idade = new Date().getFullYear() - nascimento.getFullYear();
+  const mes = new Date().getMonth() - nascimento.getMonth();
+
+  // Verifica se o cliente tem 18 anos ou mais
+  if (idade < 18 || (idade === 18 && mes < 0)) {
     return response.status(400).json({
       error: '⚠️ É necessário ter 18 anos ou mais para se cadastrar',
-      field: 'idade',
+      field: 'data_de_nascimento',
     });
   }
 

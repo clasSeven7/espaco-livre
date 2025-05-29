@@ -7,7 +7,6 @@ export async function validateLocatario(
 ) {
   const locatarioData = request.body as any;
 
-  // Validações básicas
   if (
     !locatarioData.email ||
     !locatarioData.senha ||
@@ -43,11 +42,23 @@ export async function validateLocatario(
     });
   }
 
-  // Validação de idade
-  if (!locatarioData.idade || locatarioData.idade < 18) {
+  // Validação de idade baseada na data de nascimento
+  if (!locatarioData.data_de_nascimento) {
     return response.status(400).json({
-      error: '👤 É necessário ter 18 anos ou mais para se cadastrar',
-      field: 'idade',
+      error: '⚠️ Data de nascimento é obrigatória',
+      field: 'data_de_nascimento',
+    });
+  }
+
+  const nascimento = new Date(locatarioData.data_de_nascimento);
+  const idade = new Date().getFullYear() - nascimento.getFullYear();
+  const mes = new Date().getMonth() - nascimento.getMonth();
+
+  // Verifica se o locatário tem 18 anos ou mais
+  if (idade < 18 || (idade === 18 && mes < 0)) {
+    return response.status(400).json({
+      error: '⚠️ É necessário ter 18 anos ou mais para se cadastrar',
+      field: 'data_de_nascimento',
     });
   }
 

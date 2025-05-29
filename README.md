@@ -1,3 +1,8 @@
+<div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+    <img src=".github/icon-logo.png" width="5%"/>
+    <h1 style="font-size: 2rem;">Espaço Livre</h1>
+</div>
+
 <div align="center">
   <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/clasSeven7/espaco-livre.svg" />
   
@@ -67,7 +72,7 @@ A aplicação possui uma API RESTful para gerenciar usuários, espaços e reserv
 ##### 🔐 Autenticação
 
 - `POST /login/`: Realiza o login do usuário.
-- `POST /cadastro/clinte`: Cadastra um novo cliente.
+- `POST /cadastro/cliente`: Cadastra um novo cliente.
 - `POST /cadastro/locatario`: Cadastra um novo locatário.
 
 ##### 🧑‍💼 Locatários

@@ -1,19 +1,27 @@
 import SERVER from '@/config/server.js';
-import authRouter from '@/routes/authRoutes';
-import clienteRouter from '@/routes/clienteRoutes';
-import locatarioRouter from '@/routes/locatarioRoutes';
+import authRouter from '@/routes/authRouter';
+import clienteRouter from '@/routes/clienteRouter';
+import espacoRouter from '@/routes/espacoRouter';
+import locatarioRouter from '@/routes/locatarioRouter';
+import setupSwagger from './config/swagger';
+
 import cors from 'cors';
 import express from 'express';
 
 const app = express();
+setupSwagger(app);
 
-// Mapeamento de emojis para cada rota
+app.use(express.json({limit: '50mb'}));
+app.use(express.urlencoded({extended: true, limit: '50mb'}));
+
 const routeEmojis: Record<string, string> = {
   '/auth': '🔑',
   '/locatarios': '👥',
   '/clientes': '🏢',
+  '/espacos': '🏠',
 };
 
+// Middleware
 app.use(cors(SERVER.cors));
 app.use(express.json());
 
@@ -21,25 +29,19 @@ app.use(express.json());
 app.use('/auth', authRouter);
 app.use('/locatarios', locatarioRouter);
 app.use('/clientes', clienteRouter);
+app.use('/espacos', espacoRouter);
 
-// Função para obter as rotas registradas
-const getRegisteredRoutes = () => {
-  return app._router.stack
-    .filter((r: any) => r.route)
-    .map((r: any) => {
-      const path = Object.keys(r.route.methods)[0];
-      const route = r.route.path;
-      return { path, route };
-    });
-};
-
+// Iniciando o servidor
 app.listen(SERVER.port, () => {
   console.log(`🚀 Servidor iniciado com sucesso!`);
   console.log(`📡 Rodando na porta ${SERVER.port}`);
   console.log(`🔒 CORS configurado`);
-  console.log(`📝 Endpoints disponíveis:`);
 
-  // Lista todas as rotas registradas
+  if (process.env.NODE_ENV === 'development') {
+    console.log(`💿 Documentação: http://localhost:${SERVER.port}/api/docs`);
+  }
+
+  console.log(`📝 Endpoints disponíveis:`);
   Object.keys(routeEmojis).forEach((route) => {
     console.log(`   - ${routeEmojis[route]} ${route}`);
   });
