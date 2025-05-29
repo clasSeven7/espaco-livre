@@ -47,7 +47,7 @@ export const clienteController = {
       return res.status(error.status || 500).json({
         error: `❌ ${error.message}`,
         field: error.field,
-        message: '❌ Não foi possível criar o locatario',
+        message: '❌ Não foi possível criar o cliente',
       });
     }
   },
