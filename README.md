@@ -1,7 +1,7 @@
-<!-- <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+<div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
     <img src=".github/icon-logo.png" width="5%"/>
     <h1 style="font-size: 2rem;">Espaço Livre</h1>
-</div> -->
+</div>
 
 <div align="center">
   <img alt="GitHub top language" src="https://img.shields.io/github/languages/top/clasSeven7/espaco-livre.svg" />
@@ -55,7 +55,7 @@
 
 - **Shadcn/ui:** Conjunto de componentes modernos e acessíveis para construção de interfaces com React.
 
-- **Axios\*:** Cliente HTTP usado para comunicação entre frontend e backend, inclusive com suporte a streaming.
+- **Axios:** Cliente HTTP usado para comunicação entre frontend e backend, inclusive com suporte a streaming.
 
 - **Lucida.js** Biblioteca JavaScript para criação de gráficos interativos e ícones
 
