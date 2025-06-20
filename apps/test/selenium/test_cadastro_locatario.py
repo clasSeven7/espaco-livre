@@ -43,11 +43,11 @@ class TestLogDividido(unittest.TestCase):
 
         usuario = self.browser.find_element(
             By.CSS_SELECTOR, '#nome_usuario > div:nth-child(2) > input:nth-child(2)')
-        usuario.send_keys('pablo')
+        usuario.send_keys('pedro')
 
         email = self.browser.find_element(
             By.CSS_SELECTOR, '#email > div:nth-child(2) > input:nth-child(2)')
-        email.send_keys('pablo@gmail.com')
+        email.send_keys('pedro@gmail.com')
 
         senha = self.browser.find_element(
             By.CSS_SELECTOR, '#senha > div:nth-child(2) > input:nth-child(2)')
@@ -59,7 +59,7 @@ class TestLogDividido(unittest.TestCase):
 
         data_nascimento = self.browser.find_element(
             By.CSS_SELECTOR, '#data_de_nascimento > div:nth-child(2) > input:nth-child(2)')
-        data_nascimento.send_keys('01/01/2000')
+        data_nascimento.send_keys('12/01/1996')
 
         checkbox_termos = self.browser.find_element(
             By.CSS_SELECTOR, '.peer')
