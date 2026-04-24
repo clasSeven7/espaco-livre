@@ -141,9 +141,22 @@ export default function FaqPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6 text-center">
-        Perguntas Frequentes (FAQ)
-      </h1>
+      <div className="relative w-full mb-6 py-2">
+        {' '}
+        <div className="absolute left-0 top-1/2 transform -translate-y-1/2">
+          <Button
+            variant="outline"
+            className="cursor-pointer"
+            onClick={() => window.history.back()}
+          >
+            Voltar
+          </Button>
+        </div>
+        <h1 className="text-3xl font-bold text-center">
+          {' '}
+          Perguntas Frequentes (FAQ)
+        </h1>
+      </div>
 
       <div className="flex flex-wrap justify-center gap-4 mb-10">
         {faqData.map((section) => (

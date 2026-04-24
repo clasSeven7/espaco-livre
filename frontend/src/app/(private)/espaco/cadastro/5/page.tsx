@@ -17,7 +17,7 @@ export default function UltimosDetalhes() {
 
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [fotos, setFotos] = useState<string[]>([]);
-  const [indiceAtual, setIndiceAtual] = useState(0);
+  const [indiceAtual] = useState(0);
   const [userTitulo, setUserTitulo] = useState<string | null>(null);
   const [userDescricao, setUserDescricao] = useState<string | null>(null);
   const [userRecursosImovel, setUserRecursosImovel] = useState<string | null>(null);

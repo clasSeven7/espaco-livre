@@ -1,14 +1,25 @@
 'use client';
 
 import ThemeToggleButton from '@/components/ThemeToggleButton';
-import {Button} from '@/components/ui/button';
-import {Input} from '@/components/ui/input';
-import {Textarea} from '@/components/ui/textarea';
-import {useEspacoCadastro} from '@/context/EspacoCadastroContext';
-import {Book, Camera, ChevronsUpDown, Hammer, HelpCircle, List, Megaphone, Trash2, UploadCloud, X} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { useEspacoCadastro } from '@/context/EspacoCadastroContext';
+import {
+  Book,
+  Camera,
+  ChevronsUpDown,
+  Hammer,
+  HelpCircle,
+  List,
+  Megaphone,
+  Trash2,
+  UploadCloud,
+  X,
+} from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 
 const itens = [
   'Ambiente Climatizado',
@@ -22,7 +33,7 @@ const itens = [
 ];
 
 export default function InformacoesIniciais() {
-  const {espaco, atualizarCampo} = useEspacoCadastro();
+  const { espaco, atualizarCampo } = useEspacoCadastro();
 
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [recurso, setRecurso] = useState('');
@@ -38,10 +49,10 @@ export default function InformacoesIniciais() {
 
   const [descricao, setDescricao] = useState<string>(() => {
     if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('descricao')
+      const saved = localStorage.getItem('descricao');
       return saved ?? '';
     }
-    return ''
+    return '';
   });
 
   const [recursosImovel, setRecursosImovel] = useState<string[]>(() => {
@@ -116,22 +127,22 @@ export default function InformacoesIniciais() {
   }, []);
 
   useEffect(() => {
-    atualizarCampo({titulo: titulo})
-    localStorage.setItem('titulo', titulo)
+    atualizarCampo({ titulo: titulo });
+    localStorage.setItem('titulo', titulo);
   }, [titulo]);
 
   useEffect(() => {
-    atualizarCampo({descricao: descricao})
-    localStorage.setItem('descricao', descricao)
+    atualizarCampo({ descricao: descricao });
+    localStorage.setItem('descricao', descricao);
   }, [descricao]);
 
   useEffect(() => {
-    atualizarCampo({recursos_imovel: recursosImovel});
+    atualizarCampo({ recursos_imovel: recursosImovel });
     localStorage.setItem('recursos_imovel', JSON.stringify(recursosImovel));
   }, [recursosImovel]);
 
   useEffect(() => {
-    atualizarCampo({fotos_imovel: fotosImovel});
+    atualizarCampo({ fotos_imovel: fotosImovel });
     localStorage.setItem('fotos_imovel', JSON.stringify(fotosImovel));
   }, [fotosImovel]);
 
@@ -149,7 +160,7 @@ export default function InformacoesIniciais() {
               isDarkMode ? 'bg-zinc-800' : 'bg-[#6ea7ca]'
             }`}
           >
-            <Book className="mr-2"/>
+            <Book className="mr-2" />
             Informações Iniciais
           </h1>
         </div>
@@ -165,7 +176,7 @@ export default function InformacoesIniciais() {
                 Título do Espaço
               </label>
               <div className="relative">
-                <Megaphone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80"/>
+                <Megaphone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/80" />
                 <Input
                   id="titulo"
                   value={espaco.titulo || ''}
@@ -182,8 +193,7 @@ export default function InformacoesIniciais() {
                 className={`text-sm text-[#2176AE] mt-1 text-right ${
                   isDarkMode ? 'dark:text-white' : ''
                 }`}
-              >
-              </div>
+              ></div>
             </div>
 
             <div id="descricao" className="relative">
@@ -191,7 +201,7 @@ export default function InformacoesIniciais() {
                 Descrição do Espaço
               </label>
               <div className="relative">
-                <List className="absolute left-3 top-6 text-white/80"/>
+                <List className="absolute left-3 top-6 text-white/80" />
                 <Textarea
                   id="descricao"
                   value={espaco.descricao || ''}
@@ -208,8 +218,7 @@ export default function InformacoesIniciais() {
                 className={`text-sm text-[#2176AE] mt-1 text-right ${
                   isDarkMode ? 'dark:text-white' : ''
                 }`}
-              >
-              </div>
+              ></div>
             </div>
 
             <div id="equipamentos" className="relative">
@@ -225,7 +234,7 @@ export default function InformacoesIniciais() {
                         onClick={() => removeItem(item)}
                         className="ml-1 cursor-pointer"
                       >
-                        <X size={14}/>
+                        <X size={14} />
                       </button>
                     </div>
                   ))}
@@ -242,15 +251,14 @@ export default function InformacoesIniciais() {
                       className="w-full h-full justify-between bg-[#2176AE] dark:bg-zinc-800 text-white text-sm cursor-pointer rounded-lg px-4 py-3 flex items-center"
                     >
                       <div className="flex items-center gap-2">
-                        <Hammer className="ml-2 h-6 w-6"/>
+                        <Hammer className="ml-2 h-6 w-6" />
                         Selecionar Equipamentos
                       </div>
-                      <ChevronsUpDown className="ml-2 h-4 w-4"/>
+                      <ChevronsUpDown className="ml-2 h-4 w-4" />
                     </button>
 
                     {open && (
-                      <div
-                        className="absolute left-0 top-full mt-2 z-50 w-full bg-[#2176AE] dark:bg-zinc-800 text-white rounded-md shadow-lg overflow-hidden">
+                      <div className="absolute left-0 top-full mt-2 z-50 w-full bg-[#2176AE] dark:bg-zinc-800 text-white rounded-md shadow-lg overflow-hidden">
                         <ul className="max-h-auto overflow-y-auto w-full p-2">
                           {itens.map((option) => (
                             <li
@@ -316,14 +324,14 @@ export default function InformacoesIniciais() {
                       if (recurso && !recursosImovel.includes(recurso)) {
                         const novos = [...recursosImovel, recurso];
                         setRecursosImovel(novos);
-                        atualizarCampo({recursos_imovel: novos});
+                        atualizarCampo({ recursos_imovel: novos });
                         setRecurso('');
                       }
                     }}
                     className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer"
                   >
                     <Image
-                      src="/send.svg"
+                      src="/svg/send.svg"
                       alt="Logo"
                       width={20}
                       height={20}
@@ -357,7 +365,7 @@ export default function InformacoesIniciais() {
                     isDarkMode ? 'bg-zinc-800' : 'bg-[#2176AE]'
                   }`}
                 >
-                  <UploadCloud size={50} className="text-white mb-2"/>
+                  <UploadCloud size={50} className="text-white mb-2" />
                   <span className="text-white font-medium">
                     Adicione Fotos do local
                   </span>
@@ -389,7 +397,7 @@ export default function InformacoesIniciais() {
                     onChange={handleFileChange}
                     className="bg-yellow-500 text-yellow-500 flex flex-col justify-center items-center rounded-md text-center py-2 cursor-pointer w-30 h-13"
                   />
-                  <Camera className="text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"/>
+                  <Camera className="text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
                 </div>
                 <div
                   id="remover"
@@ -400,7 +408,7 @@ export default function InformacoesIniciais() {
                     type="file"
                     className="bg-red-600 text-red-600 flex flex-col justify-center items-center rounded-md text-center py-2 cursor-pointer w-30 h-13"
                   />
-                  <Trash2 className="text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"/>
+                  <Trash2 className="text-white absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" />
                 </div>
               </div>
             </div>
@@ -439,7 +447,7 @@ export default function InformacoesIniciais() {
             }`}
           >
             <Link href="../../../ajuda" className="flex items-center gap-1">
-              <HelpCircle size={18}/>
+              <HelpCircle size={18} />
             </Link>
           </Button>
           <ThemeToggleButton
