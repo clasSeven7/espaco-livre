@@ -19,8 +19,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      ollama:
-        condition: service_healthy
     restart: always
     networks:
       - espaco_livre_net

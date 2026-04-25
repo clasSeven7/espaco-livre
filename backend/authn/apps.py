@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class EspacosConfig(AppConfig):
+class AuthnConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
-    name = "espacos"
+    name = "authn"
