@@ -40,3 +40,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# _________________________ Django ________________________
+apps/api_django/.venv/
+apps/api_django/__pycache__/
+apps/api_django/**/__pycache__/
+apps/api_django/*.pyc
+apps/api_django/db.sqlite3
