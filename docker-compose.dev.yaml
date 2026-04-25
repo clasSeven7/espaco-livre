@@ -1,0 +1,44 @@
+x-logging: &default-logging
+  options:
+    max-size: '10m'
+    max-file: '3'
+
+services:
+  db:
+    container_name: espaco_livre_db_dev
+    env_file:
+      - ./backend/.env.local
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data/
+    logging: *default-logging
+
+  backend:
+    container_name: espaco_livre_backend_dev
+    build:
+      target: development
+    volumes:
+      - ./backend:/app
+    env_file:
+      - ./backend/.env.local
+    depends_on:
+      db:
+        condition: service_healthy
+    logging: *default-logging
+
+  frontend:
+    container_name: espaco_livre_frontend_dev
+    build:
+      target: development
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    env_file:
+      - ./frontend/.env.local
+    environment:
+      - WATCHPACK_POLLING=true
+    logging: *default-logging
+
+volumes:
+  postgres_data_dev:

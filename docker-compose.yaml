@@ -1,0 +1,42 @@
+services:
+  db:
+    image: postgres:16
+    restart: always
+    networks:
+      - espaco_livre_net
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - '8002:8002'
+    depends_on:
+      db:
+        condition: service_healthy
+      ollama:
+        condition: service_healthy
+    restart: always
+    networks:
+      - espaco_livre_net
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - '3001:3001'
+    depends_on:
+      - backend
+    restart: always
+    networks:
+      - espaco_livre_net
+
+networks:
+  espaco_livre_net:
+    driver: bridge
