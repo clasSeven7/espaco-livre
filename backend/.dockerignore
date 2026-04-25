@@ -1,0 +1,64 @@
+# ==============================================================================
+# Backend (Django) — contexto de build: ./backend
+# ==============================================================================
+
+# Variáveis de ambiente (injetadas via env_file no docker-compose)
+.env*
+
+# Virtualenv
+.venv/
+venv/
+env/
+ENV/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+
+# Build / packaging
+dist/
+build/
+*.egg-info/
+*.egg
+*.whl
+
+# Testes e cobertura
+.pytest_cache/
+.tox/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+nosetests.xml
+.hypothesis/
+
+# Ferramentas de análise estática
+.mypy_cache/
+.pyre/
+.pytype/
+
+# Logs e arquivos temporários
+*.log
+*.pot
+db.sqlite3
+media/
+
+# Arquivos estáticos (gerados dentro do container via collectstatic)
+staticfiles/
+
+# Git
+.git/
+.github/
+.gitignore
+
+# Documentação
+*.md
+CLAUDE.md
+
+# Editores e IDEs
+.vscode/
+.idea/
+.history/

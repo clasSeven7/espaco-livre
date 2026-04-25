@@ -1,0 +1,58 @@
+# ==============================================================================
+# Raiz do monorepo
+# Nota: os builds do Docker usam contextos ./backend e ./frontend,
+# portanto cada serviço possui seu próprio .dockerignore dedicado.
+# Este arquivo é utilizado apenas em builds executados a partir da raiz.
+# ==============================================================================
+
+# Variáveis de ambiente
+.env*
+!.env.example
+
+# Python / Django
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+.venv/
+venv/
+env/
+ENV/
+dist/
+build/
+*.egg-info/
+*.egg
+*.log
+*.pot
+db.sqlite3
+media/
+backend/staticfiles/
+.pytest_cache/
+.mypy_cache/
+htmlcov/
+.coverage
+.coverage.*
+
+# Node.js / Next.js
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+npm-debug.log*
+
+# Git
+.git/
+.github/
+.gitignore
+.dockerignore
+
+# Documentação
+*.md
+CLAUDE.md
+
+# Editores e IDEs
+.vscode/
+.idea/
+.history/

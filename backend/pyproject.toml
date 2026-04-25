@@ -1,0 +1,44 @@
+[tool.black]
+line-length = 119
+target-version = ["py312"]
+exclude = '''
+/(
+    migrations
+  | .venv
+  | venv
+  | build
+  | dist
+)/
+'''
+
+[tool.ruff]
+line-length = 119
+target-version = "py312"
+exclude = ["migrations", ".venv", "venv"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+]
+ignore = [
+    "E501",  # linha muito longa (controlado pelo black)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = [
+    "authn",
+    "avaliacoes",
+    "chats",
+    "core",
+    "identificacao_assistido",
+    "protolocos",
+    "setup",
+    "termos",
+    "usuarios",
+    "videos",
+]

@@ -1,0 +1,36 @@
+services:
+  db:
+    container_name: espaco_livre_db_staging
+    volumes:
+      - postgres_data_staging:/var/lib/postgresql/data/
+    env_file:
+      - ./backend/.env.production
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - '5432:5432'
+
+  backend:
+    build:
+      target: production
+    container_name: espaco_livre_backend_staging
+    env_file:
+      - ./backend/.env.production
+
+  frontend:
+    build:
+      target: production
+    container_name: espaco_livre_frontend_staging
+    env_file:
+      - ./frontend/.env.production
+
+  ollama:
+    container_name: espaco_livre_ollama_staging
+
+  ollama-puller:
+    container_name: espaco_livre_ollama_puller_staging
+
+volumes:
+  postgres_data_staging:
