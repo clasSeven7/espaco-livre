@@ -1,23 +1,48 @@
-import type { NextRequest } from 'next/server';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse, type MiddlewareConfig } from 'next/server';
+
+const publicRoutes = [
+  { path: '/', whenAuthenticated: 'next' },
+  { path: '/login', whenAuthenticated: 'redirect' },
+  { path: '/cadastro/cliente', whenAuthenticated: 'redirect' },
+  { path: '/cadastro/locatario', whenAuthenticated: 'redirect' },
+  { path: '/recuperar_senha/cliente', whenAuthenticated: 'next' },
+  { path: '/recuperar_senha/locatario', whenAuthenticated: 'next' },
+  { path: '/faq', whenAuthenticated: 'next' },
+  { path: '/buscar', whenAuthenticated: 'next' },
+] as const;
+
+const REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE = '/login';
 
 export function middleware(request: NextRequest) {
-  const token = request.cookies.get('token');
-  const isLoginPage = request.nextUrl.pathname === '/login';
+  const path = request.nextUrl.pathname;
+  const publicRoute = publicRoutes.find((route) => route.path === path);
+  const authToken = request.cookies.get('token');
 
-  // Se não estiver autenticado e não estiver na página de login, redireciona para login
-  if (!token && !isLoginPage) {
-    return NextResponse.redirect(new URL('/login', request.url));
+  // 🔓 Rota pública, sem token → segue
+  if (!authToken && publicRoute) {
+    return NextResponse.next();
   }
 
-  // Se estiver autenticado e tentar acessar a página de login, redireciona para home
-  if (token && isLoginPage) {
-    return NextResponse.redirect(new URL('/', request.url));
+  // 🔐 Rota privada, sem token → redireciona pro login
+  if (!authToken && !publicRoute) {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = REDIRECT_WHEN_NOT_AUTHENTICATED_ROUTE;
+    return NextResponse.redirect(redirectUrl);
   }
 
+  // ✅ Tem token e está acessando rota pública que deve redirecionar → vai pra home
+  if (authToken && publicRoute?.whenAuthenticated === 'redirect') {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = '/';
+    return NextResponse.redirect(redirectUrl);
+  }
+
+  // ✅ Qualquer outro caso → segue normalmente
   return NextResponse.next();
 }
 
-export const config = {
-  matcher: ['/', '/login'],
+export const config: MiddlewareConfig = {
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\.(?:png|jpg|jpeg|svg|webp|ico|gif)).*)',
+  ],
 };
