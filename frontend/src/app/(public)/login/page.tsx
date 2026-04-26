@@ -101,11 +101,8 @@ export default function Login() {
         }`}
       >
         <div
-          className={`absolute inset-0 z-0 opacity-5 bg-no-repeat bg-cover bg-center ${
-            isDarkMode
-              ? 'bg-[url("/bg_textura_login_escuro.png")]'
-              : 'bg-[url("/bg_textura_login_claro.png")]'
-          }`}
+          className="absolute inset-0 z-0 opacity-5 bg-no-repeat bg-cover bg-center"
+          style={{ backgroundImage: `url('${isDarkMode ? '/bg_textura_login_escuro.png' : '/bg_textura_login_claro.png'}')` }}
         />
 
         <div className="absolute top-4 right-4">

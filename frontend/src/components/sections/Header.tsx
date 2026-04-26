@@ -23,11 +23,8 @@ export const Header: FC<HeaderProps> = ({
         }`}
       >
         <div
-          className={`absolute inset-0 z-0 bg-center opacity-10 ${
-            isDarkMode
-              ? 'bg-[url("/textura_parede_escuro.png")]'
-              : 'bg-[url("/textura_parede_claro.png")]'
-          }`}
+          className="absolute inset-0 z-0 bg-center opacity-10"
+          style={{ backgroundImage: `url('${isDarkMode ? '/textura_parede_escuro.png' : '/textura_parede_claro.png'}')` }}
         />
         <div className="relative z-10">
           <div className="mx-auto px-32 py-1 flex xl:justify-between lg:justify-between md:justify-between sm:justify-between justify-between items-center">

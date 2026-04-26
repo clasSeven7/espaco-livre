@@ -22,11 +22,8 @@ export const HeaderPerfil: FC<HeaderPerfilProps> = ({
         }`}
       >
         <div
-          className={`absolute inset-0 z-0 bg-center opacity-10 pointer-events-none ${
-            isDarkMode
-              ? 'bg-[url("/textura_parede_escuro.png")]'
-              : 'bg-[url("/textura_parede_claro.png")]'
-          }`}
+          className="absolute inset-0 z-0 bg-center opacity-10 pointer-events-none"
+          style={{ backgroundImage: `url('${isDarkMode ? '/textura_parede_escuro.png' : '/textura_parede_claro.png'}')` }}
         />
         <div className="container mx-auto px-4 py-3 flex justify-between items-center z-10">
           <div></div>
