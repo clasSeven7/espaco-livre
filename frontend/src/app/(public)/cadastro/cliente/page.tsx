@@ -32,7 +32,6 @@ export default function Cliente() {
   const [isLoading, setIsLoading] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [file, setFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<FormDataCLiente>({
@@ -73,20 +72,29 @@ export default function Cliente() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setFormData((prev) => ({
-        ...prev,
-        foto_de_perfil: file,
-      }));
-
+      setFormData((prev) => ({ ...prev, foto_de_perfil: file }));
       const reader = new FileReader();
-      reader.onload = () => {
-        setFile(file);
-      };
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const calcularIdade = (dataNascimento: string): number => {
+    const partes = dataNascimento.split('/');
+    if (partes.length !== 3 || partes[2].length !== 4) return 0;
+    const [dia, mes, ano] = partes.map(Number);
+    const nascimento = new Date(ano, mes - 1, dia);
+    const hoje = new Date();
+    let idade = hoje.getFullYear() - nascimento.getFullYear();
+    if (
+      hoje.getMonth() < nascimento.getMonth() ||
+      (hoje.getMonth() === nascimento.getMonth() && hoje.getDate() < nascimento.getDate())
+    ) {
+      idade--;
+    }
+    return idade;
   };
 
   const handleCheckboxChange = (
@@ -104,28 +112,25 @@ export default function Cliente() {
     setIsLoading(true);
 
     try {
-      const dadosFormatados = {
-        ...formData,
+      const idade = calcularIdade(formData.data_de_nascimento);
+      const dataToSend = {
+        nome_usuario: formData.nome_usuario,
         email: formData.email.toLowerCase(),
-        data_de_nascimento: formData.data_de_nascimento,
+        senha: formData.senha,
+        idade,
+        cidade: formData.cidade,
+        endereco_residencial: formData.endereco_residencial,
         cep: formData.cep.replace(/\D/g, ''),
         telefone: formData.telefone.replace(/\D/g, ''),
+        tipo_ocupacao: formData.tipo_ocupacao,
+        frequencia_uso: formData.frequencia_uso,
       };
 
-      if (file) {
-        dadosFormatados.foto_de_perfil = file;
-      }
-
-      await api.post('/clientes', dadosFormatados, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      await api.post('/api/clientes/', dataToSend);
 
       toast.success('Cadastro realizado com sucesso!');
       router.push('/login');
     } catch (error) {
-      console.error('Erro ao cadastrar:', error);
       const axiosError = error as AxiosError<{ error: string; field?: string }>;
 
       if (axiosError.response?.data?.field) {
@@ -139,7 +144,7 @@ export default function Cliente() {
         );
       }
     } finally {
-      setTimeout(() => setIsLoading(false), 1000);
+      setIsLoading(false);
     }
   };
 
@@ -171,7 +176,7 @@ export default function Cliente() {
             <h1 className="text-3xl text-white pl-12">Perfil</h1>
           </div>
           <div
-            id="pefil_inputs"
+            id="perfil_inputs"
             className="mx-8 my-8 border-b-2 border-white grid grid-cols-2 z-10"
           >
             <div id="lado_esquerdo" className="flex flex-col gap-2 mx-15">
@@ -261,10 +266,11 @@ export default function Cliente() {
                 </h1>
                 <div className="flex justify-center items-center mt-4">
                   <div className="relative w-28 h-28 bg-white text-white rounded-full cursor-pointer hover:bg-gray-100">
-                    <IMaskInput
+                    <input
                       type="file"
+                      accept="image/*"
                       onChange={handleFileChange}
-                      className="w-full h-full opacity-0 cursor-pointer"
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                     />
                     <Upload
                       className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[#1178B9] font-bold w-10 h-10"/>
@@ -410,7 +416,7 @@ export default function Cliente() {
           </div>
 
           <div
-            id="checkboks"
+            id="checkboxes"
             className="gap-4 mx-8 my-8 pb-8 border-b-2 border-white z-10"
           >
             <div className="grid grid-cols-2 gap-3 z-10 mx-22">

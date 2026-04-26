@@ -34,7 +34,6 @@ export default function Locatario() {
   const [isLoading, setIsLoading] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [file, setFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const [formData, setFormData] = useState<FormDataLocatario>({
@@ -75,20 +74,29 @@ export default function Locatario() {
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      setFormData((prev) => ({
-        ...prev,
-        foto_de_perfil: file,
-      }));
-
+      setFormData((prev) => ({ ...prev, foto_de_perfil: file }));
       const reader = new FileReader();
-      reader.onload = () => {
-        setFile(file);
-      };
       reader.onloadend = () => {
         setImagePreview(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const calcularIdade = (dataNascimento: string): number => {
+    const partes = dataNascimento.split('/');
+    if (partes.length !== 3 || partes[2].length !== 4) return 0;
+    const [dia, mes, ano] = partes.map(Number);
+    const nascimento = new Date(ano, mes - 1, dia);
+    const hoje = new Date();
+    let idade = hoje.getFullYear() - nascimento.getFullYear();
+    if (
+      hoje.getMonth() < nascimento.getMonth() ||
+      (hoje.getMonth() === nascimento.getMonth() && hoje.getDate() < nascimento.getDate())
+    ) {
+      idade--;
+    }
+    return idade;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -100,28 +108,24 @@ export default function Locatario() {
     setIsLoading(true);
 
     try {
-      const dadosFormatados = {
-        ...formData,
+      const idade = calcularIdade(formData.data_de_nascimento);
+      const dataToSend = {
+        nome_usuario: formData.nome_usuario,
         email: formData.email.toLowerCase(),
+        senha: formData.senha,
+        idade,
+        cidade: formData.cidade,
+        endereco_residencial: formData.endereco_residencial,
         cpf: formData.cpf.replace(/\D/g, ''),
         cep: formData.cep.replace(/\D/g, ''),
         telefone: formData.telefone.replace(/\D/g, ''),
       };
 
-      if (file) {
-        dadosFormatados.foto_de_perfil = file;
-      }
-
-      await api.post('/locatarios', dadosFormatados, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      await api.post('/api/locatarios/', dataToSend);
 
       toast.success('Cadastro realizado com sucesso!');
       router.push('/login');
     } catch (error) {
-      console.error('Erro ao cadastrar:', error);
       const axiosError = error as AxiosError<{ error: string; field?: string }>;
 
       if (axiosError.response?.data?.field) {
@@ -135,7 +139,7 @@ export default function Locatario() {
         );
       }
     } finally {
-      setTimeout(() => setIsLoading(false), 100);
+      setIsLoading(false);
     }
   };
 
@@ -279,10 +283,11 @@ export default function Locatario() {
                 </h1>
                 <div className="flex justify-center items-center mt-4">
                   <div className="relative w-28 h-28 bg-white text-white rounded-full cursor-pointer hover:bg-gray-100">
-                    <IMaskInput
+                    <input
                       type="file"
+                      accept="image/*"
                       onChange={handleFileChange}
-                      className="w-full h-full opacity-0 cursor-pointer"
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                     />
                     <Upload
                       className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-[#1178B9] font-bold w-10 h-10"/>

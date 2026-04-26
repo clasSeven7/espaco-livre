@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
+import { ToasterProvider } from '@/components/ToasterProvider';
 import './globals.css';
 
 const geistSans = Geist({
@@ -14,7 +15,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: 'Espaço Livre',
-  description: 'Um apliactivo de alocação de espaços ',
+  description: 'Um aplicativo de alocação de espaços',
 };
 
 export default function RootLayout({
@@ -39,8 +40,9 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-100 dark:bg-zinc-900`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-zinc-100`}
       >
+        <ToasterProvider />
         {children}
       </body>
     </html>

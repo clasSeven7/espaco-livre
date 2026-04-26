@@ -1,5 +1,6 @@
 from clientes.api.serializers import ClienteSerializer
 from clientes.models import Cliente
+from django.contrib.auth.models import User
 from django.db import IntegrityError
 from rest_framework import status, viewsets
 from rest_framework.response import Response
@@ -23,8 +24,12 @@ class ClienteViewSet(viewsets.ModelViewSet):
                 {"error": mensagem, "field": field},
                 status=status.HTTP_400_BAD_REQUEST,
             )
+        nome_usuario = serializer.validated_data["nome_usuario"]
+        email = serializer.validated_data["email"]
+        senha = serializer.validated_data["senha"]
         try:
             cliente = serializer.save()
+            User.objects.create_user(username=nome_usuario, email=email, password=senha)
             return Response(
                 {
                     "message": "Cliente cadastrado com sucesso",
@@ -34,7 +39,7 @@ class ClienteViewSet(viewsets.ModelViewSet):
             )
         except IntegrityError:
             return Response(
-                {"error": "Email já cadastrado.", "field": "email"},
+                {"error": "Email ou usuário já cadastrado.", "field": "email"},
                 status=status.HTTP_409_CONFLICT,
             )
 

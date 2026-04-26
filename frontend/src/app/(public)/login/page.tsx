@@ -49,24 +49,21 @@ export default function Login() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const response = await api.post('/auth/login', formData);
-      const {usuario, token} = response.data.data;
+      const response = await api.post('/api/auth/login/', {
+        username: formData.nome_usuario,
+        password: formData.senha,
+      });
+      const {user, token} = response.data;
 
-      console.log(usuario)
-      console.log(token)
-
-      if (!usuario || !token) {
+      if (!user || !token) {
         throw new Error('Dados de login incompletos.');
       }
 
-      // Salva nos cookies
       Cookies.set('token', token);
-      Cookies.set('user', JSON.stringify(usuario));
+      Cookies.set('user', JSON.stringify(user));
 
-      // Salva no localStorage (somente se estiver no browser)
       if (typeof window !== 'undefined') {
-        localStorage.setItem('locatario_id', String(usuario.id));
-        localStorage.setItem('tipo_usuario', usuario.tipo);
+        localStorage.setItem('user_id', String(user.id));
       }
 
       toast.success('Login realizado com sucesso!');
@@ -78,7 +75,7 @@ export default function Login() {
         toast.error('Erro ao fazer login');
       }
     } finally {
-      setTimeout(() => setIsLoading(false), 1000);
+      setIsLoading(false);
     }
   };
 
@@ -121,7 +118,7 @@ export default function Login() {
         <div className="flex items-center gap-4 mb-16 z-10">
           <Link href="/" className="flex items-center gap-4">
             <Image
-              src={isDarkMode ? '/icone_branco.png' : '/icone_branco.png'}
+              src="/icone_branco.png"
               alt="Logo"
               width={100}
               height={100}
